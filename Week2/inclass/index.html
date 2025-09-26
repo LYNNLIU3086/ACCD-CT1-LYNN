@@ -10,7 +10,7 @@
             font-family: Helvetica, Arial, sans-serif;
         }
         header {
-            background-color:black;
+            background-color:rgb(255, 255, 255);
         }
         nav ul {
             margin:0;
@@ -20,7 +20,6 @@
         nav ul li {
             margin: 20px auto;
             text-align: center;
-            border-bottom: 0.5px solid white;
             padding-bottom: 15px;
         }
         nav ul li:last-child {
@@ -29,10 +28,10 @@
 
         nav ul li a {
             text-decoration: none;
-            color: aqua;
+            color: rgb(0, 0, 0);
             text-transform: uppercase;
         }
-        .active {
+         .active {
             font-weight: bold;
         }
 
@@ -44,13 +43,38 @@
             nav ul {
                 display: flex;
                 justify-content: flex-end;
+                background-color:aqua;
             }
         nav ul li {
             border-bottom: none;   
-            margin: 10px;
+            margin: 20px;
             padding: 0;
         }
-    }
+        }
+        nav ul li a {
+            text-decoration: none;
+            color:rgb(0, 0, 0);
+            text-transform: uppercase;
+        }
+
+         @media (min-width: 1200px){
+            nav ul {
+                display: flex;
+                justify-content: flex-start;
+                background-color:rgb(0, 0, 0);
+            }
+        nav ul li {
+            border-bottom: none;   
+            margin: 20px;
+            padding: 0px;
+        }
+        }
+         nav ul li a {
+            text-decoration: none;
+            color:aqua;
+            text-transform: uppercase;
+        }
+        
     </style>
 </head>
 <body>
@@ -59,15 +83,19 @@
             <ul>
                <li><a href="#">Home</a></li>
                <li><a href="#">Work</a></li>
-               <li class="active cursive another class"><a href="#">Blog</a></li>
+               <li class="active cursive"><a href="#">Portfolio</a></li>
                <li><a href="#">Resume</a></li>
             </ul>
         </nav>
     </header>
+    
     <main>
-        <p>cursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursivecursive</p></main>
+        <p>
+            I craft immersive narratives where technology, emotion, and data converge to redefine human connections. My work transforms genetic sequences, bioelectric signals, and environmental data into provocative stories that bridge humanity, culture and nature.</p>
+    </main>
+           
+     
 
-    <main></main>
     <footer></footer>
 </body>
 </html>
