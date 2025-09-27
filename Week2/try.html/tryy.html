@@ -7,15 +7,12 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#000;color:#fff;overflow-x:hidden}
-header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:linear-gradient(180deg,rgba(0,0,0,0.65),rgba(0,0,0,0.25));z-index:1500;backdrop-filter:blur(4px)}
+header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(0,0,0,0.85);z-index:1500}
 header h1{font-size:16px;letter-spacing:2px;font-weight:700}
 nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:600;font-size:14px;opacity:.95;transition:color .2s,opacity .2s}
 nav a:hover{color:crimson;opacity:1}
 
-/* 背景动画 */
-#bg-animation{position:fixed;inset:0;z-index:-1;background:#000}
-
-/* Intro splash */
+/* intro splash */
 .intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:2000;pointer-events:auto}
 .intro .title{font-size:clamp(36px,7vw,72px);letter-spacing:4px;font-weight:700;transform:translateY(12px);opacity:0;animation:introTitle 900ms ease forwards;color:#fff}
 .intro .sub{margin-top:18px;color:#aaa;font-size:14px;opacity:0;animation:introSub 900ms ease 200ms forwards}
@@ -46,8 +43,6 @@ footer{max-width:1200px;margin:40px auto 80px;padding:0 20px;color:#777;text-ali
 </style>
 </head>
 <body>
-<canvas id="bg-animation"></canvas>
-
 <div class="intro" id="intro">
 <div class="title">MY PORTFOLIO</div>
 <div class="sub">作品集 · 视觉 / 交互 / 影像</div>
@@ -65,7 +60,7 @@ footer{max-width:1200px;margin:40px auto 80px;padding:0 20px;color:#777;text-ali
 
 <main>
 <section class="grid" id="projectsGrid">
-<a href="project1.html" class="project project--lead" aria-label="Project One">
+<a href="project1.html" class="project project--lead">
 <img class="project__media" src="assets/thumb1.jpg" alt="Project One thumbnail">
 <div class="overlay"><h2>Project One — Lead</h2><p>实验短片，结合叙事与动态影像设计</p></div>
 <div class="meta">Video · 2025</div>
@@ -96,9 +91,8 @@ footer{max-width:1200px;margin:40px auto 80px;padding:0 20px;color:#777;text-ali
 // keyboard accessibility
 document.querySelectorAll('.project').forEach(card=>{card.setAttribute('tabindex','0');card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){window.location=card.getAttribute('href')||card.click();}})});
 
-// canvas particle bg
-(function(){const c=document.getElementById('bg-animation');const ctx=c.getContext('2d');let w,h,particles=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}window.addEventListener('resize',resize);resize();for(let i=0;i<100;i++){particles.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+1,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3});}function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(255,255,255,0.6)';particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,2*Math.PI);ctx.fill();});requestAnimationFrame(draw);}draw();})();
+// 背景动画
+(function(){const c=document.createElement('canvas');c.id='bg-animation';document.body.appendChild(c);const ctx=c.getContext('2d');let w,h,particles=[];function resize(){w=c.width=window.innerWidth;h=c.height=window.innerHeight;}window.addEventListener('resize',resize);resize();for(let i=0;i<100;i++){particles.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*2+1,vx:(Math.random()-0.5)*0.3,vy:(Math.random()-0.5)*0.3})}function draw(){ctx.clearRect(0,0,w,h);ctx.fillStyle='rgba(255,255,255,0.6)';particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,2*Math.PI);ctx.fill();});requestAnimationFrame(draw);}draw();})();
 </script>
 </body>
 </html>
-

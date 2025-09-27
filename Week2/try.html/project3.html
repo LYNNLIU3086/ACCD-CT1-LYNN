@@ -1,30 +1,54 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Project Three — 作品详情</title>
-  <style>/* 与 project1 相同 */</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Project X — 作品详情</title>
+<style>
+body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#000;color:#fff;margin:0;padding:0}
+header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;align-items:center;padding:0 24px;background:rgba(0,0,0,0.85);z-index:1000}
+header a{color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+main{max-width:1000px;margin:100px auto 60px;padding:0 20px}
+h1{font-size:2rem;margin-bottom:12px}
+p{line-height:1.6;color:#ccc;margin-bottom:16px}
+.video-wrapper{position:relative;padding-bottom:56.25%;height:0;margin-bottom:32px}
+.video-wrapper iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.gallery{position:relative;margin-bottom:32px}
+.gallery img{width:100%;border-radius:8px;display:none}
+.gallery img.active{display:block}
+.gallery button{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,0.06);border:none;color:#fff;font-size:2rem;padding:8px 14px;cursor:pointer;border-radius:6px}
+.gallery .prev{left:10px}
+.gallery .next{right:10px}
+</style>
 </head>
 <body>
-  <header><a href="index.html">← 返回首页</a></header>
-  <main>
-    <h1>Project Three</h1>
-    <p>项目介绍：3D 动画系列，受有机形态启发。</p>
+<header><a href="index.html">← 返回首页</a></header>
+<main>
+<h1>Project X</h1>
+<p>项目介绍文字</p>
 
-    <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/VIDEO_ID3" allowfullscreen></iframe>
-    </div>
+<div class="video-wrapper">
+<iframe src="https://www.youtube.com/embed/VIDEO_IDX" allowfullscreen></iframe>
+</div>
 
-    <div class="gallery">
-      <button class="prev">&#10094;</button>
-      <img src="assets/project3-img1.jpg" class="active">
-      <img src="assets/project3-img2.jpg">
-      <img src="assets/project3-img3.jpg">
-      <button class="next">&#10095;</button>
-    </div>
-    <p>更多文字说明可以放这里。</p>
-  </main>
-  <script>/* 与 project1 相同 */</script>
+<div class="gallery">
+<button class="prev">&#10094;</button>
+<img src="assets/projectX-img1.jpg" class="active">
+<img src="assets/projectX-img2.jpg">
+<img src="assets/projectX-img3.jpg">
+<button class="next">&#10095;</button>
+</div>
+
+<p>更多文字说明</p>
+</main>
+<script>
+const galleryImgs=document.querySelectorAll('.gallery img');
+const prevBtn=document.querySelector('.gallery .prev');
+const nextBtn=document.querySelector('.gallery .next');
+let index=0;
+function showImg(i){galleryImgs.forEach((img,j)=>img.classList.toggle('active',i===j));}
+prevBtn.addEventListener('click',()=>{index=(index-1+galleryImgs.length)%galleryImgs.length;showImg(index);})
+nextBtn.addEventListener('click',()=>{index=(index+1)%galleryImgs.length;showImg(index);})
+</script>
 </body>
 </html>
