@@ -3,54 +3,45 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>作品集首页</title>
+<title>MY PORTFOLIO</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#000;color:#fff;overflow-x:hidden}
-header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(0,0,0,0.85);z-index:1500}
-header h1{font-size:16px;letter-spacing:2px;font-weight:700}
-nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:600;font-size:14px;opacity:.95;transition:color .2s,opacity .2s}
-nav a:hover{color:crimson;opacity:1}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#000;color:#fff;overflow-x:hidden;}
+header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(0,0,0,0.85);z-index:1500;}
+header h1{font-size:16px;letter-spacing:2px;font-weight:700;}
+nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:600;font-size:14px;opacity:.95;transition:color .2s,opacity .2s;}
+nav a:hover{color:crimson;opacity:1;}
 
-/* intro 开场动画 */
-.intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:2000;pointer-events:auto}
-.intro .title{font-size:clamp(36px,7vw,72px);letter-spacing:4px;font-weight:700;transform:translateY(12px);opacity:0;animation:introTitle 900ms ease forwards;color:#fff}
-.intro .sub{margin-top:18px;color:#aaa;font-size:14px;opacity:0;animation:introSub 900ms ease 200ms forwards}
-.intro .enter{margin-top:36px;border:1px solid rgba(255,255,255,0.12);padding:10px 18px;border-radius:6px;color:#fff;background:transparent;cursor:pointer;font-weight:600;transition:transform .18s ease,background .18s;opacity:0;animation:introBtn .9s ease .35s forwards}
-.intro .enter:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03)}
-@keyframes introTitle{to{transform:none;opacity:1}}
-@keyframes introSub{to{opacity:1}}
-@keyframes introBtn{to{opacity:1}}
-.intro.hidden{opacity:0;pointer-events:none;transition:opacity .6s ease}
+/* intro splash */
+.intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:2000;pointer-events:auto;}
+.intro .title{font-size:clamp(36px,7vw,72px);letter-spacing:4px;font-weight:700;transform:translateY(12px);opacity:0;animation:introTitle 900ms ease forwards;color:#fff;}
+.intro .sub{margin-top:18px;color:#aaa;font-size:14px;opacity:0;animation:introSub 900ms ease 200ms forwards;}
+.intro .enter{margin-top:36px;border:1px solid rgba(255,255,255,0.12);padding:10px 18px;border-radius:6px;color:#fff;background:transparent;cursor:pointer;font-weight:600;transition:transform .18s ease,background .18s;opacity:0;animation:introBtn .9s ease .35s forwards;}
+.intro .enter:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03);}
+@keyframes introTitle{to{transform:none;opacity:1;}}
+@keyframes introSub{to{opacity:1;}}
+@keyframes introBtn{to{opacity:1;}}
+.intro.hidden{opacity:0;pointer-events:none;transition:opacity .6s ease;}
 
-/* 网格项目 */
-.grid{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;gap:28px;grid-template-columns:1fr}
-@media(min-width:720px){
-  .grid{grid-template-columns:repeat(2,1fr);grid-auto-rows:minmax(320px, auto)}
-  .project--lead{grid-column:1 / -1;grid-auto-rows:minmax(420px, auto)}
-}
-@media(min-width:1100px){
-  .grid{grid-template-columns:repeat(3,1fr);grid-auto-rows:minmax(340px, auto)}
-  .project--lead{grid-column:1 / -1;grid-auto-rows:minmax(450px, auto)}
-}
+/* projects grid */
+.grid{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;gap:28px;grid-template-columns:1fr;}
+@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}.project--lead{grid-column:1 / -1}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.project--lead{grid-column:1 / -1}}
 
-.project{position:relative;overflow:hidden;border-radius:10px;cursor:pointer;background:#0b0b0b;display:block;text-decoration:none;color:inherit;transform:translateY(12px);opacity:0;transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;will-change:transform,opacity}
-.project.is-visible{transform:none;opacity:1}
-.project__media{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s ease,filter .5s ease}
-.project:hover .project__media{transform:scale(1.06);filter:brightness(.6)}
-
-.overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:28px;text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.6));opacity:0;transition:opacity .45s ease}
-.project:hover .overlay,.project:focus .overlay{opacity:1}
-.overlay h2{font-size:clamp(18px,2.2vw,28px);margin-bottom:8px;letter-spacing:1px}
-.overlay p{color:#ddd;font-size:13px;max-width:80%;line-height:1.55}
-.meta{position:absolute;left:12px;bottom:12px;color:#bbb;font-size:12px;opacity:.9;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:6px}
-
-/* 底部流光动画 canvas */
-#bottom-animation {position:fixed;left:0;bottom:0;width:100%;height:120px;pointer-events:none;z-index:10;}
+.project{position:relative;overflow:hidden;border-radius:10px;cursor:pointer;background:#0b0b0b;display:block;text-decoration:none;color:inherit;transform:translateY(12px);opacity:0;transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;}
+.project.is-visible{transform:none;opacity:1;}
+.project__media{display:block;width:100%;height:100%;min-height:180px;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
+.project:hover .project__media{transform:scale(1.06);filter:brightness(.6);}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:28px;text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.6));opacity:0;transition:opacity .45s ease;}
+.project:hover .overlay,.project:focus .overlay{opacity:1;}
+.overlay h2{font-size:clamp(18px,2.2vw,28px);margin-bottom:8px;letter-spacing:1px;}
+.overlay p{color:#ddd;font-size:13px;max-width:80%;line-height:1.55;}
+.meta{position:absolute;left:12px;bottom:12px;color:#bbb;font-size:12px;opacity:.9;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:6px;}
+footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
 </style>
 </head>
 <body>
-<!-- intro splash -->
+
 <div class="intro" id="intro">
   <div class="title">MY PORTFOLIO</div>
   <div class="sub">作品集 · 视觉 / 交互 / 影像</div>
@@ -58,44 +49,50 @@ nav a:hover{color:crimson;opacity:1}
 </div>
 
 <header>
-<h1>YOUR NAME</h1>
-<nav>
-<a href="index.html">Projects</a>
-<a href="resume.html">Resume</a>
-<a href="contact.html">Contact</a>
-</nav>
+  <h1>YOUR NAME</h1>
+  <nav>
+    <a href="index.html">Projects</a>
+    <a href="resume.html" target="_blank">Resume</a>
+    <a href="contact.html" target="_blank">Contact</a>
+  </nav>
 </header>
 
 <main>
 <section class="grid" id="projectsGrid">
-<!-- 前五个项目 -->
-<a href="project1.html" class="project project--lead" target="_blank">
-<img class="project__media" src="assets/thumb1.jpg" alt="Project One thumbnail">
-<div class="overlay"><h2>Project One — Lead</h2><p>实验短片，结合叙事与动态影像设计</p></div>
-<div class="meta">Video · 2025</div>
-</a>
-<a href="project2.html" class="project" target="_blank"><img class="project__media" src="assets/thumb2.jpg" alt="Project Two thumbnail">
-<div class="overlay"><h2>Project Two</h2><p>交互装置 —— 光与空间的实验</p></div><div class="meta">Installation · 2024</div>
-</a>
-<a href="project3.html" class="project" target="_blank"><img class="project__media" src="assets/thumb3.jpg" alt="Project Three thumbnail">
-<div class="overlay"><h2>Project Three</h2><p>3D 动画系列，受有机形态启发</p></div><div class="meta">Animation · 2023</div>
-</a>
-<a href="project4.html" class="project" target="_blank"><img class="project__media" src="assets/thumb4.jpg" alt="Project Four thumbnail">
-<div class="overlay"><h2>Project Four</h2><p>摄影系列，捕捉城市瞬间与氛围</p></div><div class="meta">Photo · 2022</div>
-</a>
-<a href="project5.html" class="project" target="_blank"><img class="project__media" src="assets/thumb5.jpg" alt="Project Five thumbnail">
-<div class="overlay"><h2>Project Five</h2><p>概念设计：未来居住系统的想象与实验</p></div><div class="meta">Speculative · 2025</div>
-</a>
-<!-- 新增项目 -->
-<a href="project6.html" class="project" target="_blank"><img class="project__media" src="assets/thumb6.jpg" alt="Project Six thumbnail">
-<div class="overlay"><h2>Project Six</h2><p>沉浸式体验项目，结合光影与互动</p></div><div class="meta">Interactive · 2025</div>
-</a>
-<a href="project7.html" class="project" target="_blank"><img class="project__media" src="assets/thumb7.jpg" alt="Project Seven thumbnail">
-<div class="overlay"><h2>Project Seven</h2><p>概念动画实验，探索未来城市</p></div><div class="meta">Animation · 2025</div>
-</a>
+
+  <a href="project1.html" class="project project--lead" target="_blank">
+    <img class="project__media" src="assets/thumb1.jpg" alt="Project One">
+    <div class="overlay"><h2>Project One — Lead</h2><p>实验短片，结合叙事与动态影像设计</p></div>
+    <div class="meta">Video · 2025</div>
+  </a>
+
+  <a href="project2.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb2.jpg" alt="Project Two">
+    <div class="overlay"><h2>Project Two</h2><p>交互装置 —— 光与空间的实验</p></div>
+    <div class="meta">Installation · 2024</div>
+  </a>
+
+  <a href="project3.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb3.jpg" alt="Project Three">
+    <div class="overlay"><h2>Project Three</h2><p>3D 动画系列，受有机形态启发</p></div>
+    <div class="meta">Animation · 2023</div>
+  </a>
+
+  <a href="project4.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb4.jpg" alt="Project Four">
+    <div class="overlay"><h2>Project Four</h2><p>摄影系列，捕捉城市瞬间与氛围</p></div>
+    <div class="meta">Photo · 2022</div>
+  </a>
+
+  <a href="project5.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb5.jpg" alt="Project Five">
+    <div class="overlay"><h2>Project Five</h2><p>概念设计：未来居住系统的想象与实验</p></div>
+    <div class="meta">Speculative · 2025</div>
+  </a>
+
 </section>
 </main>
-<canvas id="bottom-animation"></canvas>
+
 <footer>© 2025 YOUR NAME — design & code</footer>
 
 <script>
@@ -117,15 +114,15 @@ nav a:hover{color:crimson;opacity:1}
 // scroll reveal
 (function(){
   const items=document.querySelectorAll('.project');
-  const obs=new IntersectionObserver((entries)=>{
+  const obs=new IntersectionObserver(entries=>{
     entries.forEach(e=>{
       if(e.isIntersecting){
         e.target.classList.add('is-visible');
-        obs.unobserve(e.target)
+        obs.unobserve(e.target);
       }
-    })
+    });
   },{threshold:0.12});
-  items.forEach(i=>obs.observe(i))
+  items.forEach(i=>obs.observe(i));
 })();
 
 // keyboard accessibility
@@ -133,48 +130,10 @@ document.querySelectorAll('.project').forEach(card=>{
   card.setAttribute('tabindex','0');
   card.addEventListener('keydown',e=>{
     if(e.key==='Enter'||e.key===' '){
-      window.location=card.getAttribute('href')||card.click();
+      window.open(card.getAttribute('href'),'_blank');
     }
-  })
+  });
 });
-
-// 底部流光动画
-(function(){
-  const c=document.getElementById('bottom-animation');
-  const ctx=c.getContext('2d');
-  let w,h,lines=[];
-  function resize(){w=c.width=window.innerWidth;h=c.height=120;}
-  window.addEventListener('resize',resize);
-  resize();
-  for(let i=0;i<40;i++){
-    lines.push({
-      x:Math.random()*w,
-      y:Math.random()*h,
-      length:Math.random()*80+20,
-      speed:Math.random()*0.3+0.1,
-      angle:Math.random()*Math.PI*2,
-      color:`rgba(255,255,255,${Math.random()*0.3+0.1})`
-    });
-  }
-  function draw(){
-    ctx.clearRect(0,0,w,h);
-    lines.forEach(l=>{
-      l.x+=Math.cos(l.angle)*l.speed;
-      l.y+=Math.sin(l.angle)*l.speed;
-      if(l.x<0)l.x=w;if(l.x>w)l.x=0;
-      if(l.y<0)l.y=h;if(l.y>h)l.y=0;
-      ctx.strokeStyle=l.color;
-      ctx.lineWidth=1.2;
-      ctx.beginPath();
-      ctx.moveTo(l.x,l.y);
-      ctx.lineTo(l.x+Math.cos(l.angle)*l.length,l.y+Math.sin(l.angle)*l.length);
-      ctx.stroke();
-    });
-    requestAnimationFrame(draw);
-  }
-  draw();
-})();
 </script>
 </body>
 </html>
-
