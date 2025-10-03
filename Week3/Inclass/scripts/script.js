@@ -21,6 +21,12 @@ const toggleImage = () =>
     {
        imgBox.src = "assets/Q3.png"
     }
+    else
+    {
+        imgBox.src = "assets/Q1.png" 
+    }
+    
+    
 }
 colorBtn.addEventListener("click", assignRandomColor)
 imageBtn.addEventListener("click", toggleImage)
