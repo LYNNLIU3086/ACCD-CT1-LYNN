@@ -213,7 +213,23 @@ document.addEventListener('contextmenu', function(e){
 document.addEventListener('copy', e => e.preventDefault());
 document.addEventListener('cut', e => e.preventDefault());
 document.addEventListener('selectstart', e => e.preventDefault());
+
+let lastScrollTop = 0;
+const navbar = document.querySelector("nav"); // 你的菜单栏标签是 nav 的话
+
+window.addEventListener("scroll", function() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  if (scrollTop > lastScrollTop) {
+    // 向下滚动 -> 隐藏菜单栏
+    navbar.style.transform = "translateY(-100%)";
+  } else {
+    // 向上滚动 -> 显示菜单栏
+    navbar.style.transform = "translateY(0)";
+  }
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // 防止负值
+});
 </script>
+
 
 
 

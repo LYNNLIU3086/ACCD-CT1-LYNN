@@ -23,8 +23,12 @@ header {
   justify-content:space-between;
   align-items:center;
   z-index:100;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.3);   /* ✅ 初始半透明 */
+  backdrop-filter: blur(6px);
+  transition: all 0.4s ease;      /* ✅ 平滑过渡 */
+}
+header.scrolled {
+  background: rgba(0,0,0,0.85);  /* ✅ 滚动后更不透明 */
 }
 header h1 {
   font-size:1.5em;
@@ -107,29 +111,31 @@ nav a:hover {color:crimson;}
 }
 .lightbox.active {display:flex;}
 
-/* 响应式 */
-@media (max-width: 800px) {
-  nav {
-    padding: 16px 24px;
+/* ========= 响应式调整 ========= */
+@media (max-width: 768px) {
+  header {
+    padding:8px 24px;        /* ✅ 菜单栏变细 */
   }
-  nav .menu {
-    gap: 20px;
+  header h1 {
+    font-size:1.2em;         /* ✅ 字体稍小 */
+  }
+  nav a {
+    font-size:0.9em;
+    margin-left:20px;        /* ✅ 间距缩小 */
+  }
+  .container {
+    margin-top:70px;         /* ✅ 内容下移防止被挡 */
   }
 }
 
 @media (max-width: 500px) {
-  nav {
-    flex-direction: column;
-    align-items: center;
-    padding: 16px 0;
+  header {
+    flex-direction:column;
+    align-items:center;
+    padding:10px 0;
   }
-  nav .menu {
-    flex-direction: row;
-    gap: 16px;
-    margin-top: 8px;
-  }
-  nav .logo {
-    font-size: 1.2rem;
+  nav a {
+    margin:0 12px;
   }
 }
 </style>
@@ -145,11 +151,12 @@ nav a:hover {color:crimson;}
   </nav>
 </header>
 
-<div class="media-wrapper" style="position:relative;">
-    <img src="../assets/project1_img1.jpg" alt="Project 1 image 1">
-    <div style="position:absolute; top:0; left:0; width:100%; height:100%;"></div>
+<!-- 顶部展示图 -->
+<div class="media-wrapper">
+  <img src="../assets/project1_img1.jpg" alt="Project 1 image 1">
 </div>
 
+<!-- 主体内容 -->
 <div class="container section">
   <h1>Project Two</h1>
   <p class="description">
@@ -172,8 +179,8 @@ nav a:hover {color:crimson;}
   </div>
   <div class="media-wrapper">
     <img src="../assets/project1_img4.jpg" alt="Project Two image 3">
-     <div class="media-wrapper">
-
+  </div>
+  <div class="media-wrapper">
     <img src="../assets/project1_img5.jpg" alt="Project Two image 4">
   </div>
 </div>
@@ -184,30 +191,51 @@ nav a:hover {color:crimson;}
 </div>
 
 <script>
-  // Lightbox 图片放大
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = lightbox.querySelector('img');
-  document.querySelectorAll('.media-wrapper img').forEach(img => {
-    img.addEventListener('click', () => {
-      lightboxImg.src = img.src;
-      lightbox.classList.add('active');
-    });
+// Lightbox 图片放大
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = lightbox.querySelector('img');
+document.querySelectorAll('.media-wrapper img').forEach(img => {
+  img.addEventListener('click', () => {
+    lightboxImg.src = img.src;
+    lightbox.classList.add('active');
   });
-  lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+});
+lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
 
 // 禁止右键菜单
 document.addEventListener('contextmenu', function(e){
-    e.preventDefault();
-    alert("右键已禁用");
+  e.preventDefault();
+  alert("右键已禁用");
 });
 
 // 禁止复制、剪切、选择
 document.addEventListener('copy', e => e.preventDefault());
 document.addEventListener('cut', e => e.preventDefault());
 document.addEventListener('selectstart', e => e.preventDefault());
+
+// ✅ 滚动时隐藏/显示菜单栏 + 透明渐变效果
+let lastScrollTop = 0;
+const navbar = document.querySelector("header");
+
+window.addEventListener("scroll", function() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  // 滚动方向控制隐藏/出现
+  if (scrollTop > lastScrollTop) {
+    navbar.style.transform = "translateY(-100%)";
+  } else {
+    navbar.style.transform = "translateY(0)";
+  }
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+  // ✅ 滚动距离控制透明度变化
+  if (scrollTop > 80) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
 </script>
-
-
 
 </body>
 </html>
