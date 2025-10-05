@@ -3,22 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Project Three — MY PORTFOLIO</title>
+  <title>Project Two — MY PORTFOLIO</title>
   <style>
-    body {margin:0; font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif; background:#000; color:#fff; line-height:1.6; overflow-x:hidden;}
-    header {position:fixed; top:0; left:0; right:0; height:68px; display:flex; justify-content:space-between; align-items:center; padding:0 28px; background:rgba(0,0,0,0.85); z-index:1500;}
-    header h1 {font-size:16px; letter-spacing:2px; font-weight:700;}
-    nav a {color:#fff; text-decoration:none; margin-left:18px; font-weight:600; font-size:14px; opacity:.95; transition:color .2s,opacity .2s;}
-    nav a:hover {color:crimson; opacity:1;}
-    main {padding:100px 20px 60px; max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:24px;}
-    main h1 {font-size:2rem; margin-bottom:16px;}
-    main p {margin-bottom:16px; font-size:1rem; color:#ddd;}
-    img,iframe {width:100%; border-radius:8px; display:block;}
+    body {
+      margin: 0;
+      font-family: "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+      background: #ffffff;
+      color: #111;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 68px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      background: rgba(237, 255, 187, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: 1500;
+      border-bottom: 1px solid #000000;
+    }
+
+    header h1 {
+      font-size: 16px;
+      letter-spacing: 2px;
+      font-weight: 700;
+    }
+
+    nav a {
+      color: #000;
+      text-decoration: none;
+      margin-left: 18px;
+      font-weight: 600;
+      font-size: 14px;
+      opacity: .9;
+      transition: color .2s, opacity .2s;
+    }
+
+    nav a:hover {
+      color: crimson;
+      opacity: 1;
+    }
+
+    main {
+      padding: 100px 20px 120px;
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* 标题与文字部分 */
+    .intro {
+      text-align: center;
+    }
+
+    .intro h1 {
+      font-size: 2.2rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    .intro p {
+      font-size: 1rem;
+      color: #444;
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    /* 媒体比例 */
+    .media-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* 16:9 */
+      overflow: hidden;
+      border-radius: 12px;
+      background: #f5f5f5;
+    }
+
+    .media-wrapper iframe,
+    .media-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .media-wrapper img:hover {
+      transform: scale(1.02);
+    }
+
+    /* Lightbox 效果 */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 3000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    /* 底部三连导航 */
+    .project-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid #eee;
+      font-weight: 600;
+    }
+
+    .project-nav a {
+      color: #000;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .project-nav a:hover {
+      color: crimson;
+    }
+
     @media(max-width:600px){
       header{padding:0 16px;}
       nav a{margin-left:12px;font-size:13px;}
-      main h1{font-size:1.6rem;}
-      main p{font-size:0.9rem;}
+      main{gap:28px;}
+      .intro h1{font-size:1.6rem;}
+      .intro p{font-size:0.95rem;}
+      .project-nav{
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -31,16 +177,65 @@
 </header>
 
 <main>
-  <h1>Project Three</h1>
-  <p>3D 动画系列，受有机形态启发。</p>
+  <section class="intro">
+    <h1>Project Two</h1>
+    <p>
+      本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
+      观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
+      它探索了物理空间与数字感知之间的边界。
+    </p>
+  </section>
+
+  <!-- Vimeo 视频 -->
+  <div class="media-wrapper">
+    <iframe
+      src="https://player.vimeo.com/video/1043935673"
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
 
   <!-- 图片展示 -->
-  <img src="../assets/project3_img1.jpg" alt="Project Three image 1">
-  <img src="../assets/project3_img2.jpg" alt="Project Three image 2">
-  <img src="../assets/project3_img3.jpg" alt="Project Three image 3">
+  <div class="media-wrapper">
+    <img src="../assets/project3_img1.jpg" alt="Project 3 image 1">
+  </div>
+  <div class="media-wrapper">
+    <img src="../assets/project3_img2.jpg" alt="Project 3 image 2">
+  </div>
+  <div class="media-wrapper">
+    <img src="../assets/project3_img4.jpg" alt="Project 3 image 3">
+  </div>
 
-  <!-- 视频展示 -->
-  <iframe width="100%" height="480" src="https://www.youtube.com/embed/VIDEO_ID3" frameborder="0" allowfullscreen></iframe>
+  <!-- 三连底部导航 -->
+  <div class="project-nav">
+    <a href="project1.html" class="prev">← Project One</a>
+    <a href="../index.html" class="overview">返回总览</a>
+    <a href="project3.html" class="next">Project Three →</a>
+  </div>
 </main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <img src="" alt="Expanded view">
+</div>
+
+<script>
+  // Lightbox 图片放大功能
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+  const images = document.querySelectorAll('.media-wrapper img');
+
+  images.forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('active');
+    });
+  });
+
+  lightbox.addEventListener('click', () => {
+    lightbox.classList.remove('active');
+  });
+</script>
 </body>
 </html>

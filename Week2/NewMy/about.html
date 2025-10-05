@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>About — LYNN LIU</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#fff;color:#111;line-height:1.6;overflow-x:hidden;}
+a{color:#111;text-decoration:none;transition:color .2s;}
+a:hover{color:crimson;}
+header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(255,255,255,0.95);z-index:1500;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+header h1{font-size:16px;letter-spacing:2px;font-weight:700;}
+nav a{margin-left:18px;font-weight:600;font-size:14px;opacity:.95;}
+main{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+.profile-text p{opacity:0;transform:translateX(-20px);transition:opacity .8s, transform .8s; margin-bottom:20px;}
+.profile-text p.visible{opacity:1;transform:translateX(0);}
+.profile-text h2{font-size:36px;font-weight:700;margin-bottom:24px;}
+.profile-image{opacity:0;transform:translateY(20px);transition:opacity .8s, transform .8s; will-change: transform, opacity;}
+.profile-image.visible{opacity:1;transform:translateY(0);}
+.profile-image img{width:100%;border-radius:12px;display:block;object-fit:cover;}
+.social-links{margin-top:24px; display:flex; gap:16px;}
+.social-links a{font-size:16px;}
+@media(max-width:900px){main{grid-template-columns:1fr;gap:40px;} .profile-image img{width:80%;margin:0 auto;}}
+footer{text-align:center;padding:20px 0;color:#777;font-size:14px;}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>LYNN LIU</h1>
+  <nav>
+    <a href="index.html">Works</a>
+    <a href="resume.html">Resume</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main>
+  <div class="profile-text">
+    <h2>About Me</h2>
+    <p>你好，我是 Lynn Liu，一名视觉设计师与交互艺术创作者。我专注于探索空间、光影与数字技术交互的可能性，通过视觉实验、互动装置和影像作品，表达对环境和体验的思考。</p>
+    <p>我喜欢将自然元素与人造元素结合，探索感官与数据、现实与虚拟之间的关系。在我的创作中，每个项目都是一次实验和叙事尝试。</p>
+    <p>我的作品涉及：视觉实验、交互装置、影像制作、3D动画及概念设计等领域。</p>
+    <p>联系方式: <a href="mailto:lynn@example.com">lynn@example.com</a></p>
+    <div class="social-links">
+      <a href="#" target="_blank">Instagram</a>
+      <a href="https://www.linkedin.com/in/lynnliu8180" target="_blank">LinkedIn</a>
+      <a href="#" target="_blank">Behance</a>
+    </div>
+  </div>
+  <div class="profile-image" id="profileImage">
+    <img src="assets/profile.jpg" alt="Lynn Liu">
+  </div>
+</main>
+
+<footer>© 2025 LYNN LIU — design & code</footer>
+
+<script>
+// 文字逐段 fade-in + 左右微移
+const paragraphs = document.querySelectorAll('.profile-text p');
+paragraphs.forEach((p, i) => {
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        setTimeout(()=>{entry.target.classList.add('visible');}, i*250); // 每段延迟250ms
+        observer.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.2});
+  observer.observe(p);
+});
+
+// 图片 fade-in + 微浮动 + 轻微透明变化
+const profileImage = document.getElementById('profileImage');
+const imgObserver = new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      entry.target.classList.add('visible');
+      imgObserver.unobserve(entry.target);
+    }
+  });
+},{threshold:0.2});
+imgObserver.observe(profileImage);
+
+let startTime = null;
+function floatImage(timestamp){
+  if(!startTime) startTime = timestamp;
+  const elapsed = (timestamp - startTime)/1000;
+  // 上下浮动 ±6px，透明 ±0.05
+  const translateY = Math.sin(elapsed*2) * 6;
+  const opacity = 0.95 + Math.sin(elapsed*2)*0.05;
+  profileImage.style.transform = `translateY(${translateY}px)`;
+  profileImage.style.opacity = opacity;
+  requestAnimationFrame(floatImage);
+}
+requestAnimationFrame(floatImage);
+
+
+</script>
+
+</body>
+</html>
+

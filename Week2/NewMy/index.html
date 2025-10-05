@@ -11,6 +11,26 @@ header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-cont
 header h1{font-size:16px;letter-spacing:2px;font-weight:700;}
 nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:600;font-size:14px;opacity:.95;transition:color .2s,opacity .2s;}
 nav a:hover{color:crimson;opacity:1;}
+/* 粒子背景 */
+#bg-canvas {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0; /* 背景在最底层 */
+  pointer-events:none; /* 不阻止点击 */
+}
+
+/* 保证内容在背景上方 */
+body header, body main, body footer, .intro {
+  position:relative;
+  z-index:1;
+}
+
+
+/* intro splash */
+
 .intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:2000;pointer-events:auto;}
 .intro .title{font-size:clamp(36px,7vw,72px);letter-spacing:4px;font-weight:700;transform:translateY(12px);opacity:0;animation:introTitle 900ms ease forwards;color:#fff;}
 .intro .sub{margin-top:18px;color:#aaa;font-size:14px;opacity:0;animation:introSub 900ms ease 200ms forwards;}
@@ -20,9 +40,12 @@ nav a:hover{color:crimson;opacity:1;}
 @keyframes introSub{to{opacity:1;}}
 @keyframes introBtn{to{opacity:1;}}
 .intro.hidden{opacity:0;pointer-events:none;transition:opacity .6s ease;}
+
+/* projects grid */
 .grid{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;gap:28px;grid-template-columns:1fr;}
 @media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}.project--lead{grid-column:1 / -1}}
 @media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.project--lead{grid-column:1 / -1}}
+
 .project{position:relative;overflow:hidden;border-radius:10px;cursor:pointer;background:#0b0b0b;display:block;text-decoration:none;color:inherit;transform:translateY(12px);opacity:0;transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;}
 .project.is-visible{transform:none;opacity:1;}
 .project__media{display:block;width:100%;height:100%;min-height:180px;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
@@ -35,27 +58,38 @@ nav a:hover{color:crimson;opacity:1;}
 footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
 </style>
 </head>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 <body>
+
+<!-- 启动页 -->
 <div class="intro" id="intro">
-  <div class="title">MY PORTFOLIO</div>
+  <video autoplay muted loop playsinline id="introVideo">
+    <source src="assets/intro.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div class="title">My Profile</div>
   <div class="sub">作品集 · 视觉 / 交互 / 影像</div>
-  <button class="enter" id="introEnter">ENTER</button>
+  <div class="skip">点击任意位置跳过</div>
 </div>
-<header>
-  <h1>YOUR NAME</h1>
+
+
+<header id="header">
+  <h1>LYNN LIU</h1>
   <nav>
-    <a href="index.html">Projects</a>
-    <a href="resume.html" target="_blank">Resume</a>
-    <a href="contact.html" target="_blank">Contact</a>
+    <a href="index.html">Works</a>
+    <a href="resume.html">Resume</a>
+    <a href="about.html">About</a>
   </nav>
 </header>
+
 <main>
 <section class="grid" id="projectsGrid">
 
   <a href="projects/project1.html" class="project project--lead" >
     <img class="project__media" src="assets/thumb1.jpg" alt="Project One">
     <div class="overlay"><h2>Project One — Self-comb</h2><p>Immersive Spatial & Interactive Experience</p></div>
-    <div class="meta">Vritual Reality · 2.2024-12.2024</div>
+    <div class="meta">Virtual Reality · 2.2024-12.2024</div>
   </a>
 
   <a href="projects/project2.html" class="project" >
@@ -96,21 +130,36 @@ footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
 
 </section>
 </main>
-<footer>© 2025 YOUR NAME — design & code</footer>
+<footer>© 2025 LYNN LIU — design & code</footer>
+
 <script>
-// intro splash
+// 启动页逻辑 + 点击跳过 + localStorage
 (function(){
   const intro=document.getElementById('intro');
-  const enter=document.getElementById('introEnter');
-  enter.addEventListener('click',hideIntro);
-  setTimeout(hideIntro,3200);
-  function hideIntro(){
-    if(!intro.classList.contains('hidden')){
-      intro.classList.add('hidden');
+  const header=document.getElementById('header');
+  const grid=document.getElementById('projectsGrid');
+  const video=document.getElementById('introVideo');
+
+  function showMain(){
+    intro.classList.add('hidden');
+    setTimeout(()=>{
+      header.classList.add('visible');
+      grid.classList.add('visible');
       document.documentElement.style.overflow='auto';
-    }
+    },800);
+    localStorage.setItem('visitedPortfolio','true');
   }
-  document.documentElement.style.overflow='hidden';
+
+  if(localStorage.getItem('visitedPortfolio')){
+    showMain();
+  } else {
+    // 视频结束自动消失
+    video.addEventListener('ended', showMain);
+    // 点击任意位置跳过
+    intro.addEventListener('click', showMain);
+    // 防止视频无限长，可以加定时自动消失（可选）
+    setTimeout(showMain, 4000);
+  }
 })();
 
 // scroll reveal
