@@ -3,19 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Project Four — Lynn Liu</title>
+<title>Project Two — Lynn Liu</title>
 <style>
-/* 全局样式 */
 * {margin:0; padding:0; box-sizing:border-box;}
 body {
   font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
   background:#000;
   color:#fff;
   line-height:1.7;
-  overflow-x:hidden;
 }
 
-/* 顶部导航 */
+/* 导航栏 */
 header {
   position: fixed;
   top:0; left:0; right:0;
@@ -25,8 +23,12 @@ header {
   justify-content:space-between;
   align-items:center;
   z-index:100;
-  background: rgba(0,0,0,0.85);
-  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.3);   /* ✅ 初始半透明 */
+  backdrop-filter: blur(6px);
+  transition: all 0.4s ease;      /* ✅ 平滑过渡 */
+}
+header.scrolled {
+  background: rgba(0,0,0,0.85);  /* ✅ 滚动后更不透明 */
 }
 header h1 {
   font-size:1.5em;
@@ -53,9 +55,9 @@ nav a:hover {color:crimson;}
   gap:32px;
 }
 
-/* 标题与简介 */
+/* 项目标题与简介 */
 .section h1 {
-  font-size:clamp(28px,5vw,36px);
+  font-size:1.8em;
   font-weight:700;
   margin-bottom:12px;
 }
@@ -66,15 +68,16 @@ nav a:hover {color:crimson;}
   margin-bottom:24px;
 }
 
-/* 视频与图片统一比例 16:9 */
+/* 媒体比例统一 */
 .media-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 56.25%; /* 16:9 比例 */
   border-radius:8px;
   overflow:hidden;
   background:#111;
 }
+
 .media-wrapper iframe,
 .media-wrapper img {
   position:absolute;
@@ -94,7 +97,8 @@ nav a:hover {color:crimson;}
   position:fixed;
   z-index:3000;
   top:0; left:0;
-  width:100%; height:100%;
+  width:100%;
+  height:100%;
   background: rgba(0,0,0,0.85);
   justify-content:center;
   align-items:center;
@@ -106,51 +110,43 @@ nav a:hover {color:crimson;}
   box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 .lightbox.active {display:flex;}
-
 /* 底部项目导航 */
-.project-nav {
-  display:flex;
-  justify-content:space-between;
-  margin-top:60px;
-  padding-top:20px;
-  border-top:1px solid #333;
-  font-weight:600;
-}
-.project-nav a {
-  text-decoration:none;
-  color:#fff;
-  transition:color .3s;
-}
-.project-nav a:hover {color:crimson;}
+.project-nav {display:flex; justify-content:space-between; margin-top:60px; padding-top:20px; border-top:1px solid #333; font-weight:600;}
+.project-nav a {text-decoration:none; color:#fff; transition:color .3s;}
+.project-nav a:hover {color: crimson;}
 
-/* 响应式 */
-@media (max-width: 800px) {
-  nav {
-    padding: 16px 24px;
+
+/* ========= 响应式调整 ========= */
+@media (max-width: 768px) {
+  header {
+    padding:8px 24px;        /* ✅ 菜单栏变细 */
   }
-  nav .menu {
-    gap: 20px;
+  header h1 {
+    font-size:1.2em;         /* ✅ 字体稍小 */
+  }
+  nav a {
+    font-size:0.9em;
+    margin-left:20px;        /* ✅ 间距缩小 */
+  }
+  .container {
+    margin-top:70px;         /* ✅ 内容下移防止被挡 */
   }
 }
 
 @media (max-width: 500px) {
-  nav {
-    flex-direction: column;
-    align-items: center;
-    padding: 16px 0;
+  header {
+    flex-direction:column;
+    align-items:center;
+    padding:10px 0;
   }
-  nav .menu {
-    flex-direction: row;
-    gap: 16px;
-    margin-top: 8px;
-  }
-  nav .logo {
-    font-size: 1.2rem;
+  nav a {
+    margin:0 12px;
   }
 }
 </style>
 </head>
 <body>
+
 
 <header>
   <h1>LYNN LIU</h1>
@@ -224,22 +220,29 @@ document.addEventListener('copy', e => e.preventDefault());
 document.addEventListener('cut', e => e.preventDefault());
 document.addEventListener('selectstart', e => e.preventDefault());
 
+// ✅ 滚动时隐藏/显示菜单栏 + 透明渐变效果
 let lastScrollTop = 0;
-const navbar = document.querySelector("nav"); // 你的菜单栏标签是 nav 的话
+const navbar = document.querySelector("header");
 
 window.addEventListener("scroll", function() {
   const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  // 滚动方向控制隐藏/出现
   if (scrollTop > lastScrollTop) {
-    // 向下滚动 -> 隐藏菜单栏
     navbar.style.transform = "translateY(-100%)";
   } else {
-    // 向上滚动 -> 显示菜单栏
     navbar.style.transform = "translateY(0)";
   }
-  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // 防止负值
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+  // ✅ 滚动距离控制透明度变化
+  if (scrollTop > 80) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
 });
 </script>
-
 
 </body>
 </html>

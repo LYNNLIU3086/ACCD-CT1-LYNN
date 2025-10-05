@@ -110,6 +110,11 @@ nav a:hover {color:crimson;}
   box-shadow:0 0 20px rgba(0,0,0,0.5);
 }
 .lightbox.active {display:flex;}
+/* 底部项目导航 */
+.project-nav {display:flex; justify-content:space-between; margin-top:60px; padding-top:20px; border-top:1px solid #333; font-weight:600;}
+.project-nav a {text-decoration:none; color:#fff; transition:color .3s;}
+.project-nav a:hover {color: crimson;}
+
 
 /* ========= 响应式调整 ========= */
 @media (max-width: 768px) {
@@ -182,6 +187,14 @@ nav a:hover {color:crimson;}
   </div>
   <div class="media-wrapper">
     <img src="../assets/project1_img5.jpg" alt="Project Two image 4">
+  </div>
+</div>
+
+  <!-- 底部导航 -->
+  <div class="project-nav">
+    <a href="project2.html" class="prev">← Project Two</a>
+    <a href="../index.html" class="overview">返回总览</a>
+    <a href="project4.html" class="next">Project Four →</a>
   </div>
 </div>
 
