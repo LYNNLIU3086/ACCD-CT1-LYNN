@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Resume | Lynn Liu</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+  font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  line-height:1.8;
+}
+
+/* 顶部导航栏 */
+header {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+header h1 {
+  font-size:1.5em;
+  font-weight:600;
+  letter-spacing:1px;
+}
+
+header nav a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:40px;
+  font-weight:400; /* 正常字体 */
+  font-size:1em;
+  transition:color 0.3s;
+}
+
+header nav a:hover {
+  color:#aaa;
+}
+
+/* 页面主体容器 */
+.container {
+  max-width:900px;
+  margin:120px auto 60px; /* 顶部留空间给导航 */
+  padding:0 50px;
+  text-align:left;
+}
+
+/* 返回按钮 */
+.back-btn {
+  display:inline-block;
+  margin-bottom:50px;
+  padding:10px 18px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:6px;
+  color:#fff;
+  text-decoration:none;
+  transition:0.2s;
+}
+.back-btn:hover {
+  background:rgba(255,255,255,0.03);
+  transform:translateY(-2px);
+}
+
+/* section 标题 */
+.section {
+  margin-bottom:50px;
+}
+
+.section h2 {
+  font-size:1.4em;
+  margin-bottom:20px;
+  color:#ccc;
+  border-bottom:1px solid #333;
+  padding-bottom:5px;
+}
+
+/* 每条经历分层 */
+.item {
+  margin-bottom:25px;
+}
+
+.item .role {
+  font-weight:600;
+  font-size:1.05em;
+  color:#fff;
+  margin-bottom:4px;
+}
+
+.item .company {
+  font-weight:400;
+  font-size:0.95em;
+  color:#ccc;
+  margin-bottom:4px;
+}
+
+.item .date {
+  font-size:0.85em;
+  color:#888;
+  margin-bottom:8px;
+}
+
+.item ul {
+  margin-left:25px;
+  color:#eee;
+  font-size:0.9em;
+  line-height:1.5;
+}
+
+ul.skills, ul.exhibitions {
+  margin-left:25px;
+  font-size:0.95em;
+  color:#eee;
+  margin-bottom:20px;
+}
+
+ul.skills li,
+ul.exhibitions li {
+  margin-bottom:8px;
+}
+
+/* 响应式 */
+@media (max-width: 800px) {
+  nav {
+    padding: 16px 24px;
+  }
+  nav .menu {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+  }
+  nav .menu {
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  nav .logo {
+    font-size: 1.2rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<header>
+  <h1>LYNN LIU</h1>
+  <nav>
+    <a href="index.html">Works</a>
+    <a href="resume.html">Resume</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<!-- 页面主体 -->
+<div class="container">
+  <a class="back-btn" href="index.html">← Back to Works</a>
+
+  <!-- Education -->
+  <div class="section">
+    <h2>EDUCATION</h2>
+    <div class="item">
+      <p class="role">Bachelor of Fine Arts in Art and Technology</p>
+      <p class="company">Central Academy of Fine Arts (CAFA) | Beijing, China</p>
+      <p class="date">Sep. 2020 – Jun. 2024 | GPA: 3.8, Rank: 9/183</p>
+    </div>
+    <div class="item">
+      <p class="role">Master of Fine Arts in Media Design Practice</p>
+      <p class="company">Art Center College of Design (ACCD) | Pasadena, California</p>
+      <p class="date">Sep. 2024 – May. 2027</p>
+    </div>
+  </div>
+
+  <!-- Social Practices -->
+  <div class="section">
+    <h2>SOCIAL PRACTICES</h2>
+    <div class="item">
+      <p class="role">Visual Designer & On-site Photography Assistant</p>
+      <p class="company">Senior Executives’ Seminar for Digital Transformation & Development of Enterprises in Shandong Peninsula, China</p>
+      <p class="date">Aug. 2024</p>
+      <ul>
+        <li>Executed visual design tasks in a professional scenario and assisted with photography for the event.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <p class="role">Design Assistant</p>
+      <p class="company">Beijing Tsingshang Architectural Design Research Institute Co., Ltd.</p>
+      <p class="date">Jul. 2024 – Oct. 2024</p>
+      <ul>
+        <li>Prepared drawings, 3D models, and renderings for the design team.</li>
+        <li>Researched materials, site data, and regulations to inform project designs.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <p class="role">Visual Designer</p>
+      <p class="company">Beijing Daolin Architectural Planning & Design Consulting Co., Ltd.</p>
+      <p class="date">Jul. 2023 – Oct. 2023</p>
+      <ul>
+        <li>Responsible for visual design tasks for architectural planning projects.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <p class="role">User Experience Designer</p>
+      <p class="company">User Research at Yake Smart Technology Company & Major Medical Clinics in Beijing</p>
+      <p class="date">Aug. 2023 – Oct. 2023</p>
+      <ul>
+        <li>Conducted end-to-end user, market, and product research.</li>
+      </ul>
+    </div>
+
+    <div class="item">
+      <p class="role">Motion Designer & Director</p>
+      <p class="company">Motion Capture Studio</p>
+      <p class="date">Jun. 2023 – Jul. 2023</p>
+      <ul>
+        <li>Participated in full motion capture pipeline including design and choreography guidance.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Exhibitions -->
+  <div class="section">
+    <h2>ART EVENTS & EXHIBITIONS</h2>
+    <ul class="exhibitions">
+      <li>LABELHOOD Pioneer Fashion & Arts Festival | Jul. 2024</li>
+      <li>Social Innovation Open House of School of Visual Arts | Nov. 2023</li>
+      <li>Cumulus Beijing 2023 at CAFA | Dec. 2023 – Nov. 2023</li>
+    </ul>
+  </div>
+
+  <!-- Skills -->
+  <div class="section">
+    <h2>PROFESSIONAL SKILLS</h2>
+    <ul class="skills">
+      <li><strong>Graphic Design:</strong> Adobe Creative Suite (Photoshop, Illustrator, InDesign, AfterEffects)</li>
+      <li><strong>Film & Video:</strong> Photography (outdoor/studio), DaVinci Resolve, Premiere Pro</li>
+      <li><strong>3D Modeling:</strong> Cinema 4D, Blender, Rhino, Unreal Engine</li>
+      <li><strong>Programming:</strong> Arduino, AI tools (object detection etc.)</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+</script>
+
+
+</body>
+</html>

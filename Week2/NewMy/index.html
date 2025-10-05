@@ -1,65 +1,170 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MY PORTFOLIO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works | Lynn Liu</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#000;color:#fff;overflow-x:hidden;}
-header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(0,0,0,0.85);z-index:1500;}
-header h1{font-size:16px;letter-spacing:2px;font-weight:700;}
-nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:600;font-size:14px;opacity:.95;transition:color .2s,opacity .2s;}
-nav a:hover{color:crimson;opacity:1;}
-/* 粒子背景 */
-#bg-canvas {
-  position:fixed;
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+  font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+
+/* 顶部导航栏统一风格 */
+header {
+  position: fixed;
   top:0;
   left:0;
   width:100%;
-  height:100%;
-  z-index:0; /* 背景在最底层 */
-  pointer-events:none; /* 不阻止点击 */
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
 }
 
-/* 保证内容在背景上方 */
-body header, body main, body footer, .intro {
-  position:relative;
-  z-index:1;
+header h1 {
+  font-size:1.5em;
+  font-weight:400; /* 和 About/Resume 保持一致 */
+  letter-spacing:1px;
 }
 
+header nav a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:40px;
+  font-weight:400;
+  font-size:1em;
+  transition:color 0.3s;
+}
+header nav a:hover {
+  color:#aaa;
+}
 
 /* intro splash */
-
-.intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:2000;pointer-events:auto;}
-.intro .title{font-size:clamp(36px,7vw,72px);letter-spacing:4px;font-weight:700;transform:translateY(12px);opacity:0;animation:introTitle 900ms ease forwards;color:#fff;}
-.intro .sub{margin-top:18px;color:#aaa;font-size:14px;opacity:0;animation:introSub 900ms ease 200ms forwards;}
-.intro .enter{margin-top:36px;border:1px solid rgba(255,255,255,0.12);padding:10px 18px;border-radius:6px;color:#fff;background:transparent;cursor:pointer;font-weight:600;transition:transform .18s ease,background .18s;opacity:0;animation:introBtn .9s ease .35s forwards;}
-.intro .enter:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03);}
+.intro{
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background:#000; z-index:2000;
+  pointer-events:auto;
+}
+.intro .title{
+  font-size:clamp(36px,7vw,72px);
+  letter-spacing:4px;font-weight:700;
+  transform:translateY(12px);opacity:0;
+  animation:introTitle 900ms ease forwards;
+  color:#fff;
+}
+.intro .sub{
+  margin-top:18px;color:#aaa;font-size:14px;
+  opacity:0;animation:introSub 900ms ease 200ms forwards;
+}
+.intro .skip{
+  margin-top:36px;color:#888;font-size:0.9em;cursor:pointer;
+  opacity:0;animation:introBtn .9s ease .35s forwards;
+}
 @keyframes introTitle{to{transform:none;opacity:1;}}
 @keyframes introSub{to{opacity:1;}}
 @keyframes introBtn{to{opacity:1;}}
 .intro.hidden{opacity:0;pointer-events:none;transition:opacity .6s ease;}
 
-/* projects grid */
-.grid{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;gap:28px;grid-template-columns:1fr;}
-@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}.project--lead{grid-column:1 / -1}}
-@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.project--lead{grid-column:1 / -1}}
+/* 主容器 */
+main {
+  max-width:1200px;
+  margin:140px auto 80px; /* 顶部留空间给固定导航 */
+  padding:0 40px;
+}
 
-.project{position:relative;overflow:hidden;border-radius:10px;cursor:pointer;background:#0b0b0b;display:block;text-decoration:none;color:inherit;transform:translateY(12px);opacity:0;transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;}
+/* 项目网格 */
+.grid{
+  display:grid;
+  gap:28px;
+  grid-template-columns:1fr;
+}
+@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}}
+
+.project{
+  position:relative;overflow:hidden;
+  border-radius:10px;cursor:pointer;
+  background:#0b0b0b;display:block;
+  text-decoration:none;color:inherit;
+  transform:translateY(12px);opacity:0;
+  transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;
+}
 .project.is-visible{transform:none;opacity:1;}
-.project__media{display:block;width:100%;height:100%;min-height:180px;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
+
+.project__media{
+  display:block;width:100%;height:100%;
+  min-height:180px;object-fit:cover;
+  transition:transform .6s ease,filter .5s ease;
+}
 .project:hover .project__media{transform:scale(1.06);filter:brightness(.6);}
-.overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:28px;text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.6));opacity:0;transition:opacity .45s ease;}
+
+.overlay{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  padding:28px; text-align:center;
+  background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.6));
+  opacity:0; transition:opacity .45s ease;
+}
 .project:hover .overlay,.project:focus .overlay{opacity:1;}
-.overlay h2{font-size:clamp(18px,2.2vw,28px);margin-bottom:8px;letter-spacing:1px;}
-.overlay p{color:#ddd;font-size:13px;max-width:80%;line-height:1.55;}
-.meta{position:absolute;left:12px;bottom:12px;color:#bbb;font-size:12px;opacity:.9;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:6px;}
-footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
+.overlay h2{
+  font-size:clamp(18px,2.2vw,28px);
+  margin-bottom:8px;letter-spacing:1px;
+}
+.overlay p{
+  color:#ddd;font-size:13px;max-width:80%;line-height:1.55;
+}
+
+.meta{
+  position:absolute;left:12px;bottom:12px;
+  color:#bbb;font-size:12px;opacity:.9;
+  background:rgba(255,255,255,0.02);
+  padding:6px 8px;border-radius:6px;
+}
+
+/* Footer */
+footer{
+  text-align:center;padding:20px 0;
+  color:#777;background:rgba(0,0,0,0.85);
+}
+
+/* 响应式 */
+@media (max-width: 800px) {
+  nav {
+    padding: 16px 24px;
+  }
+  nav .menu {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+  }
+  nav .menu {
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  nav .logo {
+    font-size: 1.2rem;
+  }
+}
 </style>
 </head>
-
-<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
 <body>
 
 <!-- 启动页 -->
@@ -73,7 +178,7 @@ footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
   <div class="skip">点击任意位置跳过</div>
 </div>
 
-
+<!-- 导航栏 -->
 <header id="header">
   <h1>LYNN LIU</h1>
   <nav>
@@ -83,46 +188,47 @@ footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
   </nav>
 </header>
 
+<!-- 主体内容 -->
 <main>
 <section class="grid" id="projectsGrid">
 
-  <a href="projects/project1.html" class="project project--lead" >
+  <a href="projects/project1.html" class="project project--lead">
     <img class="project__media" src="assets/thumb1.jpg" alt="Project One">
     <div class="overlay"><h2>Project One — Self-comb</h2><p>Immersive Spatial & Interactive Experience</p></div>
     <div class="meta">Virtual Reality · 2.2024-12.2024</div>
   </a>
 
-  <a href="projects/project2.html" class="project" >
+  <a href="projects/project2.html" class="project">
     <img class="project__media" src="assets/thumb2.jpg" alt="Project Two">
     <div class="overlay"><h2>Project Two</h2><p>交互装置 —— 光与空间的实验</p></div>
     <div class="meta">Installation · 2024</div>
   </a>
 
-  <a href="projects/project3.html" class="project" >
+  <a href="projects/project3.html" class="project">
     <img class="project__media" src="assets/thumb3.jpg" alt="Project Three">
     <div class="overlay"><h2>Project Three</h2><p>3D 动画系列，受有机形态启发</p></div>
     <div class="meta">Animation · 2023</div>
   </a>
 
-  <a href="projects/project4.html" class="project" >
+  <a href="projects/project4.html" class="project">
     <img class="project__media" src="assets/thumb4.jpg" alt="Project Four">
     <div class="overlay"><h2>Project Four</h2><p>摄影系列，捕捉城市瞬间与氛围</p></div>
     <div class="meta">Photo · 2022</div>
   </a>
 
-  <a href="projects/project5.html" class="project" >
+  <a href="projects/project5.html" class="project">
     <img class="project__media" src="assets/thumb5.jpg" alt="Project Five">
     <div class="overlay"><h2>Project Five</h2><p>概念设计：未来居住系统的想象与实验</p></div>
     <div class="meta">Speculative · 2025</div>
   </a>
 
-  <a href="projects/project6.html" class="project" >
+  <a href="projects/project6.html" class="project">
     <img class="project__media" src="assets/thumb6.jpg" alt="Project Six">
     <div class="overlay"><h2>Project Six</h2><p>这里一句话描述项目 6</p></div>
     <div class="meta">类型 · 年份</div>
   </a>
 
-  <a href="projects/project7.html" class="project" >
+  <a href="projects/project7.html" class="project">
     <img class="project__media" src="assets/thumb7.jpg" alt="Project Seven">
     <div class="overlay"><h2>Project Seven</h2><p>这里一句话描述项目 7</p></div>
     <div class="meta">类型 · 年份</div>
@@ -130,10 +236,11 @@ footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
 
 </section>
 </main>
+
 <footer>© 2025 LYNN LIU — design & code</footer>
 
 <script>
-// 启动页逻辑 + 点击跳过 + localStorage
+// 启动页逻辑
 (function(){
   const intro=document.getElementById('intro');
   const header=document.getElementById('header');
@@ -153,16 +260,13 @@ footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
   if(localStorage.getItem('visitedPortfolio')){
     showMain();
   } else {
-    // 视频结束自动消失
     video.addEventListener('ended', showMain);
-    // 点击任意位置跳过
     intro.addEventListener('click', showMain);
-    // 防止视频无限长，可以加定时自动消失（可选）
     setTimeout(showMain, 4000);
   }
 })();
 
-// scroll reveal
+// Scroll reveal
 (function(){
   const items=document.querySelectorAll('.project');
   const obs=new IntersectionObserver(entries=>{
@@ -176,7 +280,7 @@ footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
   items.forEach(i=>obs.observe(i));
 })();
 
-// keyboard accessibility
+// Keyboard accessibility
 document.querySelectorAll('.project').forEach(card=>{
   card.setAttribute('tabindex','0');
   card.addEventListener('keydown',e=>{
@@ -185,6 +289,13 @@ document.querySelectorAll('.project').forEach(card=>{
     }
   });
 });
+
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
 </script>
+
+
 </body>
 </html>

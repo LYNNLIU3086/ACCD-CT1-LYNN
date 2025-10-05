@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lynn Liu — Welcome</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+html, body { width:100%; height:100%; font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif; background:#000; overflow:hidden; }
+
+/* 全屏视频背景 */
+#bgVideo {
+  position:fixed;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:0;
+}
+
+/* 封面内容 */
+#cover {
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  color:#fff;
+  cursor:pointer;
+  background: rgba(0,0,0,0.35);
+}
+
+/* Logo 和文字容器 */
+#cover h1 {
+  font-size:4rem;
+  letter-spacing:4px;
+  margin-bottom:16px;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+#cover h1 span {
+  opacity:0;
+  transform:translateY(30px);
+  display:inline-block;
+  animation:letterFade 1s forwards;
+}
+#cover p {
+  font-size:1.2rem;
+  color:#ddd;
+  opacity:0;
+  transform:translateY(20px);
+  animation:fadeUp 1s forwards 2s;
+}
+
+/* Enter 按钮 */
+#enterBtn {
+  margin-top:40px;
+  padding:12px 32px;
+  font-size:1rem;
+  font-weight:600;
+  color:#fff;
+  border:2px solid #fff;
+  border-radius:24px;
+  background:transparent;
+  cursor:pointer;
+  opacity:0;
+  transform:translateY(20px);
+  animation:fadeUp 1s forwards 2.5s;
+  transition:all 0.3s;
+}
+#enterBtn:hover { background:#fff; color:#000; transform:scale(1.05); }
+
+/* 文字动画关键帧 */
+@keyframes letterFade {
+  to {
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+@keyframes fadeUp {
+  to {opacity:1; transform:translateY(0);}
+}
+
+/* 遮罩动画 */
+#transitionMask {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:#000;
+  opacity:0;
+  z-index:999;
+  pointer-events:none;
+  transition:opacity 0.8s ease;
+}
+
+/* 响应式 */
+@media(max-width:600px){
+  #cover h1{font-size:2.5rem;}
+  #cover p{font-size:1rem;}
+  #enterBtn{padding:10px 28px; font-size:0.9rem;}
+}
+</style>
+</head>
+<body>
+
+<video id="bgVideo" autoplay muted loop>
+  <source src="assets/cover_video4.mp4" type="video/mp4">
+  你的浏览器不支持视频播放。
+</video>
+
+<div id="cover">
+  <h1 id="logoText"></h1>
+  <p>Explore my works</p>
+  <button id="enterBtn">Enter</button>
+</div>
+
+<div id="transitionMask"></div>
+
+<script>
+const mask = document.getElementById('transitionMask');
+const video = document.getElementById('bgVideo');
+const logo = document.getElementById('logoText');
+
+// 随机播放视频起点
+function randomVideoStart() {
+  const duration = video.duration || 0;
+  if (duration > 0) video.currentTime = Math.random() * duration;
+}
+video.addEventListener('loadedmetadata', randomVideoStart);
+video.addEventListener('ended', randomVideoStart);
+video.addEventListener('timeupdate', () => {
+  if(video.currentTime >= video.duration - 0.05) randomVideoStart();
+});
+
+// 封面点击或按键进入网站
+function enterSite(){
+  mask.style.pointerEvents = "auto";
+  mask.style.opacity = "1";
+  setTimeout(() => { window.location.href='index.html'; }, 800);
+}
+document.getElementById('cover').addEventListener('click', enterSite);
+document.getElementById('enterBtn').addEventListener('click', enterSite);
+document.addEventListener('keydown', enterSite);
+
+// 文字逐字动画
+const text = "LYNN LIU";
+logo.innerHTML = "";
+text.split("").forEach((char, i)=>{
+  const span = document.createElement("span");
+  span.textContent = char === " " ? "\u00A0" : char;
+  span.style.animationDelay = (0.3 + i*0.1) + "s";
+  logo.appendChild(span);
+});
+
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+</script>
+
+
+</body>
+</html>

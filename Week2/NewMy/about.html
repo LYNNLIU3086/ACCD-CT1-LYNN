@@ -1,32 +1,163 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>About — LYNN LIU</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About | Lynn Liu</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#fff;color:#111;line-height:1.6;overflow-x:hidden;}
-a{color:#111;text-decoration:none;transition:color .2s;}
-a:hover{color:crimson;}
-header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(255,255,255,0.95);z-index:1500;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
-header h1{font-size:16px;letter-spacing:2px;font-weight:700;}
-nav a{margin-left:18px;font-weight:600;font-size:14px;opacity:.95;}
-main{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
-.profile-text p{opacity:0;transform:translateX(-20px);transition:opacity .8s, transform .8s; margin-bottom:20px;}
-.profile-text p.visible{opacity:1;transform:translateX(0);}
-.profile-text h2{font-size:36px;font-weight:700;margin-bottom:24px;}
-.profile-image{opacity:0;transform:translateY(20px);transition:opacity .8s, transform .8s; will-change: transform, opacity;}
-.profile-image.visible{opacity:1;transform:translateY(0);}
-.profile-image img{width:100%;border-radius:12px;display:block;object-fit:cover;}
-.social-links{margin-top:24px; display:flex; gap:16px;}
-.social-links a{font-size:16px;}
-@media(max-width:900px){main{grid-template-columns:1fr;gap:40px;} .profile-image img{width:80%;margin:0 auto;}}
-footer{text-align:center;padding:20px 0;color:#777;font-size:14px;}
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+  font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  line-height:1.8;
+}
+
+/* 顶部导航栏统一风格 */
+header {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+header h1 {
+  font-size:1.5em;
+  font-weight:600;
+  letter-spacing:1px;
+}
+
+header nav a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:40px;
+  font-weight:400; /* 正常字体 */
+  font-size:1em;
+  transition:color 0.3s;
+}
+
+header nav a:hover {
+  color:#aaa;
+}
+
+/* 页面主体容器 */
+.container {
+  max-width:900px;
+  margin:120px auto 60px; /* 顶部留空间给固定导航 */
+  padding:0 50px;
+  text-align:left;
+}
+
+/* 返回按钮 */
+.back-btn {
+  display:inline-block;
+  margin-bottom:50px;
+  padding:10px 18px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:6px;
+  color:#fff;
+  text-decoration:none;
+  transition:0.2s;
+}
+.back-btn:hover {
+  background:rgba(255,255,255,0.03);
+  transform:translateY(-2px);
+}
+
+/* section 标题 */
+.section {
+  margin-bottom:50px;
+}
+
+.section h2 {
+  font-size:1.4em;
+  margin-bottom:20px;
+  color:#ccc;
+  border-bottom:1px solid #333;
+  padding-bottom:5px;
+}
+
+/* 每条经历分层 */
+.item {
+  margin-bottom:25px;
+}
+
+.item .role {
+  font-weight:600;
+  font-size:1.05em;
+  color:#fff;
+  margin-bottom:4px;
+}
+
+.item .company {
+  font-weight:400;
+  font-size:0.95em;
+  color:#ccc;
+  margin-bottom:4px;
+}
+
+.item .date {
+  font-size:0.85em;
+  color:#888;
+  margin-bottom:8px;
+}
+
+.item ul {
+  margin-left:25px;
+  color:#eee;
+  font-size:0.9em;
+  line-height:1.5;
+}
+
+ul.skills, ul.exhibitions {
+  margin-left:25px;
+  font-size:0.95em;
+  color:#eee;
+  margin-bottom:20px;
+}
+
+ul.skills li,
+ul.exhibitions li {
+  margin-bottom:8px;
+}
+
+/* 响应式 */
+@media (max-width: 800px) {
+  nav {
+    padding: 16px 24px;
+  }
+  nav .menu {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+  }
+  nav .menu {
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  nav .logo {
+    font-size: 1.2rem;
+  }
+}
 </style>
 </head>
 <body>
 
+<!-- 导航栏 -->
 <header>
   <h1>LYNN LIU</h1>
   <nav>
@@ -36,69 +167,48 @@ footer{text-align:center;padding:20px 0;color:#777;font-size:14px;}
   </nav>
 </header>
 
-<main>
-  <div class="profile-text">
-    <h2>About Me</h2>
-    <p>你好，我是 Lynn Liu，一名视觉设计师与交互艺术创作者。我专注于探索空间、光影与数字技术交互的可能性，通过视觉实验、互动装置和影像作品，表达对环境和体验的思考。</p>
-    <p>我喜欢将自然元素与人造元素结合，探索感官与数据、现实与虚拟之间的关系。在我的创作中，每个项目都是一次实验和叙事尝试。</p>
-    <p>我的作品涉及：视觉实验、交互装置、影像制作、3D动画及概念设计等领域。</p>
-    <p>联系方式: <a href="mailto:lynn@example.com">lynn@example.com</a></p>
-    <div class="social-links">
-      <a href="#" target="_blank">Instagram</a>
-      <a href="https://www.linkedin.com/in/lynnliu8180" target="_blank">LinkedIn</a>
-      <a href="#" target="_blank">Behance</a>
+<!-- 页面主体 -->
+<div class="container">
+  <a class="back-btn" href="index.html">← Back to Works</a>
+
+  <!-- About Me -->
+  <div class="section">
+    <h2>ABOUT ME</h2>
+    <div class="item">
+      <p>Hello! I’m Yuning Liu, a media designer and visual artist passionate about exploring the intersections of art, technology, and user experience. I focus on creating engaging visual narratives and interactive experiences that bridge creative expression and digital innovation.</p>
+
+      <p>My background combines rigorous art training from CAFA in Beijing with advanced media design studies at Art Center College of Design in Pasadena. I enjoy experimenting with motion graphics, 3D modeling, and immersive storytelling, always aiming to create work that resonates with audiences both aesthetically and conceptually.</p>
+
+      <p>Outside of professional work, I’m fascinated by research-driven projects, user experience, and the potential of technology to enhance human creativity. I often combine traditional art practices with digital tools to explore new forms of visual communication.</p>
     </div>
   </div>
-  <div class="profile-image" id="profileImage">
-    <img src="assets/profile.jpg" alt="Lynn Liu">
+
+  <!-- Contact Info -->
+  <div class="section">
+    <h2>CONTACT</h2>
+    <div class="item">
+      <p class="role">Tel: 626-567-5250</p>
+      <p class="role">Email: <a href="mailto:yliu84@inside.artcenter.edu" style="color:#ccc; text-decoration:underline;">yliu84@inside.artcenter.edu</a></p>
+    </div>
   </div>
-</main>
 
-<footer>© 2025 LYNN LIU — design & code</footer>
-
+  <!-- Skills (optional to show on About) -->
+  <div class="section">
+    <h2>PROFESSIONAL SKILLS</h2>
+    <ul class="skills">
+      <li><strong>Graphic Design:</strong> Adobe Creative Suite (Photoshop, Illustrator, InDesign, AfterEffects)</li>
+      <li><strong>Film & Video:</strong> Photography (outdoor/studio), DaVinci Resolve, Premiere Pro</li>
+      <li><strong>3D Modeling:</strong> Cinema 4D, Blender, Rhino, Unreal Engine</li>
+      <li><strong>Programming:</strong> Arduino, AI tools (object detection etc.)</li>
+    </ul>
+  </div>
+</div>
 <script>
-// 文字逐段 fade-in + 左右微移
-const paragraphs = document.querySelectorAll('.profile-text p');
-paragraphs.forEach((p, i) => {
-  const observer = new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(entry.isIntersecting){
-        setTimeout(()=>{entry.target.classList.add('visible');}, i*250); // 每段延迟250ms
-        observer.unobserve(entry.target);
-      }
-    });
-  },{threshold:0.2});
-  observer.observe(p);
-});
-
-// 图片 fade-in + 微浮动 + 轻微透明变化
-const profileImage = document.getElementById('profileImage');
-const imgObserver = new IntersectionObserver(entries=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      entry.target.classList.add('visible');
-      imgObserver.unobserve(entry.target);
-    }
-  });
-},{threshold:0.2});
-imgObserver.observe(profileImage);
-
-let startTime = null;
-function floatImage(timestamp){
-  if(!startTime) startTime = timestamp;
-  const elapsed = (timestamp - startTime)/1000;
-  // 上下浮动 ±6px，透明 ±0.05
-  const translateY = Math.sin(elapsed*2) * 6;
-  const opacity = 0.95 + Math.sin(elapsed*2)*0.05;
-  profileImage.style.transform = `translateY(${translateY}px)`;
-  profileImage.style.opacity = opacity;
-  requestAnimationFrame(floatImage);
-}
-requestAnimationFrame(floatImage);
-
-
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
 </script>
 
 </body>
 </html>
-
