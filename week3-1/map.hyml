@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沉浸式交互地图探索</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .map-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+        
+        #map {
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(120, 180, 240, 0.7) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(200, 160, 100, 0.6) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(140, 200, 120, 0.5) 0%, transparent 50%);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease-out;
+        }
+        
+        .controls {
+            width: 300px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 5;
+        }
+        
+        .control-group {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffcc00;
+        }
+        
+        .control-item {
+            margin-bottom: 15px;
+        }
+        
+        .key {
+            display: inline-block;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            padding: 5px 10px;
+            margin-right: 10px;
+            min-width: 40px;
+            text-align: center;
+            font-family: monospace;
+        }
+        
+        .status {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .location-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 15px 25px;
+            border-radius: 10px;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-left: 4px solid #ffcc00;
+        }
+        
+        .location-title {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #ffcc00;
+        }
+        
+        .compass {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .compass-needle {
+            width: 4px;
+            height: 30px;
+            background: #ff3333;
+            border-radius: 2px;
+            transform-origin: bottom center;
+            transition: transform 0.2s ease-out;
+        }
+        
+        .map-element {
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease-out;
+        }
+        
+        .building {
+            background: linear-gradient(to bottom, #5d5d5d, #3a3a3a);
+            border: 1px solid #2a2a2a;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+        
+        .tree {
+            background: radial-gradient(circle at 30% 30%, #3a7a3a, #2a5a2a);
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .water {
+            background: linear-gradient(135deg, #1a6fa8, #2a8acc);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0.8;
+        }
+        
+        .road {
+            background: #505050;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .instructions {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 500px;
+            z-index: 20;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .instructions h2 {
+            color: #ffcc00;
+            margin-bottom: 20px;
+        }
+        
+        .instructions p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .start-btn {
+            background: linear-gradient(to right, #ff8c00, #ffcc00);
+            color: #1a1a2e;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.6);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(5px);
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>沉浸式交互地图探索</h1>
+            <div class="subtitle">使用键盘控制移动，体验沉浸式地图探索</div>
+        </header>
+        
+        <div class="content">
+            <div class="map-container">
+                <div id="map"></div>
+                
+                <div class="location-info">
+                    <div class="location-title">中央广场</div>
+                    <div>坐标: X: 0, Y: 0</div>
+                    <div>海拔: 120m</div>
+                </div>
+                
+                <div class="compass">
+                    <div class="compass-needle"></div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="control-group">
+                    <h2>移动控制</h2>
+                    <div class="control-item">
+                        <div><span class="key">W</span>向前移动</div>
+                        <div><span class="key">S</span>向后移动</div>
+                        <div><span class="key">A</span>向左移动</div>
+                        <div><span class="key">D</span>向右移动</div>
+                    </div>
+                    
+                    <div class="control-item">
+                        <div><span class="key">Q</span>左旋转</div>
+                        <div><span class="key">E</span>右旋转</div>
+                    </div>
+                    
+                    <div class="control-item">
+                        <div><span class="key">R</span>升高视角</div>
+                        <div><span class="key">F</span>降低视角</div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>状态信息</h2>
+                    <div class="status">
+                        <div>速度:</div>
+                        <div id="speed-value">0 km/h</div>
+                    </div>
+                    <div class="status">
+                        <div>方向:</div>
+                        <div id="direction-value">北</div>
+                    </div>
+                    <div class="status">
+                        <div>视角:</div>
+                        <div id="view-value">标准</div>
+                    </div>
+                </div>
+                
+                <div class="control-group">
+                    <h2>探索模式</h2>
+                    <div class="control-item">
+                        <div><span class="key">1</span>步行模式</div>
+                        <div><span class="key">2</span>飞行模式</div>
+                        <div><span class="key">3</span>探索模式</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions" id="instructions">
+            <h2>欢迎来到沉浸式地图探索</h2>
+            <p>使用键盘控制在地图上自由移动和探索</p>
+            <p>WASD键控制前后左右移动，QE键控制旋转，RF键控制视角高度</p>
+            <p>数字键1、2、3切换不同的探索模式</p>
+            <p>点击开始按钮进入探索体验</p>
+            <button class="start-btn pulse" id="start-btn">开始探索</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const map = document.getElementById('map');
+            const instructions = document.getElementById('instructions');
+            const startBtn = document.getElementById('start-btn');
+            const speedValue = document.getElementById('speed-value');
+            const directionValue = document.getElementById('direction-value');
+            const viewValue = document.getElementById('view-value');
+            const compassNeedle = document.querySelector('.compass-needle');
+            const locationTitle = document.querySelector('.location-title');
+            
+            let position = { x: 0, y: 0, z: 0 };
+            let rotation = 0;
+            let viewHeight = 50;
+            let speed = 0;
+            let mode = 'walking';
+            let keys = {};
+            let animationId;
+            
+            // 初始化地图元素
+            function initMap() {
+                // 添加建筑物
+                for (let i = 0; i < 20; i++) {
+                    createMapElement('building', 
+                        Math.random() * 400 - 200, 
+                        Math.random() * 400 - 200,
+                        Math.random() * 30 + 20,
+                        Math.random() * 30 + 20,
+                        Math.random() * 50 + 30
+                    );
+                }
+                
+                // 添加树木
+                for (let i = 0; i < 30; i++) {
+                    createMapElement('tree', 
+                        Math.random() * 500 - 250, 
+                        Math.random() * 500 - 250,
+                        Math.random() * 15 + 10,
+                        Math.random() * 20 + 15
+                    );
+                }
+                
+                // 添加水域
+                createMapElement('water', -100, 80, 120, 80);
+                createMapElement('water', 150, -120, 100, 60);
+                
+                // 添加道路
+                createMapElement('road', 0, 0, 300, 15);
+                createMapElement('road', 0, 0, 15, 300);
+                
+                // 添加云朵
+                for (let i = 0; i < 10; i++) {
+                    createCloud(
+                        Math.random() * 600 - 300,
+                        Math.random() * 200 - 100,
+                        Math.random() * 40 + 20
+                    );
+                }
+            }
+            
+            function createMapElement(type, x, y, width, height, depth = 0) {
+                const element = document.createElement('div');
+                element.className = `map-element ${type}`;
+                element.style.width = `${width}px`;
+                element.style.height = `${height}px`;
+                element.style.left = `calc(50% + ${x}px)`;
+                element.style.top = `calc(50% + ${y}px)`;
+                
+                if (type === 'building') {
+                    element.style.transform = `translateZ(${depth}px)`;
+                }
+                
+                map.appendChild(element);
+            }
+            
+            function createCloud(x, y, size) {
+                const cloud = document.createElement('div');
+                cloud.className = 'cloud';
+                cloud.style.width = `${size}px`;
+                cloud.style.height = `${size/2}px`;
+                cloud.style.left = `calc(50% + ${x}px)`;
+                cloud.style.top = `calc(30% + ${y}px)`;
+                cloud.style.opacity = `${Math.random() * 0.5 + 0.3}`;
+                map.appendChild(cloud);
+            }
+            
+            // 开始探索
+            startBtn.addEventListener('click', function() {
+                instructions.classList.add('hidden');
+                initMap();
+                startAnimation();
+            });
+            
+            // 键盘控制
+            document.addEventListener('keydown', function(e) {
+                keys[e.key.toLowerCase()] = true;
+                
+                // 模式切换
+                if (e.key === '1') setMode('walking');
+                if (e.key === '2') setMode('flying');
+                if (e.key === '3') setMode('exploration');
+            });
+            
+            document.addEventListener('keyup', function(e) {
+                keys[e.key.toLowerCase()] = false;
+            });
+            
+            function setMode(newMode) {
+                mode = newMode;
+                updateStatus();
+            }
+            
+            function updateStatus() {
+                // 更新速度显示
+                speedValue.textContent = `${Math.round(speed * 10)} km/h`;
+                
+                // 更新方向显示
+                const directions = ['北', '东北', '东', '东南', '南', '西南', '西', '西北'];
+                const index = Math.round(rotation / 45) % 8;
+                directionValue.textContent = directions[index < 0 ? index + 8 : index];
+                
+                // 更新视角显示
+                if (viewHeight < 30) viewValue.textContent = '低视角';
+                else if (viewHeight < 70) viewValue.textContent = '标准';
+                else viewValue.textContent = '高视角';
+                
+                // 更新位置信息
+                if (position.x > 100 && position.y > 100) locationTitle.textContent = '东北山区';
+                else if (position.x > 100 && position.y < -100) locationTitle.textContent = '东南森林';
+                else if (position.x < -100 && position.y > 100) locationTitle.textContent = '西北湖泊';
+                else if (position.x < -100 && position.y < -100) locationTitle.textContent = '西南平原';
+                else locationTitle.textContent = '中央广场';
+                
+                // 更新指南针
+                compassNeedle.style.transform = `rotate(${rotation}deg)`;
+            }
+            
+            function startAnimation() {
+                function animate() {
+                    // 移动速度计算
+                    let moveSpeed = 0;
+                    
+                    if (mode === 'walking') moveSpeed = 2;
+                    else if (mode === 'flying') moveSpeed = 5;
+                    else if (mode === 'exploration') moveSpeed = 3;
+                    
+                    // 处理移动
+                    if (keys['w']) {
+                        position.x += Math.sin(rotation * Math.PI / 180) * moveSpeed;
+                        position.y -= Math.cos(rotation * Math.PI / 180) * moveSpeed;
+                        speed = moveSpeed;
+                    } else if (keys['s']) {
+                        position.x -= Math.sin(rotation * Math.PI / 180) * moveSpeed;
+                        position.y += Math.cos(rotation * Math.PI / 180) * moveSpeed;
+                        speed = moveSpeed;
+                    } else {
+                        speed = 0;
+                    }
+                    
+                    if (keys['a']) {
+                        position.x -= Math.cos(rotation * Math.PI / 180) * moveSpeed;
+                        position.y -= Math.sin(rotation * Math.PI / 180) * moveSpeed;
+                    }
+                    
+                    if (keys['d']) {
+                        position.x += Math.cos(rotation * Math.PI / 180) * moveSpeed;
+                        position.y += Math.sin(rotation * Math.PI / 180) * moveSpeed;
+                    }
+                    
+                    // 处理旋转
+                    if (keys['q']) {
+                        rotation -= 3;
+                    }
+                    
+                    if (keys['e']) {
+                        rotation += 3;
+                    }
+                    
+                    // 处理视角高度
+                    if (keys['r'] && viewHeight < 100) {
+                        viewHeight += 1;
+                    }
+                    
+                    if (keys['f'] && viewHeight > 10) {
+                        viewHeight -= 1;
+                    }
+                    
+                    // 更新地图位置和视角
+                    map.style.transform = `
+                        translate(-50%, -50%)
+                        translate(${position.x}px, ${position.y}px)
+                        rotate(${rotation}deg)
+                        perspective(1000px)
+                        rotateX(${60 - viewHeight}deg)
+                    `;
+                    
+                    // 更新状态显示
+                    updateStatus();
+                    
+                    animationId = requestAnimationFrame(animate);
+                }
+                
+                animate();
+            }
+            
+            // 初始状态
+            updateStatus();
+        });
+    </script>
+</body>
+</html>
