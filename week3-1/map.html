@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>沉浸式交互地图探索</title>
+    <title>迪士尼魔法王国探索</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +13,7 @@
         
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
             color: white;
             overflow: hidden;
             height: 100vh;
@@ -35,12 +35,15 @@
             backdrop-filter: blur(10px);
             z-index: 10;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border-bottom: 2px solid #ffd700;
         }
         
         h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            color: #ffd700;
+            font-family: 'Trebuchet MS', sans-serif;
         }
         
         .subtitle {
@@ -68,9 +71,10 @@
             top: -50%;
             left: -50%;
             background: 
-                radial-gradient(circle at 30% 40%, rgba(120, 180, 240, 0.7) 0%, transparent 50%),
-                radial-gradient(circle at 70% 60%, rgba(200, 160, 100, 0.6) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(140, 200, 120, 0.5) 0%, transparent 50%);
+                radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 105, 180, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(135, 206, 250, 0.3) 0%, transparent 50%),
+                linear-gradient(160deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
             transform-style: preserve-3d;
             transition: transform 0.1s ease-out;
         }
@@ -83,7 +87,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 2px solid #ffd700;
             z-index: 5;
         }
         
@@ -91,12 +95,14 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             padding: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
         }
         
         h2 {
             font-size: 1.3rem;
             margin-bottom: 15px;
-            color: #ffcc00;
+            color: #ffd700;
+            font-family: 'Trebuchet MS', sans-serif;
         }
         
         .control-item {
@@ -106,13 +112,14 @@
         .key {
             display: inline-block;
             background: rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.5);
             border-radius: 5px;
             padding: 5px 10px;
             margin-right: 10px;
             min-width: 40px;
             text-align: center;
             font-family: monospace;
+            color: #ffd700;
         }
         
         .status {
@@ -132,13 +139,13 @@
             border-radius: 10px;
             z-index: 10;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border-left: 4px solid #ffcc00;
+            border-left: 4px solid #ffd700;
         }
         
         .location-title {
             font-size: 1.2rem;
             margin-bottom: 5px;
-            color: #ffcc00;
+            color: #ffd700;
         }
         
         .compass {
@@ -155,7 +162,7 @@
             align-items: center;
             z-index: 10;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.5);
         }
         
         .compass-needle {
@@ -173,27 +180,57 @@
             transition: transform 0.3s ease-out;
         }
         
-        .building {
-            background: linear-gradient(to bottom, #5d5d5d, #3a3a3a);
-            border: 1px solid #2a2a2a;
+        .castle {
+            background: linear-gradient(to bottom, #ff6b6b, #ff8e8e);
+            border: 2px solid #ffd700;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 10px 10px 0 0;
+        }
+        
+        .tower {
+            background: linear-gradient(to bottom, #ff8e8e, #ffaaaa);
+            border: 2px solid #ffd700;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 50% 50% 0 0;
         }
         
         .tree {
-            background: radial-gradient(circle at 30% 30%, #3a7a3a, #2a5a2a);
+            background: radial-gradient(circle at 30% 30%, #7cfc00, #32cd32);
             border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid #006400;
         }
         
         .water {
-            background: linear-gradient(135deg, #1a6fa8, #2a8acc);
+            background: linear-gradient(135deg, #1e90ff, #00bfff);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             opacity: 0.8;
+            border-radius: 10px;
         }
         
         .road {
-            background: #505050;
+            background: #8b4513;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            border: 1px solid #654321;
+        }
+        
+        .mickey {
+            background: radial-gradient(circle at 30% 30%, #000000, #333333);
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .ear {
+            background: #000000;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .sparkle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            animation: sparkle 2s infinite;
         }
         
         .instructions {
@@ -209,11 +246,11 @@
             max-width: 500px;
             z-index: 20;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid #ffd700;
         }
         
         .instructions h2 {
-            color: #ffcc00;
+            color: #ffd700;
             margin-bottom: 20px;
         }
         
@@ -255,6 +292,12 @@
             100% { transform: scale(1); }
         }
         
+        @keyframes sparkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+        
         .cloud {
             position: absolute;
             background: rgba(255, 255, 255, 0.8);
@@ -262,13 +305,25 @@
             filter: blur(5px);
             z-index: 1;
         }
+        
+        .firework {
+            position: absolute;
+            border-radius: 50%;
+            animation: firework 1.5s ease-out forwards;
+            z-index: 5;
+        }
+        
+        @keyframes firework {
+            0% { transform: translate(var(--x), var(--y)) scale(0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(1); opacity: 0; }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>沉浸式交互地图探索</h1>
-            <div class="subtitle">使用键盘控制移动，体验沉浸式地图探索</div>
+            <h1>迪士尼魔法王国探索</h1>
+            <div class="subtitle">使用键盘控制移动，探索迪士尼魔法世界</div>
         </header>
         
         <div class="content">
@@ -276,9 +331,9 @@
                 <div id="map"></div>
                 
                 <div class="location-info">
-                    <div class="location-title">中央广场</div>
+                    <div class="location-title">灰姑娘城堡</div>
                     <div>坐标: X: 0, Y: 0</div>
-                    <div>海拔: 120m</div>
+                    <div>魔法值: ★★★★★</div>
                 </div>
                 
                 <div class="compass">
@@ -311,7 +366,7 @@
                     <h2>状态信息</h2>
                     <div class="status">
                         <div>速度:</div>
-                        <div id="speed-value">0 km/h</div>
+                        <div id="speed-value">0 魔法单位/小时</div>
                     </div>
                     <div class="status">
                         <div>方向:</div>
@@ -328,19 +383,19 @@
                     <div class="control-item">
                         <div><span class="key">1</span>步行模式</div>
                         <div><span class="key">2</span>飞行模式</div>
-                        <div><span class="key">3</span>探索模式</div>
+                        <div><span class="key">3</span>魔法模式</div>
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="instructions" id="instructions">
-            <h2>欢迎来到沉浸式地图探索</h2>
-            <p>使用键盘控制在地图上自由移动和探索</p>
+            <h2>欢迎来到迪士尼魔法王国</h2>
+            <p>使用键盘控制在魔法王国中自由移动和探索</p>
             <p>WASD键控制前后左右移动，QE键控制旋转，RF键控制视角高度</p>
             <p>数字键1、2、3切换不同的探索模式</p>
-            <p>点击开始按钮进入探索体验</p>
-            <button class="start-btn pulse" id="start-btn">开始探索</button>
+            <p>探索灰姑娘城堡、米奇广场和其他魔法区域！</p>
+            <button class="start-btn pulse" id="start-btn">开始魔法之旅</button>
         </div>
     </div>
 
@@ -365,34 +420,36 @@
             
             // 初始化地图元素
             function initMap() {
-                // 添加建筑物
-                for (let i = 0; i < 20; i++) {
-                    createMapElement('building', 
-                        Math.random() * 400 - 200, 
-                        Math.random() * 400 - 200,
-                        Math.random() * 30 + 20,
-                        Math.random() * 30 + 20,
-                        Math.random() * 50 + 30
-                    );
-                }
+                // 创建灰姑娘城堡
+                createCastle(0, 0, 80, 100);
+                
+                // 添加塔楼
+                createMapElement('tower', -60, -60, 25, 60, 40);
+                createMapElement('tower', 60, -60, 25, 60, 40);
+                createMapElement('tower', -60, 60, 25, 60, 40);
+                createMapElement('tower', 60, 60, 25, 60, 40);
                 
                 // 添加树木
-                for (let i = 0; i < 30; i++) {
+                for (let i = 0; i < 20; i++) {
                     createMapElement('tree', 
-                        Math.random() * 500 - 250, 
-                        Math.random() * 500 - 250,
-                        Math.random() * 15 + 10,
-                        Math.random() * 20 + 15
+                        Math.random() * 400 - 200, 
+                        Math.random() * 400 - 200,
+                        Math.random() * 20 + 15,
+                        Math.random() * 25 + 20
                     );
                 }
                 
                 // 添加水域
-                createMapElement('water', -100, 80, 120, 80);
-                createMapElement('water', 150, -120, 100, 60);
+                createMapElement('water', -120, 100, 100, 60);
+                createMapElement('water', 150, -100, 80, 70);
                 
                 // 添加道路
                 createMapElement('road', 0, 0, 300, 15);
                 createMapElement('road', 0, 0, 15, 300);
+                
+                // 添加米奇角色
+                createMickey(120, 120);
+                createMickey(-120, -120);
                 
                 // 添加云朵
                 for (let i = 0; i < 10; i++) {
@@ -402,6 +459,41 @@
                         Math.random() * 40 + 20
                     );
                 }
+                
+                // 添加魔法火花
+                for (let i = 0; i < 15; i++) {
+                    createSparkle(
+                        Math.random() * 500 - 250,
+                        Math.random() * 500 - 250
+                    );
+                }
+                
+                // 开始烟花表演
+                startFireworks();
+            }
+            
+            function createCastle(x, y, width, height) {
+                const castle = document.createElement('div');
+                castle.className = 'map-element castle';
+                castle.style.width = `${width}px`;
+                castle.style.height = `${height}px`;
+                castle.style.left = `calc(50% + ${x}px)`;
+                castle.style.top = `calc(50% + ${y}px)`;
+                castle.style.transform = `translateZ(50px)`;
+                
+                // 添加城堡尖顶
+                const spire = document.createElement('div');
+                spire.style.position = 'absolute';
+                spire.style.width = '10px';
+                spire.style.height = '20px';
+                spire.style.background = '#ffd700';
+                spire.style.top = '-20px';
+                spire.style.left = '50%';
+                spire.style.transform = 'translateX(-50%)';
+                spire.style.borderRadius = '5px 5px 0 0';
+                castle.appendChild(spire);
+                
+                map.appendChild(castle);
             }
             
             function createMapElement(type, x, y, width, height, depth = 0) {
@@ -412,11 +504,40 @@
                 element.style.left = `calc(50% + ${x}px)`;
                 element.style.top = `calc(50% + ${y}px)`;
                 
-                if (type === 'building') {
+                if (depth > 0) {
                     element.style.transform = `translateZ(${depth}px)`;
                 }
                 
                 map.appendChild(element);
+            }
+            
+            function createMickey(x, y) {
+                const mickey = document.createElement('div');
+                mickey.className = 'map-element mickey';
+                mickey.style.width = '40px';
+                mickey.style.height = '40px';
+                mickey.style.left = `calc(50% + ${x}px)`;
+                mickey.style.top = `calc(50% + ${y}px)`;
+                
+                // 左耳
+                const leftEar = document.createElement('div');
+                leftEar.className = 'ear';
+                leftEar.style.width = '20px';
+                leftEar.style.height = '20px';
+                leftEar.style.top = '-10px';
+                leftEar.style.left = '-5px';
+                mickey.appendChild(leftEar);
+                
+                // 右耳
+                const rightEar = document.createElement('div');
+                rightEar.className = 'ear';
+                rightEar.style.width = '20px';
+                rightEar.style.height = '20px';
+                rightEar.style.top = '-10px';
+                rightEar.style.right = '-5px';
+                mickey.appendChild(rightEar);
+                
+                map.appendChild(mickey);
             }
             
             function createCloud(x, y, size) {
@@ -428,6 +549,50 @@
                 cloud.style.top = `calc(30% + ${y}px)`;
                 cloud.style.opacity = `${Math.random() * 0.5 + 0.3}`;
                 map.appendChild(cloud);
+            }
+            
+            function createSparkle(x, y) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.width = '10px';
+                sparkle.style.height = '10px';
+                sparkle.style.left = `calc(50% + ${x}px)`;
+                sparkle.style.top = `calc(50% + ${y}px)`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                map.appendChild(sparkle);
+            }
+            
+            function startFireworks() {
+                setInterval(() => {
+                    if (Math.random() > 0.7) {
+                        createFirework();
+                    }
+                }, 1000);
+            }
+            
+            function createFirework() {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                
+                firework.style.background = color;
+                firework.style.width = '5px';
+                firework.style.height = '5px';
+                firework.style.left = `calc(50% + ${Math.random() * 400 - 200}px)`;
+                firework.style.top = `calc(50% + ${Math.random() * 400 - 200}px)`;
+                
+                const x = (Math.random() - 0.5) * 100;
+                const y = (Math.random() - 0.5) * 100;
+                firework.style.setProperty('--x', `${x}px`);
+                firework.style.setProperty('--y', `${y}px`);
+                
+                map.appendChild(firework);
+                
+                setTimeout(() => {
+                    firework.remove();
+                }, 1500);
             }
             
             // 开始探索
@@ -444,7 +609,7 @@
                 // 模式切换
                 if (e.key === '1') setMode('walking');
                 if (e.key === '2') setMode('flying');
-                if (e.key === '3') setMode('exploration');
+                if (e.key === '3') setMode('magic');
             });
             
             document.addEventListener('keyup', function(e) {
@@ -458,7 +623,7 @@
             
             function updateStatus() {
                 // 更新速度显示
-                speedValue.textContent = `${Math.round(speed * 10)} km/h`;
+                speedValue.textContent = `${Math.round(speed * 10)} 魔法单位/小时`;
                 
                 // 更新方向显示
                 const directions = ['北', '东北', '东', '东南', '南', '西南', '西', '西北'];
@@ -471,11 +636,11 @@
                 else viewValue.textContent = '高视角';
                 
                 // 更新位置信息
-                if (position.x > 100 && position.y > 100) locationTitle.textContent = '东北山区';
-                else if (position.x > 100 && position.y < -100) locationTitle.textContent = '东南森林';
-                else if (position.x < -100 && position.y > 100) locationTitle.textContent = '西北湖泊';
-                else if (position.x < -100 && position.y < -100) locationTitle.textContent = '西南平原';
-                else locationTitle.textContent = '中央广场';
+                if (position.x > 100 && position.y > 100) locationTitle.textContent = '米奇广场';
+                else if (position.x > 100 && position.y < -100) locationTitle.textContent = '小美人鱼礁湖';
+                else if (position.x < -100 && position.y > 100) locationTitle.textContent = '幻想世界';
+                else if (position.x < -100 && position.y < -100) locationTitle.textContent = '冒险乐园';
+                else locationTitle.textContent = '灰姑娘城堡';
                 
                 // 更新指南针
                 compassNeedle.style.transform = `rotate(${rotation}deg)`;
@@ -488,7 +653,7 @@
                     
                     if (mode === 'walking') moveSpeed = 2;
                     else if (mode === 'flying') moveSpeed = 5;
-                    else if (mode === 'exploration') moveSpeed = 3;
+                    else if (mode === 'magic') moveSpeed = 8;
                     
                     // 处理移动
                     if (keys['w']) {
