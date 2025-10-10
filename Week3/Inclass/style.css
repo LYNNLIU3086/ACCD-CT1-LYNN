@@ -40,6 +40,11 @@ body {
 .thumbnails {
 padding: 0; 
 list-style: none;  
-display：flex；
+display:flex;
 flex-direction: row;
+}
+
+.thumbnails li{
+padding: 8px; 
+
 }
