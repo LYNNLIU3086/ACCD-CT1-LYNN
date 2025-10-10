@@ -19,11 +19,11 @@ const toggleImage = () =>
     console.log(imgBox.src)
     if(imgBox.src.includes("Q1"))
     {
-       imgBox.src = "assets/Q3.png"
+       imgBox.src = "images/Q3.png"
     }
     else
     {
-        imgBox.src = "assets/Q1.png" 
+        imgBox.src = "images/Q1.png" 
     }
     
     
