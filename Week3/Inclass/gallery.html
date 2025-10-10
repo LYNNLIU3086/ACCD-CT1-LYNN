@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gallery</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
-    
   <header>
     <nav>
       <ul>
@@ -21,15 +22,23 @@
 
   <main>
     <ul class="thumbnails">
-      <li class="gallery-thumb"><img src="images/gallery1.jpg" alt="crater1" id="galleryThumb1"></li>
-      <li class="gallery-thumb"><img src="images/gallery2.jpg" alt="crater2" id="galleryThumb2"></li>
-      <li class="gallery-thumb"><img src="images/gallery3.jpg" alt="crater3" id="galleryThumb3"></li>
-      <li class="gallery-thumb"><img src="images/gallery4.jpg" alt="crater4" id="galleryThumb4"></li>
+      <li class="gallery-thumb current-thumb"><img src="images/gallery1.jpg" alt="Quokka 1"></li>
+      <li class="gallery-thumb"><img src="images/gallery2.jpg" alt="Quokka 2"></li>
+      <li class="gallery-thumb"><img src="images/gallery3.jpg" alt="Quokka 3"></li>
+      <li class="gallery-thumb"><img src="images/gallery4.jpg" alt="Quokka 4"></li>
     </ul>
-<div class="imgShowcase">
-    <img src="images/gallery1.jpg" alt="showcase image of a crater" id="showcaseImage">
-</div>
+
+    <div class="imgShowcase">
+      <img src="images/gallery1.jpg" alt="Showcase image" id="showcaseImage" />
+      <div class="showcase-arrow showcase-arrow-left">
+        <i class="fas fa-chevron-left"></i>
+      </div>
+      <div class="showcase-arrow showcase-arrow-right">
+        <i class="fas fa-chevron-right"></i>
+      </div>
+    </div>
   </main>
+
   <script src="script.js"></script>
 </body>
 </html>

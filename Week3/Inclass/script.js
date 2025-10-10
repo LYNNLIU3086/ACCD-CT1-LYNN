@@ -1,15 +1,35 @@
-let gT1 = document. getElementById("galleryThumb1")
-let gT2 = document. getElementById("galleryThumb2")
-let gT3 = document. getElementById("galleryThumb3")
-let gT4 = document. getElementById("galleryThumb4")
+document.addEventListener("DOMContentLoaded", function () {
+  const thumbImages = document.querySelectorAll(".gallery-thumb > img");
+  const scImage = document.getElementById("showcaseImage");
+  const arrowRight = document.querySelector(".showcase-arrow-right");
+  const arrowLeft = document.querySelector(".showcase-arrow-left");
 
-let scimage = document.getElementById("showcaseImage")
+  let currentIndexThumb = 0;
 
-function changeImage(event) {
-console.log (event)
-}
+  function changeImage(newImage) {
+    scImage.src = newImage.src;
 
-gT1.addEventListener ("click", changelmage)
-gT2.addEventListener ("click", changelmage)
-gT3.addEventListener ("click", changelmage)
-gT4.addEventListener ("click", changelmage)
+    thumbImages.forEach(img => {
+      img.parentElement.classList.remove("current-thumb");
+    });
+
+    newImage.parentElement.classList.add("current-thumb");
+    currentIndexThumb = Array.from(thumbImages).indexOf(newImage);
+  }
+
+  thumbImages.forEach(img => {
+    img.addEventListener("click", () => {
+      changeImage(img);
+    });
+  });
+
+  arrowRight.addEventListener("click", () => {
+    currentIndexThumb = (currentIndexThumb + 1) % thumbImages.length;
+    changeImage(thumbImages[currentIndexThumb]);
+  });
+
+  arrowLeft.addEventListener("click", () => {
+    currentIndexThumb = (currentIndexThumb - 1 + thumbImages.length) % thumbImages.length;
+    changeImage(thumbImages[currentIndexThumb]);
+  });
+});
