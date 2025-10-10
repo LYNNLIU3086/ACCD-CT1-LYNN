@@ -7,29 +7,7 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-      <style>
-    @media (min-width: 768px) {
-            header {background-color:rgb(0, 0, 0);}
-            nav ul {
-                display: flex;
-                justify-content:flex-end
-            }
-            nav ul li {
-                border-bottom: none;
-                margin: 10px;
-                padding: 20px;
-            }
-        }
     
-        @media (min-width: 1200px){
-            header {background-color:rgb(0, 0, 0);}
-            nav ul {
-                display: flex;
-                justify-content:space-around;
-                background-color:rgb(0, 0, 0);
-            }
-            }
-  </style>
   <header>
     <nav>
       <ul>
@@ -43,14 +21,15 @@
 
   <main>
     <ul class="thumbnails">
-      <li class="gallery-thumb"><img src="images/gallery1.jpg" alt="poster1"></li>
-      <li class="gallery-thumb"><img src="images/gallery2.jpg" alt="poster2"></li>
-      <li class="gallery-thumb"><img src="images/gallery3.jpg" alt="poster3"></li>
-      <li class="gallery-thumb"><img src="images/gallery4.jpg" alt="poster4"></li>
+      <li class="gallery-thumb"><img src="images/gallery1.jpg" alt="crater1" id="galleryThumb1"></li>
+      <li class="gallery-thumb"><img src="images/gallery2.jpg" alt="crater2" id="galleryThumb2"></li>
+      <li class="gallery-thumb"><img src="images/gallery3.jpg" alt="crater3" id="galleryThumb3"></li>
+      <li class="gallery-thumb"><img src="images/gallery4.jpg" alt="crater4" id="galleryThumb4"></li>
     </ul>
+<div class="imgShowcase">
+    <img src="images/gallery1.jpg" alt="showcase image of a crater" id="showcaseImage">
+</div>
   </main>
-
   <script src="script.js"></script>
-
 </body>
 </html>
