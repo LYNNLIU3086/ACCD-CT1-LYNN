@@ -11,8 +11,10 @@ function setup() {
   colorMode(HSB, width, 100,100)
   posX = width*0.5
   posY = height*0.5
-  velX = -2
-  velY = 3
+  
+  velX = random(-100,100)
+  velY = 
+  velX = random(-3,4)
 }
 
 function draw() {
