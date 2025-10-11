@@ -143,6 +143,16 @@ nav a:hover {color:crimson;}
     margin:0 12px;
   }
 }
+/* 放到现有 style 最后：只作用于滑动的图片，安全无副作用 */
+.slide-img {
+  display: block; /* 避免内联 img 导致布局问题 */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+  image-rendering: auto;
+}
+
 </style>
 </head>
 <body>
@@ -164,40 +174,239 @@ nav a:hover {color:crimson;}
 
 
 <div class="container section">
-  <h1>Project Three — 光影装置实验</h1>
-  <p class="description">
-    本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
-    观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
-    它探索了物理空间与数字感知之间的边界。
-  </p>
-
+  <h1>The gift of the Land</h1>
   <!-- Vimeo 视频 -->
   <div class="media-wrapper">
     <iframe src="https://player.vimeo.com/video/1043935673" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
   </div>
 
-  <!-- 图片展示 -->
-  <div class="media-wrapper">
-    <img src="../assets/project3_img1.jpg" alt="Project Three image 1">
+<p class="description">
+  本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
+  观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
+  它探索了物理空间与数字感知之间的边界。
+</p>
+  
+
+<!-- ✅ 横向切换 + 可放大 + 预览编号 -->
+<div class="media-wrapper" style="position:relative; overflow:hidden;">
+  <div class="scroll-inner" style="
+      position:absolute;
+      top:0; left:0; right:0; bottom:0;
+      display:flex;
+      overflow:hidden;
+      transition:transform 0.5s ease;
+  ">
+    <img src="../assets/project3_img1.jpg" alt="Project 3 image 1" class="slide-img zoomable" style="
+      flex:0 0 100%;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      cursor:pointer;
+    ">
+    <img src="../assets/project3_img12.jpg" alt="Project 3 image 2" class="slide-img zoomable" style="
+      flex:0 0 100%;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      cursor:pointer;
+    ">
+    <img src="../assets/project3_img13.jpg" alt="Project 3 image 3" class="slide-img zoomable" style="
+      flex:0 0 100%;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      cursor:pointer;
+    ">
   </div>
+
+  <!-- 左右箭头 -->
+  <div class="arrow left" style="
+      position:absolute;
+      top:50%;
+      left:16px;
+      transform:translateY(-50%);
+      font-size:2em;
+      color:rgba(100, 100, 100, 0.8);
+      cursor:pointer;
+      user-select:none;
+      z-index:5;
+  ">‹</div>
+
+  <div class="arrow right" style="
+      position:absolute;
+      top:50%;
+      right:16px;
+      transform:translateY(-50%);
+      font-size:2em;
+      color:rgba(77, 77, 77, 0.8);
+      cursor:pointer;
+      user-select:none;
+      z-index:5;
+  ">›</div>
+</div>
+
+<!-- ✅ 放大预览层 -->
+<div id="imgModal" style="
+  display:none;
+  position:fixed;
+  z-index:9999;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
+  overflow:hidden;
+">
+  <img id="modalImage" src="" style="
+    max-width:90%;
+    max-height:90%;
+    border-radius:10px;
+    box-shadow:0 0 20px rgba(0,0,0,0.5);
+  ">
+  <div id="modalPrev" style="
+    position:absolute; left:20px; top:50%;
+    transform:translateY(-50%);
+    font-size:2em; color:#fff; cursor:pointer;
+    user-select:none; opacity:0.8;
+  ">‹</div>
+  <div id="modalNext" style="
+    position:absolute; right:20px; top:50%;
+    transform:translateY(-50%);
+    font-size:2em; color:#fff; cursor:pointer;
+    user-select:none; opacity:0.8;
+  ">›</div>
+  <div id="modalCounter" style="
+    position:absolute;
+    bottom:30px;
+    font-size:0.9em;
+    color:#ccc;
+  "></div>
+</div>
+
+<script>
+/* ==============================
+   ✅ 横向切换逻辑（主画面）
+============================== */
+const slides = document.querySelectorAll('.slide-img');
+const scrollInner = document.querySelector('.scroll-inner');
+const leftArrow = document.querySelector('.arrow.left');
+const rightArrow = document.querySelector('.arrow.right');
+let currentSlide = 0;
+
+function updateSlide() {
+  scrollInner.style.transform = `translateX(-${currentSlide * 100}%)`;
+}
+
+leftArrow.addEventListener('click', () => {
+  currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+  updateSlide();
+});
+rightArrow.addEventListener('click', () => {
+  currentSlide = (currentSlide + 1) % slides.length;
+  updateSlide();
+});
+
+/* ==============================
+   ✅ 放大预览逻辑
+============================== */
+const modal = document.getElementById('imgModal');
+const modalImg = document.getElementById('modalImage');
+const modalPrev = document.getElementById('modalPrev');
+const modalNext = document.getElementById('modalNext');
+const modalCounter = document.getElementById('modalCounter');
+let currentIndex = 0;
+
+function openModal(index) {
+  currentIndex = index;
+  modalImg.src = slides[index].src;
+  modal.style.display = 'flex';
+  updateCounter();
+}
+
+function updateCounter() {
+  modalCounter.textContent = `${currentIndex + 1} / ${slides.length}`;
+}
+
+slides.forEach((img, i) => {
+  img.addEventListener('click', () => openModal(i));
+});
+
+modalPrev.addEventListener('click', e => {
+  e.stopPropagation();
+  currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+  modalImg.src = slides[currentIndex].src;
+  updateCounter();
+});
+modalNext.addEventListener('click', e => {
+  e.stopPropagation();
+  currentIndex = (currentIndex + 1) % slides.length;
+  modalImg.src = slides[currentIndex].src;
+  updateCounter();
+});
+
+// 点击灰层关闭
+modal.addEventListener('click', e => {
+  if (e.target === modal) modal.style.display = 'none';
+});
+
+// 键盘操作
+document.addEventListener('keydown', e => {
+  if (modal.style.display === 'flex') {
+    if (e.key === 'ArrowLeft') modalPrev.click();
+    if (e.key === 'ArrowRight') modalNext.click();
+    if (e.key === 'Escape') modal.style.display = 'none';
+  }
+});
+
+// 手机滑动
+let startX = 0;
+modal.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+modal.addEventListener('touchend', e => {
+  let endX = e.changedTouches[0].clientX;
+  if (endX - startX > 50) modalPrev.click();
+  if (startX - endX > 50) modalNext.click();
+});
+</script>
+
   <div class="media-wrapper">
     <img src="../assets/project3_img2.jpg" alt="Project Three image 2">
   </div>
+<pre>
+  本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
+  观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
+  它探索了物理空间与数字感知之间的边界。
+</pre>
+
   <div class="media-wrapper">
     <img src="../assets/project3_img3.jpg" alt="Project Three image 3">
   </div>
+<pre>
+  本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
+  观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
+  它探索了物理空间与数字感知之间的边界。
+</pre>
   <div class="media-wrapper">
     <img src="../assets/project3_img4.jpg" alt="Project Three image 3">
   </div>
+<pre>
+  本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
+  观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
+  它探索了物理空间与数字感知之间的边界。
+</pre>
   <div class="media-wrapper">
     <img src="../assets/project3_img5.jpg" alt="Project Three image 3">
   </div>
+  <pre>
+  本项目是一件关于 <b>光与空间互动</b> 的装置实验。  
+  观众通过身体移动触发空间内的光线变化，从而产生沉浸式的视觉体验。  
+  它探索了物理空间与数字感知之间的边界。
+</pre>
 
   <!-- 底部导航 -->
   <div class="project-nav">
-    <a href="project2.html" class="prev">← Project Two</a>
-    <a href="../index.html" class="overview">返回总览</a>
-    <a href="project4.html" class="next">Project Four →</a>
+    <a href="project2.html" class="prev">← Before</a>
+    <a href="../index.html" class="overview">Home</a>
+    <a href="project4.html" class="next">After →</a>
   </div>
 </div>
 
