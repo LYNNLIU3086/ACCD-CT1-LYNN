@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MYDATA JSON</title>
+<style>
+  /* 整体黑色背景，文字白色 */
+  body {
+    background-color: #111;
+    color: #eee;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  h1 {
+    margin-bottom: 40px;
+    text-align: center;
+    font-weight: 400;
+  }
+
+  /* 按钮风格 */
+  .download-btn {
+    background-color: #222;
+    color: #fff;
+    padding: 16px 32px;
+    font-size: 18px;
+    border-radius: 12px;
+    border: 2px solid #555;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .download-btn:hover {
+    background-color: #444;
+    border-color: #888;
+    color: #0ff;
+  }
+
+  /* 小说明文字 */
+  .note {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #aaa;
+    max-width: 400px;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <h1>Crater</h1>
+  <button class="download-btn" id="downloadBtn">Click JSON</button>
+  <p class="note">
+    JSON
+  </p>
+
+<script>
+const jsonFilePath = 'mydata.json'; // JSON 文件路径
+
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  fetch(jsonFilePath)
+    .then(response => response.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'mydata.json'; // 下载文件名
+      a.click();
+      URL.revokeObjectURL(url); // 释放内存
+    })
+    .catch(err => alert('下载失败: ' + err));
+});
+</script>
+</body>
+</html>

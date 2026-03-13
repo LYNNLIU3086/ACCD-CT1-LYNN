@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Simplified Ecosystem + Interaction</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Find my interface</h1>
+  <p>Build my first prototype using P5js with ML5js library.</p>
+  <div id="canvas-container"></div>
+
+  <h2>Instructions</h2>
+  <main>
+    <section class="portfolio">
+    </section>
+    <section class="doc">
+      <h2>Function</h2>
+      <h3>1:Image Blending Display</h3>
+      <p>Achieves smooth blending effect between two images through the <code>drawBlend()</code> </p>
+      <pre>
+function drawBlend() {
+  image(img1, 0, 0, width, height);
+  push();
+  tint(255, blendAmt * 255);
+  image(img2, 0, 0, width, height);
+  pop();
+}
+      </pre>
+      <h3>2:Gesture-based Image Switching</h3>
+      <p>Controls which image is currently displayed through the <code>drawSwitch()</code></p>
+      <pre>
+function drawSwitch() {
+  if (something){
+    image(imgS[0], 0, 0, width, height);
+  } else {
+    image(imgS[1], 0, 0, width, height);
+  }
+}
+      </pre>
+      
+    </pre>
+      <h3>3:Slider Invisibility</h3>
+      <p>Hidden via CSS:</p>
+      <pre>
+blendSlider.elt.style.opacity = '0';
+  or
+blendSlider.elt.style.visibility = 'hidden';
+  or
+blendSlider.elt.style.display = 'none';
+
+</pre>
+      <div style="margin: 20px 0">
+        <video width="600" controls>
+          <source src="blend.mp4" type="video/mp4">
+         
+        </video>
+      
+  <script src="sketch.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Handpose Image Blend with Slider</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+  <script src="sketch.js"></script>
+  
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Handpose Image Blend with Slider</title>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>作品档案展示</h1>
+    <p></p>
+  </header>
+  <main>
+    <section class="portfolio">
+    </section>
+    <section class="doc">
+      <h2>关键功能</h2>
+      <h3>功能1：图片渐变显示</h3>
+      <p>通过 <code>drawBlend()</code> 实现两张图片的平滑渐变效果：</p>
+      <pre>
+function drawBlend() {
+  image(img1, 0, 0, width, height);
+  push();
+  tint(255, blendAmt * 255);
+  image(img2, 0, 0, width, height);
+  pop();
+}
+      </pre>
+      <h3>功能2：手势切换图片</h3>
+      <p>通过 <code>drawSwitch()</code> 控制当前显示哪张图片：</p>
+      <pre>
+function drawSwitch() {
+  if (something){
+    image(imgS[0], 0, 0, width, height);
+  } else {
+    image(imgS[1], 0, 0, width, height);
+  }
+}
+      </pre>
+      <h3>学习过程记录</h3>
+      <p>
+        在完成此作业的过程中，我学习了以下内容：<br>
+        1. p5.js 的基本绘图函数（image, push, pop, tint）<br>
+        2. ml5.handpose 模型的调用方法，以及如何获取关键点信息<br>
+        3. 手势与滑块结合控制变量，实现图片渐变和切换<br>
+        4. HTML 和 CSS 的排版方式，使网页同时展示作品和说明文字
+      </p>
+    </section>
+  </main>
+   <script src="sketch.js"></script>
+</body>
+</html> -->

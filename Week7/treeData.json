@@ -1,0 +1,102 @@
+
+
+{
+  "name": "Home",
+  "type": "Home",
+  "children": [
+    {
+      "name": "Cafe",
+      "type": "Category",
+      "children": [
+        {
+          "name": "Starbucks",
+          "type": "Brand",
+           "coordinates": "-118.25,34.05",
+          "children": [
+            { "name": "Starbucks CBD", "type": "Location", "travelTime": 10, "stayTime": 30 },
+            { "name": "Starbucks University Rd", "type": "Location", "travelTime": 15, "stayTime": 25,"coordinates":"-118.24,34.051"}
+          ]
+        },
+        {
+          "name": "Blue Bottle",
+          "type": "Brand",
+          "children": [
+            { "name": "Blue Bottle Mall", "type": "Location", "travelTime": 12, "stayTime": 20 }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Library",
+      "type": "Category",
+      "children": [
+        {
+          "name": "Library A",
+          "type": "Location",
+          "travelTime": 15,
+          "stayTime": 120
+        },
+        {
+          "name": "Library B",
+          "type": "Location",
+          "travelTime": 18,
+          "stayTime": 90
+        }
+      ]
+    },
+    {
+      "name": "Supermarket",
+      "type": "Category",
+      "children": [
+        {
+          "name": "Supermarket A",
+          "type": "Location",
+          "travelTime": 8,
+          "stayTime": 20
+        },
+        {
+          "name": "Supermarket B",
+          "type": "Location",
+          "travelTime": 10,
+          "stayTime": 30
+        }
+      ]
+    },
+    {
+      "name": "Restaurant",
+      "type": "Category",
+      "children": [
+        {
+          "name": "Restaurant A",
+          "type": "Location",
+          "travelTime": 12,
+          "stayTime": 60
+        },
+        {
+          "name": "Restaurant B",
+          "type": "Location",
+          "travelTime": 15,
+          "stayTime": 45
+        }
+      ]
+    },
+    {
+      "name": "Gym & Park",
+      "type": "Category",
+      "children": [
+        {
+          "name": "Gym",
+          "type": "Location",
+          "travelTime": 10,
+          "stayTime": 60
+        },
+        {
+          "name": "Park",
+          "type": "Location",
+          "travelTime": 12,
+          "stayTime": 40
+        }
+      ]
+    }
+  ]
+}

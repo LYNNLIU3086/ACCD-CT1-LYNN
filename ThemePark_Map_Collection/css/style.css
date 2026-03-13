@@ -1,0 +1,12 @@
+
+*{box-sizing:border-box;font-family:Georgia, 'Times New Roman', serif}
+body{margin:0;display:flex;height:100vh;overflow:hidden;background:#f2efe6}
+#sidebar{width:360px;padding:24px;border-right:1px solid #ddd;overflow:auto;background:#fbf7ef}
+#sidebar h1{font-size:20px;margin:0 0 8px}
+#sidebar p{color:#555;font-size:13px}
+#mapList{margin-top:12px}
+.mapItem{padding:10px;border-radius:6px;margin:8px 0;background:#fff;cursor:pointer;border:1px solid #eee}
+.mapItem small{display:block;color:#777}
+#viewer{flex:1;display:flex;align-items:center;justify-content:center;padding:20px}
+#mapContainer{width:90%;height:90%;background:#fff;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;overflow:hidden}
+#currentMap{max-width:100%;max-height:100%;transform-origin:center;transition:transform .12s linear}

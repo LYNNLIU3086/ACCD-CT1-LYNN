@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>有机光流动画</title>
+<style>
+  body { margin: 0; overflow: hidden; background: #111; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+// 鼠标位置
+const mouse = {x: width/2, y: height/2};
+canvas.addEventListener('mousemove', e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+// 简单 Perlin 噪声类
+class PerlinNoise {
+  constructor() {
+    this.grad3 = [
+      [1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+      [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+      [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]
+    ];
+    this.p = [];
+    for(let i=0;i<256;i++) this.p[i]=Math.floor(Math.random()*256);
+    this.perm=[];
+    for(let i=0;i<512;i++) this.perm[i]=this.p[i & 255];
+  }
+  dot(g,x,y){ return g[0]*x+g[1]*y; }
+  fade(t){ return t*t*t*(t*(t*6-15)+10); }
+  lerp(a,b,t){ return a + t*(b-a); }
+  noise(xin,yin){
+    let X=Math.floor(xin)&255;
+    let Y=Math.floor(yin)&255;
+    let x=xin-Math.floor(xin);
+    let y=yin-Math.floor(yin);
+    let u=this.fade(x);
+    let v=this.fade(y);
+    let n00=this.dot(this.grad3[this.perm[X+this.perm[Y]]%12], x, y);
+    let n01=this.dot(this.grad3[this.perm[X+this.perm[Y+1]]%12], x, y-1);
+    let n10=this.dot(this.grad3[this.perm[X+1+this.perm[Y]]%12], x-1, y);
+    let n11=this.dot(this.grad3[this.perm[X+1+this.perm[Y+1]]%12], x-1, y-1);
+    return this.lerp(this.lerp(n00,n10,u), this.lerp(n01,n11,u), v);
+  }
+}
+
+const noise = new PerlinNoise();
+let startTime = Date.now();
+
+// 定义圆
+const circles = [
+  {type:'circle', radius:20, cx:width/2, cy:height/2, speed:2, color1:'cyan', color2:'blue'},
+  {type:'vertical', radius:30, x:width/4, y:height/3, speed:2, delay:1.5, color1:'orange', color2:'red'},
+  {type:'horizontal', radius:25, x:width/3, y:height/1.5, speed:1.5, delay:0, color1:'magenta', color2:'pink'},
+  {type:'perlin', radius:18, baseX:width/1.5, baseY:height/2, noiseFactor:100, color1:'lime', color2:'green', speed:0.5},
+  {type:'perlin', radius:15, baseX:width/1.2, baseY:height/1.2, noiseFactor:80, color1:'yellow', color2:'gold', speed:0.8}
+];
+
+function getGradientColor(color1, color2, t){
+  return t%2<1?color1:color2;
+}
+
+function animate(){
+  const time = (Date.now() - startTime)/1000;
+
+  // 拖尾效果：半透明黑色覆盖画布
+  ctx.fillStyle = 'rgba(17,17,17,0.2)'; // alpha越小，拖尾越长
+  ctx.fillRect(0,0,width,height);
+
+  const positions = [];
+  circles.forEach(c=>{
+    let x=c.cx||c.x||c.baseX;
+    let y=c.cy||c.y||c.baseY;
+    if(c.type==='circle'){
+      x=c.cx + 100*Math.cos(time*c.speed);
+      y=c.cy + 100*Math.sin(time*c.speed);
+    } else if(c.type==='vertical'){
+      if(time>c.delay){
+        const t = time - c.delay;
+        y = c.y + Math.sin(t*c.speed*2)*100;
+      }
+    } else if(c.type==='horizontal'){
+      x = c.x + Math.sin(time*c.speed*3)*100;
+    } else if(c.type==='perlin'){
+      x = c.baseX + noise.noise(time*c.speed,0)*c.noiseFactor;
+      y = c.baseY + noise.noise(0,time*c.speed)*c.noiseFactor;
+    }
+
+    // 鼠标吸引
+    const dx = mouse.x - x;
+    const dy = mouse.y - y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if(dist < 150){
+      const force = (150 - dist)/150 * 0.5;
+      x += dx*force;
+      y += dy*force;
+    }
+
+    const t = Math.sin(time*c.speed);
+    ctx.fillStyle = getGradientColor(c.color1, c.color2, t);
+    ctx.globalAlpha = 0.7 + 0.3*t;
+    ctx.beginPath();
+    ctx.arc(x, y, c.radius, 0, Math.PI*2);
+    ctx.fill();
+
+    positions.push({x,y});
+  });
+
+  // 连线效果
+  ctx.globalAlpha = 0.2;
+  ctx.strokeStyle = 'white';
+  positions.forEach((p1,i)=>{
+    for(let j=i+1;j<positions.length;j++){
+      const p2 = positions[j];
+      const dx = p1.x - p2.x;
+      const dy = p1.y - p2.y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if(dist < 200){
+        ctx.lineWidth = (200-dist)/150;
+        ctx.beginPath();
+        ctx.moveTo(p1.x,p1.y);
+        ctx.lineTo(p2.x,p2.y);
+        ctx.stroke();
+      }
+    }
+  });
+
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener('resize', ()=>{
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = window.innerHeight;
+  circles[0].cx = width/2; circles[0].cy = height/2;
+  circles[1].x = width/4; circles[1].y = height/3;
+  circles[2].x = width/3; circles[2].y = height/1.5;
+  circles[3].baseX = width/1.5; circles[3].baseY = height/2;
+  circles[4].baseX = width/1.2; circles[4].baseY = height/1.2;
+});
+</script>
+</body>
+</html>
+

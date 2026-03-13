@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semester Project Archive</title>
+
+  <!-- 基础字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0b0c;
+      --panel: #111113;
+      --text-main: #eaeaea;
+      --text-secondary: #a0a0a0;
+      --accent: #8f8f8f;
+      --border: #1e1e1e;
+    }
+
+    * { box-sizing: border-box; margin:0; padding:0; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.7;
+      letter-spacing: 0.2px;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 80px 24px 120px;
+    }
+
+    header {
+      margin-bottom: 80px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 40px;
+      font-weight: 500;
+      margin-bottom: 16px;
+    }
+
+    header p {
+      color: var(--text-secondary);
+      max-width: 720px;
+    }
+
+    section.step {
+      margin-bottom: 96px;
+      padding-left: 0;
+      border-left: none;
+    }
+
+    .step-number {
+      font-size: 14px;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .step-title {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    .step-content p {
+      margin-bottom: 20px;
+      color: var(--text-main);
+    }
+
+    .media-block { margin: 48px 0; }
+    .media-full .media-asset img,
+    .media-asset img,
+    .media-asset video {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      object-fit: cover;
+      background: black;
+    }
+
+    .media-text {
+      color: var(--text-main);
+    }
+
+    .media-text p {
+      margin-bottom: 16px;
+      color: var(--text-secondary);
+    }
+
+    .media-caption {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    .media-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .media-split.reverse { direction: rtl; }
+    .media-split.reverse > * { direction: ltr; }
+
+    .project-divider {
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      padding: 160px 0;
+      background: linear-gradient(180deg, #0b0b0c, #111113);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .project-divider h2 { font-size: 36px; font-weight: 400; letter-spacing: 0.5px; }
+    .project-divider p {
+      margin-top: 16px;
+      color: var(--text-secondary);
+      max-width: 520px;
+      margin-left:auto;
+      margin-right:auto;
+    }
+
+    .layout { display: flex; align-items: flex-start; }
+    .sidebar {
+      position: sticky;
+      top: 0;
+      width: 220px;
+      height: 100vh;
+      padding: 80px 24px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+    }
+
+    .sidebar-title {
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      margin-bottom: 24px;
+      text-transform: uppercase;
+    }
+
+    .nav-list { list-style: none; }
+    .nav-list li { margin-bottom: 16px; }
+    .nav-list a {
+      text-decoration: none;
+      font-size: 14px;
+      color: var(--text-secondary);
+      transition: color 0.2s ease;
+    }
+
+    .nav-list a:hover { color: var(--text-main); }
+    .nav-list a.active { color: var(--text-main); position: relative; }
+    .nav-list a.active::before {
+      content: "";
+      position: absolute;
+      left: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .nav-theme { font-size: 13px; color: var(--text-main); margin-bottom: 20px; }
+    .nav-theme ul {
+      list-style: none;
+      margin-top: 8px;
+      padding-left: 12px;
+      border-left: 1px solid var(--border);
+    }
+    .nav-theme ul li { margin: 8px 0; }
+    .nav-theme a { font-size: 13px; color: var(--text-secondary); }
+
+    @media (max-width: 900px) {
+      .layout { flex-direction: column; }
+      .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+    }
+
+    @media (max-width: 800px) { .media-split { grid-template-columns: 1fr; } }
+    @media (max-width: 640px) {
+      header h1 { font-size: 30px; }
+      .step-title { font-size: 22px; }
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section.step');
+      const navLinks = document.querySelectorAll('.nav-list a');
+
+      const observer = new IntersectionObserver(
+        entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const id = entry.target.getAttribute('id');
+              navLinks.forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+              });
+            }
+          });
+        },
+        { rootMargin: '-40% 0px -50% 0px' }
+      );
+
+      sections.forEach(section => observer.observe(section));
+    });
+  </script>
+</head>
+
+<body>
+  <div class="layout">
+    <!-- 左侧导航 -->
+    <nav class="sidebar">
+      <h3 class="sidebar-title">目录</h3>
+      <ul class="nav-list">
+        <li class="nav-theme">Archeology of the Futures (week1-3)
+          <ul>
+            <li><a href="#p1-step1">Knowledge Collection</a></li>
+            <li><a href="#p1-step2">My Proposal</a></li>
+            <li><a href="#p1-step3">My Outcome</a></li>
+          </ul>
+        </li>
+        <li class="nav-theme">Project 2
+          <ul>
+            <li><a href="#p2-step1">Knowledge Collection</a></li>
+            <li><a href="#p2-step2">My Proposal</a></li>
+            <li><a href="#p2-step3">My Outcome</a></li>
+          </ul>
+        </li>
+        <li class="nav-theme">Project 3
+          <ul>
+            <li><a href="#p3-step1">Knowledge Collection</a></li>
+            <li><a href="#p3-step2">My Proposal</a></li>
+            <li><a href="#p3-step3">My Outcome</a></li>
+          </ul>
+        </li>
+        <li class="nav-theme">Project 4
+          <ul>
+            <li><a href="#p4-step1">Knowledge Collection</a></li>
+            <li><a href="#p4-step2">My Proposal</a></li>
+            <li><a href="#p4-step3">My Outcome</a></li>
+          </ul>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- 主内容区 -->
+    <div class="container">
+      <header id="intro">
+        <h1>Semester Project Archive</h1>
+        <p>
+          This page documents four independent design projects completed over the course of this semester. Each project is presented as a self-contained chapter, structured through research, proposal development, and final outcomes.
+        </p>
+      </header>
+
+      <!-- Project Divider -->
+      <div class="project-divider" id="project-1">
+        <h2>Project 01 · Future Health Self-Care System</h2>
+        <p>A speculative design exploration focusing on the interface between body, material, and technology.</p>
+      </div>
+
+      <!-- Step 1 -->
+      <section class="step" id="p1-step1">
+        <div class="step-number">Part 01</div>
+        <h2 class="step-title">Knowledge Collection</h2>
+        <div class="step-content">
+          <p>A crucial organ system in the human body is the gastrointestinal system. However, whether in terms of the complexity of medical examinations or daily observation, it poses significant challenges. It is also the only area that requires internal examination during basic diagnostic procedures.</p>
+        </div>
+
+        <div class="media-block media-full">
+          <div class="media-asset">
+            <img src="images/project1-hero.jpg" alt="Future Health Self-Care System">
+          </div>
+        </div>
+
+        <div class="media-block media-full">
+          <div class="media-asset">
+            <img src="images/project1-hero2.jpg" alt="Future Health Self-Care System">
+          </div>
+        </div>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="step" id="p1-step2">
+        <div class="step-number">Part 02</div>
+        <h2 class="step-title">My Proposal and Experiment</h2>
+        <div class="step-content">
+          <p>Current Pain Points:</p>
+          <p>1. The intestinal tract itself hosts a vast and diverse population of microorganisms, and the organ structure is deep and winding.</p>
+          <p>2. Medical examinations are primitive and complex.</p>
+          <p>3. Diet planning is troublesome and lacks intelligent guidance.</p>
+        </div>
+
+        <div class="media-block media-split">
+          <div class="media-asset">
+            <img src="images/material layer.jpg" alt="Prototype iteration">
+          </div>
+          <div class="media-text">
+            <p>Here are the nodes for my transparent material. I found that adjusting the material in the standard panel didn't achieve the desired effect, so I used the node editor. This showcases my node setup for achieving a lens-like material.</p>
+          </div>
+        </div>
+
+        <div class="media-block" style="display:flex; gap:20px; flex-wrap:wrap;">
+          <div class="media-asset" style="flex:1;">
+            <video controls muted playsinline>
+              <source src="videos/simulation1.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="media-asset" style="flex:1;">
+            <video controls muted playsinline>
+              <source src="videos/simulation2.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+        <div class="media-text" style="margin-top:16px;">
+          <p>This interactive simulation demonstrates two core states of the lens system:</p>
+          <p>Left - Dynamic Imaging: Simulates the process of the device capturing and displaying real-time internal structure imagery while in motion.</p>
+          <p>Right - Depth Adjustment: Illustrates how users can externally interact to control the focal depth, enabling visual exploration from the surface to the interior.</p>
+        </div>
+        <!-- Step 3 -->
+      <section class="step" id="p1-step3">
+        <div class="step-number">Part 03</div>
+        <h2 class="step-title">My Outcome</h2>
+        <div class="step-content">
+          <p>My design direction envisions a possible future scenario where people can check basic intestinal conditions at home using an observation scope, with the device being both portable and stationary.</p>
+          <p>It is equipped with manual tools to assist with movement and angle adjustment, and may even include matching panels that can be installed on the visual interface of refrigerators, working together with diet planning to provide assistance and recommendations.</p>
+          <p>Future Technologies: Home-Based Health Care (Lowering the threshold for medical access), Advanced Penetrative/Lens Technology. State 1: Idle display of a panoramic view, preserving the last recorded health status index. State 2: During use, it is movable, adjustable in depth, and after rolling across the abdomen, it waits for imaging.</p>
+        </div>
+
+        <h3 class="step-title">Final Model Showcase</h3>
+        <div class="media-block media-full">
+          <div class="media-asset">
+            <img src="images/Artboard 1.png" alt="Future Health Self-Care System">
+          </div>
+        </div>
+        <div class="media-block media-full">
+          <div class="media-asset">
+            <img src="images/Artboard 2.png" alt="Future Health Self-Care System">
+          </div>
+        </div>
+
+      </section>
+      <div class="media-block" style="display:flex; gap:20px; flex-wrap:wrap;">
+      <div class="media-asset" style="flex:1;">
+      <div class="media-block media-full">
+          <div class="media-asset">
+            <h3>Question and Learn</h3>
+
+            <p>Is there a way to separate part of the overall model so it becomes independent (I want to assign a different material to it)? These parts were created using the Extrude Region method.</p>
+            <img src="images/1.jpg" alt="Future Health Self-Care System">
+          </div>
+        </div>
+        <div class="media-block media-full">
+          <div class="media-asset">
+            <p>How can I make an Array follow a circular distribution?</p>
+            <img src="images/2.jpg" alt="Future Health Self-Care System">
+          </div>
+        </div>
+        
+      <div class="media-block" style="display:flex; gap:20px; flex-wrap:wrap;">
+      <div class="media-asset" style="flex:1;">
+      <div class="media-block media-full">
+          <div class="media-asset">
+            <p>Question 1</p>
+            <img src="images/1-1.jpg" alt="Future Health Self-Care System">
+          </div>
+        </div>
+        <div class="media-block media-full">
+          <div class="media-asset">
+            <p>Question 2</p>
+            <img src="images/2-1.jpg" alt="Future Health Self-Care System">
+          </div>
+        </div>
+        
+      </section>
+
+      <!-- Project Divider -->
+<div class="project-divider" id="project-2">
+  <h2>Project 02 · [空间智能交互]</h2>
+  <p>A speculative design exploration focusing on [brief description].</p>
+</div>
+
+<!-- Step 1 -->
+<section class="step" id="p2-step1">
+  <div class="step-number">Part 01</div>
+  <h2 class="step-title">Knowledge Collection</h2>
+  <div class="step-content">
+    <p>[Introduce the background or problem space of this project.]</p>
+  </div>
+
+  <div class="media-block media-full">
+    <div class="media-asset">
+      <img src="images4-6/idea1.jpg" alt="Project 2">
+    </div>
+  </div>
+  <div class="media-block media-full">
+    <div class="media-asset">
+      <img src="images4-6/1.jpg" alt="Project 2">
+    </div>
+  </div>
+
+</section>
+
+<!-- Step 2 -->
+<section class="step" id="p2-step2">
+  <div class="step-number">Part 02</div>
+  <h2 class="step-title">My Proposal and Experiment</h2>
+  <div class="step-content">
+    <p>Current Pain Points:</p>
+    <p>1. [Pain point one.]</p>
+    <p>2. [Pain point two.]</p>
+ <div class="media-asset">
+        <img src="images4-6/4-6.jpg" alt="Project 2 Final Model">
+      </div>
+    </div>
+    <div class="media-block media-full">
+
+  </div>
+
+  <div class="media-block media-split">
+    <div class="media-asset">
+      <img src="images4-6/3.jpg" alt="Prototype iteration">
+    </div>
+    <div class="media-text">
+      <p>[Description of the material, technique, or node setup used in this project.]</p>
+    </div>
+  </div>
+
+  <div class="media-block" style="display:flex; gap:20px; flex-wrap:wrap;">
+    <div class="media-asset" style="flex:1;">
+      <video controls muted playsinline>
+        <source src="videos/space1.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="media-asset" style="flex:1;">
+      <video controls muted playsinline>
+        <source src="videos/space2.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+  <div class="media-text" style="margin-top:16px;">
+    <p>[Overview sentence for the two simulations.]</p>
+    <p>Left - [State name]: [Description of left video.]</p>
+    <p>Right - [State name]: [Description of right video.]</p>
+  </div>
+
+  <!-- Step 3 -->
+  <section class="step" id="p2-step3">
+    <div class="step-number">Part 03</div>
+    <h2 class="step-title">My Outcome</h2>
+    <div class="step-content">
+      <p>[Paragraph one describing the design direction and vision.]</p>
+       <div class="media-asset">
+        <img src="images4-6/outcome1.jpg" alt="Project 2 Final Model">
+      </div>
+      <div class="media-asset" style="flex:1;">
+      <video controls muted playsinline>
+        <source src="videos/outcome1.mov" type="video/mp4">
+      </video>
+       <video controls muted playsinline>
+        <source src="videos/outcome2.mov" type="video/mp4">
+      </video>
+    </div>
+      <p>[Paragraph two describing features and functions.]</p>
+      <p>[Paragraph three describing future technologies and states.]</p>
+    </div>
+
+    <h3 class="step-title">Final Model Showcase</h3>
+    <div class="media-block media-full">
+     
+    </div>
+
+  </section>
+
+  <div class="media-block" style="display:flex; gap:20px; flex-wrap:wrap;">
+    <div class="media-asset" style="flex:1;">
+      <div class="media-block media-full">
+        <div class="media-asset">
+          <h3>Question and Learn</h3>
+          <p>[Question one description.]</p>
+          <img src="images4-6/p2-1.jpg" alt="Project 2 Q1">
+        </div>
+      </div>
+      <div class="media-block media-full">
+        <div class="media-asset">
+          <p>[Question two description.]</p>
+          <img src="images4-6/p2-2.jpg" alt="Project 2 Q2">
+        </div>
+      </div>
+
+      <div class="media-block" style="display:flex; gap:20px; flex-wrap:wrap;">
+        <div class="media-asset" style="flex:1;">
+          <div class="media-block media-full">
+            <div class="media-asset">
+              <p>Question 1</p>
+              <p>这个我在实践让本身有位置信息的数据点驱动物体，</p>
+              <img src="images4-6/p2-1-1.jpg" alt="Project 2 Q1 Answer">
+            </div>
+          </div>
+          <div class="media-block media-full">
+            <div class="media-asset">
+              <p>Question 2</p>
+              <p>建立多个script来控制交互</p>
+              <p>同时要注意不同script会target在不同的物体上，甚至main camera也会搭载在别的物体上，然后也要注意trigger等小属性是否选中。</p>
+              <img src="images4-6/q2.jpg" alt="Project 2 Q2 Answer">
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+    </div>
+  </div>
+</body>
+</html>

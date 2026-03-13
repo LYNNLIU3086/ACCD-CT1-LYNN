@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>艺术遗产档案馆 | Artworks</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>FORGOTTEN HERITAGE</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">艺术作品</a>
+                <a href="#" class="nav-link">艺术家</a>
+                <a href="#" class="nav-link">展览</a>
+                <a href="#" class="nav-link">关于</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 页面标题 -->
+        <header class="page-header">
+            <h2 class="page-title">ARTWORKS</h2>
+            <p class="page-subtitle">探索遗失的文化遗产收藏</p>
+        </header>
+
+        <!-- 画廊网格 -->
+        <div class="gallery-container">
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- 图片将通过JavaScript动态加载 -->
+            </div>
+        </div>
+
+        <!-- 加载更多 -->
+        <div class="load-more-container">
+            <button id="loadMoreBtn" class="load-more-btn">
+                <span class="btn-text">加载更多作品</span>
+                <span class="btn-loader"></span>
+            </button>
+        </div>
+    </main>
+
+    <!-- 图片详情模态框 -->
+    <div class="modal" id="imageModal">
+        <div class="modal-background" id="modalBackground"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+            <div class="modal-image-container">
+                <img class="modal-image" id="modalImage" alt="艺术作品详情">
+            </div>
+            <div class="modal-info">
+                <h3 id="modalTitle" class="modal-title"></h3>
+                <p id="modalArtist" class="modal-artist"></p>
+                <p id="modalDescription" class="modal-description"></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

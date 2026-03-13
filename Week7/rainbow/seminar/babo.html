@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>科幻黑白流光气泡网络 - 层级分环+分类</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { margin:0; font-family:sans-serif; display:flex; height:100vh; background:#111; color:#fff; }
+#viz { flex:1; position:relative; }
+svg { width:100%; height:100%; display:block; }
+.link { stroke:#888; stroke-opacity:0.3; }
+.node { cursor:pointer; stroke:#fff; stroke-width:1px; }
+.node.selected { stroke:#fff; stroke-width:2px; filter: drop-shadow(0 0 10px #fff); }
+.tooltip { position:absolute; pointer-events:none; background:rgba(255,255,255,0.95); color:#000; padding:6px 10px; border-radius:6px; font-size:13px; display:none; }
+#panel { width:300px; border-left:1px solid #333; padding:16px; box-sizing:border-box; background:#1a1a1a; }
+#panel h3 { margin:6px 0 12px; color:#fff; }
+.btn { display:inline-block; padding:6px 10px; border-radius:6px; border:1px solid #444; background:#222; cursor:pointer; margin-right:6px; font-size:13px; color:#fff; }
+</style>
+</head>
+<body>
+<div id="viz">
+  <div id="controls" style="position:absolute; top:10px; left:10px; z-index:10;">
+    <span class="btn" id="reset">重置布局</span>
+    <span class="btn" id="collapse">隐藏链接</span>
+    <span class="btn" id="expand">显示链接</span>
+  </div>
+  <svg></svg>
+  <div class="tooltip" id="tooltip"></div>
+</div>
+<div id="panel">
+  <h3>节点详情</h3>
+  <div id="details">点击一个气泡查看详情。</div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+// 生成示例数据（增加level表示层级）
+const nodes=[], links=[];
+const nodeCount=50;
+const groupColors=["#fff","#aaa","#ccc"]; // 分类光环颜色
+for(let i=0;i<nodeCount;i++){
+  nodes.push({
+    id:'Node'+i,
+    value: Math.floor(Math.random()*60)+10,
+    label:'节点 '+i,
+    group: Math.floor(Math.random()*3),
+    level: Math.floor(Math.random()*3) // 层级 0=中心，1=中间，2=外围
+  });
+}
+for(let i=0;i<nodeCount*2;i++){
+  const source=nodes[Math.floor(Math.random()*nodeCount)].id;
+  const target=nodes[Math.floor(Math.random()*nodeCount)].id;
+  if(source!==target) links.push({source,target,value:1});
+}
+
+// D3设置
+const svg=d3.select("svg");
+const width=+svg.node().clientWidth;
+const height=+svg.node().clientHeight;
+const g=svg.append("g");
+const zoom=d3.zoom().scaleExtent([0.2,3]).on("zoom",(event)=>g.attr("transform",event.transform));
+svg.call(zoom);
+
+// 节点半径 = 数值 + 层级加权
+const rScale=d3.scaleSqrt().domain(d3.extent(nodes,d=>d.value)).range([6,28]);
+
+// 力学模拟 + 分层环状布局
+const simulation=d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d=>d.id).distance(60).strength(0.8))
+  .force("charge", d3.forceManyBody().strength(-120))
+  .force("center", d3.forceCenter(width/2,height/2))
+  .force("collision", d3.forceCollide().radius(d=>rScale(d.value)+4))
+  .force("radial", d3.forceRadial(d=>50 + d.level*80, width/2, height/2).strength(0.1)); // 分环布局
+
+// 定义光环渐变
+const defs=svg.append("defs");
+nodes.forEach(n=>{
+  const grad=defs.append("radialGradient").attr("id","grad"+n.id).attr("cx","50%").attr("cy","50%").attr("r","50%");
+  grad.append("stop").attr("offset","0%").attr("stop-color",groupColors[n.group]).attr("stop-opacity",0.9);
+  grad.append("stop").attr("offset","100%").attr("stop-color","#000").attr("stop-opacity",0.1);
+});
+
+// 链接
+const link=g.append("g").attr("class","links").selectAll("line")
+  .data(links).join("line").attr("class","link").attr("stroke-width",d=>Math.sqrt(d.value));
+
+// 节点组
+const node=g.append("g").attr("class","nodes").selectAll("g")
+  .data(nodes).join("g").attr("class","node-group").call(drag(simulation));
+
+// 圆形+光晕
+node.append("circle")
+  .attr("class","node")
+  .attr("r",d=>rScale(d.value)*(1 + (2-d.level)*0.3)) // 层级加权
+  .style("fill",d=>"url(#grad"+d.id+")")
+  .style("filter","drop-shadow(0 0 6px #fff)")
+  .on("mouseover", onMouseOver)
+  .on("mousemove", onMouseMove)
+  .on("mouseout", onMouseOut)
+  .on("click", onClick)
+  .on("dblclick", onDoubleClick);
+
+// 文本
+node.append("text").attr("dy",4).attr("x",d=>rScale(d.value)+6).style("font-size","11px").text(d=>d.id);
+
+const tooltip=d3.select("#tooltip");
+let selected=null;
+let glowInterval=null;
+let flowInterval=null;
+
+// 动态布局
+simulation.on("tick",()=>{
+  nodes.forEach(d=>{
+    d.x=Math.max(rScale(d.value),Math.min(width-rScale(d.value),d.x));
+    d.y=Math.max(rScale(d.value)+30,Math.min(height-rScale(d.value),d.y));
+  });
+  link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  node.attr("transform",d=>`translate(${d.x},${d.y})`);
+});
+
+// 拖拽
+function drag(sim){
+  function dragstarted(event,d){ if(!event.active) sim.alphaTarget(0.2).restart(); d.fx=d.x; d.fy=d.y;}
+  function dragged(event,d){ d.fx=event.x; d.fy=event.y;}
+  function dragended(event,d){ if(!event.active) sim.alphaTarget(0);}
+  return d3.drag().on("start",dragstarted).on("drag",dragged).on("end",dragended);
+}
+
+// 事件
+function onMouseOver(event,d){ tooltip.style("display","block"); highlightNeighbors(d,true); node.select("circle").transition().duration(200).attr("r",rScale(d.value)*(1+(2-d.level)*0.3)*1.3);}
+function onMouseMove(event,d){ tooltip.html(`<strong>${d.label}</strong><div>value:${d.value}</div><div>level:${d.level}</div>`).style("left",(event.pageX+12)+"px").style("top",(event.pageY+12)+"px");}
+function onMouseOut(event,d){ tooltip.style("display","none"); highlightNeighbors(selected,true); node.select("circle").transition().duration(200).attr("r",d=>rScale(d.value)*(1+(2-d.level)*0.3));}
+function onClick(event,d){ selected=(selected&&selected.id===d.id)?null:d; updateSelection();}
+function onDoubleClick(event,d){ d.fx=null; d.fy=null;}
+
+// 更新选中状态+发光光环+流光连线
+function updateSelection(){
+  node.select("circle").classed("selected",n=>selected&&n.id===selected.id);
+  stopGlow();
+  stopFlow();
+  if(selected){
+    selected.fx=selected.x; selected.fy=selected.y; showDetails(selected); animateGlow(selected); animateFlow(selected);
+  } else { nodes.forEach(n=>{n.fx=null;n.fy=null;}); d3.select("#details").html("点击一个气泡查看详情。"); }
+}
+
+// 显示详情
+function showDetails(d){
+  d3.select("#details").html(`
+    <div><strong>ID:</strong> ${d.id}</div>
+    <div><strong>标签:</strong> ${d.label}</div>
+    <div><strong>数值:</strong> ${d.value}</div>
+    <div><strong>类别:</strong> ${d.group}</div>
+    <div><strong>层级:</strong> ${d.level}</div>
+  `);
+}
+
+// 邻居高亮
+function highlightNeighbors(center){
+  const linked={};
+  links.forEach(l=>{linked[`${l.source.id}-${l.target.id}`]=true; linked[`${l.target.id}-${l.source.id}`]=true;});
+  node.select("circle").transition().duration(200).style("opacity",n=>{
+    if(!center) return 1;
+    if(n.id===center.id) return 1;
+    return linked[`${center.id}-${n.id}`]?1:0.15;
+  });
+  link.transition().duration(200).style("opacity",l=>{
+    if(!center) return 0.3;
+    return (l.source.id===center.id||l.target.id===center.id)?0.9:0.05;
+  });
+}
+
+// 发光动画
+function animateGlow(center){
+  const circle=node.filter(d=>d.id===center.id).select("circle");
+  let grow=true;
+  glowInterval=setInterval(()=>{
+    circle.transition().duration(400).attr("r",()=>grow?rScale(center.value)*(1+(2-center.level)*0.3)*1.5:rScale(center.value)*(1+(2-center.level)*0.3)*1.3);
+    grow=!grow;
+  },400);
+}
+function stopGlow(){ if(glowInterval){clearInterval(glowInterval); glowInterval=null;} }
+
+// 流光动画
+function animateFlow(center){
+  const neighborIds=links.filter(l=>l.source.id===center.id||l.target.id===center.id).map(l=>l.source.id===center.id?l.target.id:l.source.id);
+  let t=0;
+  flowInterval=setInterval(()=>{
+    t=(t+0.02)%1;
+    link.style("stroke",l=>{
+      if(l.source.id===center.id||l.target.id===center.id) return d3.interpolateRgb("#fff","#aaa")(t);
+      return "#888";
+    });
+  },50);
+}
+function stopFlow(){ if(flowInterval){clearInterval(flowInterval); flowInterval=null;} }
+
+// 控件
+d3.select("#reset").on("click",()=>{ nodes.forEach(n=>{n.fx=null;n.fy=null;}); selected=null; updateSelection(); simulation.alpha(1).restart(); });
+d3.select("#collapse").on("click",()=>link.style("visibility","hidden"));
+d3.select("#expand").on("click",()=>link.style("visibility","visible"));
+
+// 窗口变化
+window.addEventListener("resize",()=>{ const w=svg.node().clientWidth; const h=svg.node().clientHeight; simulation.force("center",d3.forceCenter(w/2,h/2)); simulation.alpha(0.3).restart(); });
+
+</script>
+</body>
+</html>

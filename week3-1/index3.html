@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Dreampark Fantasy — Upload & AI Storytelling (Chapters Save)</title>
+<meta name="description" content="Blend real Disney elements with AI-generated fantasy elements. Supports image drag-and-drop upload, frontend + backend (LLM) hybrid storytelling, chapter save & export."/>
+<style>
+  :root{
+    --bg:#1e0f2f; --panel:#e0b5f0; --muted:#b4a0c1; --glass: rgba(255,255,255,0.05);
+    --accent:#ffb0f0; --accent2:#d89ee8;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family: Inter, "Helvetica Neue", Arial, sans-serif;background:linear-gradient(180deg,#2c103d,#12051f);color:#fff0ff}
+  .wrap{max-width:1300px;margin:18px auto;padding:18px;display:grid;grid-template-columns:300px 1fr 380px;gap:18px}
+  header{grid-column:1/-1;display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:6px}
+  h1{font-size:16px;margin:0}
+  .controls{display:flex;gap:8px;align-items:center}
+  button{background:var(--glass);border:1px solid rgba(255,255,255,0.06);padding:8px 10px;border-radius:10px;color:inherit;cursor:pointer}
+  button.small{padding:6px 8px;font-size:13px}
+  input[type=range]{width:110px}
+  .panel{background:linear-gradient(180deg, rgba(255, 180, 255, 0.02), rgba(223, 200, 255, 0.02));border-radius:12px;padding:12px;height:calc(100vh - 120px);overflow:auto;box-shadow:0 10px 36px rgba(0,0,0,0.6)}
+  .panel h3{margin:0 0 8px 0;font-size:13px}
+  .uploader{border:2px dashed rgba(255, 196, 255, 0.04);padding:12px;border-radius:10px;background:linear-gradient(180deg, rgba(239, 226, 239, 0.01), transparent)}
+  .uploader.dragover{border-color:rgba(255,180,240,0.6);background:linear-gradient(180deg, rgba(255,180,240,0.02), transparent)}
+  .thumb{display:flex;gap:8px;align-items:center;margin-top:8px}
+  .thumb img{width:56px;height:56px;border-radius:8px;object-fit:cover;border:1px solid rgba(255,255,255,0.04)}
+  .legend{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .chip{padding:6px 8px;border-radius:8px;background:rgba(255,255,255,0.02);font-size:12px;color:var(--muted)}
+  .stage{position:relative;border-radius:12px;overflow:hidden;min-height:72vh;border:1px solid rgba(255,255,255,0.02)}
+  .sky{height:140px;background:linear-gradient(180deg,#45147d,#220733);position:relative}
+  .ground{height:calc(100% - 140px);background:linear-gradient(180deg,#12051f,#0b0310);position:relative;overflow:hidden}
+  .hud{position:absolute;left:12px;top:12px;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,0.28);backdrop-filter:blur(4px);font-size:13px}
+  .sun{position:absolute;right:20px;top:18px;width:64px;height:64px;border-radius:50%;box-shadow:0 12px 40px rgba(255,170,240,0.08);background:radial-gradient(circle,#fff0f8,#ffb0f0)}
+  .moon{position:absolute;right:24px;top:22px;width:46px;height:46px;border-radius:50%;background:linear-gradient(180deg,#f0e6ff,#d8b0ff);box-shadow:0 8px 28px rgba(200,180,255,0.05)}
+  .overlay-dusk{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;background:linear-gradient(180deg, rgba(18,4,24,0.0), rgba(18,4,24,0.6));opacity:0;transition:opacity 800ms}
+  .ride{position:absolute;width:240px;height:240px;border-radius:50%;left:50%;top:30%;transform:translate(-50%,-50%);display:flex;align-items:center;justify-content:center;pointer-events:none}
+  .ride .disc{position:absolute;width:100%;height:100%;border-radius:50%;border:6px dashed rgba(255,255,255,0.03)}
+  .entity{position:absolute;touch-action:none;user-select:none;will-change:transform,opacity}
+  .entity .imgwrap{display:block;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg,#ffe0ff,#f8e8ff);width:64px;height:64px;display:flex;align-items:center;justify-content:center}
+  .entity img{width:100%;height:100%;object-fit:cover;display:block}
+  .entity .meta{position:absolute;left:50%;transform:translateX(-50%);top:-18px;font-size:12px;padding:2px 8px;border-radius:999px;background:rgba(0,0,0,0.48);color:#fff}
+  .entity .controls{position:absolute;right:-8px;top:-8px;display:flex;gap:6px}
+  .icon-btn{width:28px;height:28px;border-radius:8px;background:rgba(0,0,0,0.45);display:flex;align-items:center;justify-content:center;font-size:12px;cursor:pointer}
+  .log{background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);padding:10px;border-radius:10px;color:var(--muted);min-height:180px;max-height:56vh;overflow:auto}
+  .story-controls{display:flex;gap:8px;margin-top:8px;align-items:center}
+  .chapters{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+  .chapter-item{display:flex;justify-content:space-between;align-items:center;padding:8px;border-radius:8px;background:rgba(255,255,255,0.02)}
+  .small{font-size:13px;padding:6px 8px}
+  @media (max-width:1100px){.wrap{grid-template-columns:1fr; padding:12px} header{flex-direction:column;align-items:flex-start} .panel{height:auto} .stage{min-height:56vh}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div style="display:flex;gap:12px;align-items:center">
+        <h1>Dreampark Fantasy — Upload & AI Storytelling</h1>
+        <div style="color:var(--muted);font-size:13px">Visitor-free park — Objects autonomously operate & chapters exportable</div>
+      </div>
+      <div class="controls">
+        <div style="display:flex;align-items:center;gap:8px">
+          <label style="font-size:13px;color:var(--muted)">Speed</label>
+          <input id="speed" type="range" min="0.25" max="2.5" step="0.05" value="1">
+        </div>
+        <button id="togglePlay" class="small">Pause</button>
+        <button id="toggleDay" class="small">Toggle Day/Night</button>
+      </div>
+    </header>
+
+    <!-- LEFT PANEL -->
+    <aside class="panel">
+      <h3>Upload / Drag Images (to spawn entities)</h3>
+      <div id="uploader" class="uploader" aria-label="Drag images here or click to upload">
+        <div style="font-size:13px;color:var(--muted)">Drag images here, or click the button below. PNG/JPG/WebP supported.</div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <input id="fileInput" type="file" accept="image/*" style="display:none" multiple>
+          <button id="chooseFiles">Choose Images</button>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)"><input type="checkbox" id="asFantasy"> <span>As Fantasy Element</span></label>
+        </div>
+        <div id="uploadedList" style="margin-top:10px"></div>
+      </div>
+
+      <hr style="border:none;height:10px">
+      <h3>Map Nodes (Demo)</h3>
+      <div style="height:170px;border-radius:8px;background:linear-gradient(180deg,#2c0d42,#220733);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">
+        Replace with real Disney map tiles or SVG hotspots.
+      </div>
+      <div style="margin-top:10px">
+        <strong style="font-size:13px">Tips</strong>
+        <ul style="color:var(--muted);font-size:13px">
+          <li>Uploaded images appear as entities on the stage. Drag to reposition.</li>
+          <li>Click top-right buttons to remove or mark as fantasy.</li>
+          <li>To use a real LLM backend, enter its URL and enable the backend in AI settings.</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- MIDDLE STAGE -->
+    <main class="panel stage" id="stagePanel">
+      <div class="sky">
+        <div class="hud" id="timeLabel">Day • 09:00</div>
+        <div id="sunMoonContainer"></div>
+      </div>
+      <div class="ground" id="ground">
+        <div class="overlay-dusk" id="duskOverlay"></div>
+        <div class="ride" id="carousel" data-speed="0.9"><div class="disc"></div></div>
+        <div id="entities"></div>
+      </div>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="panel">
+      <h3>Spatial Storytelling (AI)</h3>
+      <div class="log" id="storyLog" role="log" aria-live="polite">
+        <div><em>Welcome to Dreampark. No visitors here; objects and space operate autonomously. Upload images and mark them as "fantasy" to trigger alternate storylines.</em></div>
+      </div>
+      <div class="story-controls">
+        <button id="genLocal" class="small">Generate Local Line</button>
+        <button id="genHybrid" class="small">Hybrid (Local + Backend)</button>
+        <button id="saveChapter" class="small">Save as Chapter</button>
+        <button id="clearLog" class="small">Clear</button>
+      </div>
+      <hr style="border:none;height:10px">
+      <h3>AI Settings (optional)</h3>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <label style="font-size:13px;color:var(--muted)">Backend LLM URL (POST)</label>
+        <input id="llmEndpoint" type="text" placeholder="https://your-server.example.com/llm" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+        <label style="font-size:13px;color:var(--muted)"><input type="checkbox" id="enableLLM"> Enable Backend (Hybrid)</label>
+        <div style="font-size:12px;color:var(--muted)">Hybrid mode: generate local line first, then send context to backend for enhancement (backend should return plain text).</div>
+      </div>
+      <hr style="border:none;height:10px">
+      <h3>Chapter Management</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="chapterTitle" placeholder="Chapter Title (optional)" style="flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit">
+        <button id="exportAll" class="small">Export All</button>
+      </div>
+      <div class="chapters" id="chaptersList" aria-live="polite"></div>
+    </aside>
+  </div>
+
+<script>
+
+
+/* ---------- Tools & Status ---------- */
+const entitiesEl = document.getElementById('entities');
+const storyLog = document.getElementById('storyLog');
+const uploadedList = document.getElementById('uploadedList');
+const fileInput = document.getElementById('fileInput');
+const chooseFiles = document.getElementById('chooseFiles');
+const uploader = document.getElementById('uploader');
+const asFantasyCheckbox = document.getElementById('asFantasy');
+
+const genLocalBtn = document.getElementById('genLocal');
+const genHybridBtn = document.getElementById('genHybrid');
+const llmEndpointInput = document.getElementById('llmEndpoint');
+const enableLLMInput = document.getElementById('enableLLM');
+
+const saveChapterBtn = document.getElementById('saveChapter');
+const chapterTitleInput = document.getElementById('chapterTitle');
+const chaptersList = document.getElementById('chaptersList');
+const exportAllBtn = document.getElementById('exportAll');
+
+const togglePlayBtn = document.getElementById('togglePlay');
+const speedRange = document.getElementById('speed');
+const toggleDayBtn = document.getElementById('toggleDay');
+const duskOverlay = document.getElementById('duskOverlay');
+const sunMoon = document.getElementById('sunMoonContainer');
+
+let running = true;
+let simSpeed = 1;
+let day = true;
+
+let entities = []; // {id,el,x,y,w,h, fantasy, meta, imgURL}
+let fantasyCount = 0;
+let lastTime = performance.now();
+let simulatedMinutes = 9*60; // start at 09:00
+
+/* ---------- Local Narrative Engine ---------- */
+/* Design: templates + keyword extraction + random embellishments, fast & offline */
+const localTemplates = [
+  (ctx)=> `A gentle breeze passes through ${ctx.place}, ${ctx.subject} pauses lightly, as if recalling a distant melody.`,
+  (ctx)=> `${ctx.subject} strolls down the empty street, lights in the shop windows spinning, casting scattered shadows.`,
+  (ctx)=> `In the visitor-free afternoon, ${ctx.subject} quietly watches a self-moving carriage, as if waiting for someone to return.`,
+  (ctx)=> `Under a street lamp, ${ctx.subject}'s shadow overlaps with the past, the city memories fading and appearing like a movie.`,
+  (ctx)=> `${ctx.subject} hears faint synthetic music in the wind, the rhythm of amusement rides looping automatically.`
+];
+
+function pick(array){ return array[Math.floor(Math.random()*array.length)]; }
+
+function contextForLocal(){
+  const place = 'Main Square'; // extendable: map entity position to map nodes
+  const sample = entities.length ? pick(entities) : null;
+  const subject = sample ? (sample.meta?.name || 'an image') : pick(['a wanderer','a lost doll','a floating object','a beam of light']);
+  return {place, subject};
+}
+
+function generateLocalLine(){
+  const ctx = contextForLocal();
+  const tpl = pick(localTemplates);
+  return tpl(ctx);
+}
+
+/* ---------- Day/Night, Stage, Amusement Rides ---------- */
+const carouselEl = document.getElementById('carousel');
+function initCarousel(){
+  const N = 8;
+  for(let i=0;i<N;i++){
+    const car = document.createElement('div');
+    car.className = 'car';
+    car.style.position='absolute';
+    car.style.width='28px'; car.style.height='28px'; car.style.borderRadius='50%';
+    car.style.background='linear-gradient(180deg,#fff,#ffd6d6)';
+    car.dataset.rel = (i/N)*Math.PI*2;
+    carouselEl.appendChild(car);
+  }
+}
+initCarousel();
+
+/* ---------- Entity Generation (Upload / Drag & Drop) ---------- */
+function registerFileHandlers(){
+  chooseFiles.addEventListener('click', ()=> fileInput.click());
+  fileInput.addEventListener('change', (e)=> {
+    const files = Array.from(e.target.files||[]);
+    files.forEach(f=>handleFile(f, asFantasyCheckbox.checked));
+    fileInput.value = '';
+  });
+
+  // drag/drop
+  ['dragenter','dragover'].forEach(ev=>{
+    uploader.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); uploader.classList.add('dragover'); });
+  });
+  ['dragleave','drop'].forEach(ev=>{
+    uploader.addEventListener(ev, (e)=>{ e.preventDefault(); e.stopPropagation(); uploader.classList.remove('dragover'); });
+  });
+  uploader.addEventListener('drop', (e)=>{
+    const files = Array.from(e.dataTransfer.files || []).filter(f=>f.type.startsWith('image/'));
+    files.forEach(f=>handleFile(f, asFantasyCheckbox.checked));
+  });
+}
+registerFileHandlers();
+
+function handleFile(file, asFantasy=false){
+  const url = URL.createObjectURL(file);
+  const meta = {name: file.name.split('.')[0], size: file.size, type:file.type};
+  addUploadedPreview(url, meta);
+  createEntityFromImage(url, {fantasy: !!asFantasy, meta});
+}
+
+/* Uploaded thumbnail preview */
+function addUploadedPreview(url, meta){
+  const wrap = document.createElement('div'); wrap.className='thumb';
+  const img = document.createElement('img'); img.src = url;
+  const txt = document.createElement('div'); txt.innerHTML = `<strong style="font-size:13px">${meta.name}</strong><div style="font-size:12px;color:var(--muted)">${Math.round(meta.size/1024)} KB</div>`;
+  const btn = document.createElement('button'); btn.textContent='Generate Entity'; btn.className='small';
+  btn.onclick = ()=> createEntityFromImage(url, {fantasy:false, meta});
+  wrap.appendChild(img); wrap.appendChild(txt); wrap.appendChild(btn);
+  uploadedList.prepend(wrap);
+}
+
+/* create entity: image-based */
+let idCounter = 0;
+function createEntityFromImage(imgURL, opts={}){
+  const id = 'e'+(++idCounter);
+  const el = document.createElement('div'); el.className='entity';
+  el.dataset.id = id;
+  el.style.left = (100 + Math.random()*400) + 'px';
+  el.style.top = (120 + Math.random()*200) + 'px';
+  const w = 64, h = 64;
+  el.style.width = w+'px'; el.style.height = h+'px';
+  el.innerHTML = `
+    <div class="imgwrap"><img src="${imgURL}" alt="${opts.meta?.name || 'entity'}"></div>
+    <div class="meta">${opts.meta?.name || 'Entity'}</div>
+    <div class="controls">
+      <div class="icon-btn" title="Toggle Fantasy">☆</div>
+      <div class="icon-btn" title="Delete">✕</div>
+    </div>
+  `;
+  entitiesEl.appendChild(el);
+
+  const ent = {
+    id, el, x: parseFloat(el.style.left), y: parseFloat(el.style.top),
+    w, h, fantasy: !!opts.fantasy, meta: opts.meta || {}, imgURL
+  };
+  entities.push(ent);
+  updateEntityVisual(ent);
+
+  const [starBtn, delBtn] = el.querySelectorAll('.icon-btn');
+  starBtn.addEventListener('click', ()=>{
+    ent.fantasy = !ent.fantasy; updateEntityVisual(ent);
+    pushStory(`${ent.meta?.name || 'Entity'} is marked as ${ent.fantasy ? 'Fantasy' : 'Real'}.`);
+  });
+  delBtn.addEventListener('click', ()=> removeEntityById(ent.id));
+
+  makeDraggable(el, ent);
+  pushStory(`${ent.meta?.name || 'New Entity'} entered the park.`);
+}
+
+/* update visual (fantasy tag) */
+function updateEntityVisual(ent){
+  const metaEl = ent.el.querySelector('.meta');
+  metaEl.textContent = ent.meta?.name || 'Entity';
+  if(ent.fantasy){
+    ent.el.style.opacity = 0.92;
+    metaEl.style.background = 'linear-gradient(90deg,#7bd389,#7be0ff)';
+    fantasyCount++;
+  } else {
+    ent.el.style.opacity = 1;
+    metaEl.style.background = 'rgba(0,0,0,0.48)';
+  }
+}
+
+/* remove entity */
+function removeEntityById(id){
+  const idx = entities.findIndex(e=>e.id===id);
+  if(idx===-1) return;
+  const e = entities[idx];
+  e.el.remove();
+  entities.splice(idx,1);
+  pushStory(`${e.meta?.name || 'Entity'} removed.`);
+}
+
+/* draggable implementation */
+function makeDraggable(el, ent){
+  let dragging = false, sx=0, sy=0, ox=0, oy=0;
+  el.addEventListener('pointerdown', (ev)=>{
+    ev.preventDefault();
+    dragging = true; el.setPointerCapture(ev.pointerId);
+    sx = ev.clientX; sy = ev.clientY; ox = ent.x; oy = ent.y;
+    el.style.transition = 'none';
+  });
+  window.addEventListener('pointermove', (ev)=>{
+    if(!dragging) return;
+    const dx = ev.clientX - sx, dy = ev.clientY - sy;
+    ent.x = Math.max(8, ox + dx);
+    ent.y = Math.max(8, oy + dy);
+    ent.el.style.transform = `translate(${ent.x}px, ${ent.y}px)`;
+  });
+  window.addEventListener('pointerup', (ev)=>{
+    if(!dragging) return;
+    dragging = false;
+    try { el.releasePointerCapture(ev.pointerId); } catch(e){}
+    el.style.transition = '';
+  });
+}
+
+/* ---------- Narrative (Local & Hybrid) ---------- */
+function pushStory(text){
+  const p = document.createElement('div');
+  p.textContent = text;
+  storyLog.appendChild(p);
+  while(storyLog.children.length > 40) storyLog.removeChild(storyLog.firstChild);
+  storyLog.scrollTop = storyLog.scrollHeight;
+}
+
+genLocalBtn.addEventListener('click', ()=> {
+  const line = generateLocalLine();
+  pushStory(line);
+});
+
+genHybridBtn.addEventListener('click', async ()=>{
+  const localLine = generateLocalLine();
+  pushStory('[Local] ' + localLine);
+  if(enableLLMInput.checked && llmEndpointInput.value.trim()){
+    pushStory('[Backend] Requesting backend generation...');
+    try{
+      const payload = {
+        prompt: `[CONTEXT]\nRecent log:\n${getRecentLogText(6)}\n\nNew local sentence:\n${localLine}\n\nPlease expand into a 1-2 sentence detailed narrative in English:`,
+        max_tokens: 160
+      };
+      const res = await fetch(llmEndpointInput.value, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload),
+      });
+      if(!res.ok) throw new Error('Backend returned error: ' + res.status);
+      const data = await res.json();
+      const text = (data.text || data.result || data.output || '').trim();
+      if(text) pushStory('[Backend] ' + text);
+      else pushStory('[Backend] No text returned (check backend response format, must return {text:"..."})');
+    } catch(err){
+      console.error(err);
+      pushStory('[Backend] Request failed: ' + err.message);
+    }
+  } else {
+    pushStory('[Backend] Disabled or no URL provided, hybrid mode only shows local sentence.');
+  }
+});
+
+/* helper: get recent N lines */
+function getRecentLogText(n=6){
+  const lines = Array.from(storyLog.children).slice(-n).map(d=>d.textContent.trim());
+  return lines.join('\n');
+}
+
+/* ---------- Chapter Save, Manage, Export ---------- */
+function loadChapters(){
+  const raw = localStorage.getItem('spacepark_chapters_v1');
+  return raw ? JSON.parse(raw) : [];
+}
+function saveChapters(list){
+  localStorage.setItem('spacepark_chapters_v1', JSON.stringify(list));
+}
+function refreshChaptersUI(){
+  const list = loadChapters();
+  chaptersList.innerHTML = '';
+  if(list.length===0){ chaptersList.innerHTML='<div style="color:var(--muted)">No chapters yet. Save current log as a chapter to export or continue editing.</div>'; return; }
+  list.forEach((ch, idx)=>{
+    const div = document.createElement('div'); div.className='chapter-item';
+    const left = document.createElement('div'); left.style.display='flex'; left.style.flexDirection='column';
+    left.innerHTML = `<strong style="font-size:13px">${ch.title || 'Chapter '+(idx+1)}</strong><div style="font-size:12px;color:var(--muted)">${new Date(ch.savedAt).toLocaleString()}</div>`;
+    const right = document.createElement('div'); right.style.display='flex'; right.style.gap='6px';
+    const btnDownload = document.createElement('button'); btnDownload.className='small'; btnDownload.textContent='Download';
+    btnDownload.onclick = ()=> downloadTextAsFile((ch.title||'chapter')+'.txt', (ch.content || '').trim());
+    const btnDelete = document.createElement('button'); btnDelete.className='small'; btnDelete.textContent='Delete';
+    btnDelete.onclick = ()=>{
+      const arr = loadChapters(); arr.splice(idx,1); saveChapters(arr); refreshChaptersUI();
+    };
+    right.appendChild(btnDownload); right.appendChild(btnDelete);
+    div.appendChild(left); div.appendChild(right);
+    chaptersList.appendChild(div);
+  });
+}
+refreshChaptersUI();
+
+saveChapterBtn.addEventListener('click', ()=>{
+  const content = Array.from(storyLog.children).map(d=>d.textContent).join('\n');
+  if(!content.trim()){ alert('Current log is empty, cannot save.'); return; }
+  const ch = {
+    title: chapterTitleInput.value.trim() || null,
+    savedAt: Date.now(),
+    content
+  };
+  const list = loadChapters();
+  list.push(ch);
+  saveChapters(list);
+  refreshChaptersUI();
+  pushStory('Chapter saved.');
+});
+
+exportAllBtn.addEventListener('click', ()=> {
+  const list = loadChapters();
+  if(list.length===0){ alert('No chapters to export.'); return; }
+  const blob = new Blob([JSON.stringify(list, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'spacepark_chapters.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+
+/* download helper */
+function downloadTextAsFile(filename, text){
+  const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- Main loop: carousel, time, auto-narrative ---------- */
+function update(dt){
+  const rideSpeed = parseFloat(carouselEl.dataset.speed) || 0.9;
+  const cars = carouselEl.querySelectorAll('.car');
+  cars.forEach((c,idx)=>{
+    const rel = parseFloat(c.dataset.rel) || 0;
+    const ang = rel + (performance.now()*0.0002 * rideSpeed * simSpeed);
+    c.style.left = `${50 + Math.cos(ang)*36}%`;
+    c.style.top = `${50 + Math.sin(ang)*36}%`;
+    c.style.transform = `translate(-50%,-50%) translateY(${Math.sin(performance.now()*0.002 + idx)*6}px)`;
+  });
+
+  if(Math.random() < 0.007 * simSpeed){
+    const line = generateLocalLine();
+    pushStory(line);
+  }
+
+  simulatedMinutes += dt*0.016 * simSpeed;
+  const hours = Math.floor((simulatedMinutes/60)%24);
+  const mins = Math.floor(simulatedMinutes%60);
+  document.getElementById('timeLabel').textContent = (hours>=6 && hours<18 ? 'Day' : 'Night') + ' • ' + String(hours).padStart(2,'0') + ':' + String(mins).padStart(2,'0');
+
+  const isDay = (hours >= 6 && hours < 18);
+  duskOverlay.style.opacity = isDay ? 0 : 0.48;
+}
+
+function loop(now){
+  const dt = now - lastTime;
+  if(running) update(dt);
+  lastTime = now;
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ---------- Controls ---------- */
+togglePlayBtn.addEventListener('click', ()=>{
+  running = !running;
+  togglePlayBtn.textContent = running ? 'Pause' : 'Play';
+});
+speedRange.addEventListener('input', ()=> simSpeed = parseFloat(speedRange.value));
+toggleDayBtn.addEventListener('click', ()=>{
+  day = !day;
+  sunMoon.innerHTML = '';
+  if(day) sunMoon.innerHTML = '<div class="sun"></div>';
+  else sunMoon.innerHTML = '<div class="moon"></div>';
+});
+
+
+/* ---------- Expose helpers for console ---------- */
+window.__park = {
+  createEntityFromImage,
+  pushStory,
+  getState: ()=> ({entities: entities.map(e=>({id:e.id,meta:e.meta, fantasy:e.fantasy})), simulatedTime: document.getElementById('timeLabel').textContent})
+};
+
+/* ---------- Utility for debugging ---------- */
+function debugShowRecent(){
+  console.log(getRecentLogText(10));
+}
+
+
+
+</script>
+</body>
+</html>

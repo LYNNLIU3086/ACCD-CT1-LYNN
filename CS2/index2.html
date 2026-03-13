@@ -1,0 +1,646 @@
+<!-- <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Bio-Scanner Elite Hybrid</title>
+    <style>
+        :root { 
+            --main-green: #2ecc71; 
+            --deep-green: #27ae60;
+            --accent-green: #e8f8f1;
+            --bg-white: #f8faf9;
+            --text-dark: #2c3e50;
+            --text-dim: #808e9b;
+        }
+        body { margin: 0; background-color: var(--bg-white); overflow: hidden; font-family: "Inter", "SF Pro Display", sans-serif; color: var(--text-dark); }
+
+        /* --- 顶部 UI --- */
+        #top-info {
+            position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+            text-align: center; z-index: 100; pointer-events: none;
+        }
+        #top-info h1 { 
+            font-size: 24px; letter-spacing: 10px; margin: 0; font-weight: 300; text-transform: uppercase;
+            background: linear-gradient(180deg, var(--deep-green) 0%, #95a5a6 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- 模式切换按钮 --- */
+        #mode-toggle {
+            position: absolute; top: 35px; right: 40px; z-index: 110;
+            padding: 10px 24px; border-radius: 50px; background: white;
+            border: 1px solid var(--main-green); color: var(--deep-green);
+            font-size: 11px; font-weight: 800; cursor: pointer; letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s;
+        }
+        #mode-toggle:hover { background: var(--main-green); color: white; }
+
+        /* --- 侧边数据卡片 (来自代码2) --- */
+        #analysis-panel {
+            position: absolute; top: 120px; left: 40px; width: 280px; z-index: 90;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 25px; border: 1px solid rgba(0,0,0,0.05);
+            display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+        }
+        .year-hero { font-size: 4rem; font-weight: 900; letter-spacing: -4px; line-height: 0.8; margin: 10px 0; }
+        #json-stream { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--text-dim); height: 200px; overflow-y: auto; margin-top: 15px; }
+
+        /* --- 底部控制条 --- */
+        #ui-layer {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 40px; padding: 15px 40px; border-radius: 50px;
+            background: white; border: 1px solid var(--accent-green); z-index: 100;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
+        }
+        .control-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .control-group label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--text-dim); }
+
+        input[type="range"] { appearance: none; background: #e0e6ed; height: 3px; border-radius: 2px; width: 120px; }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none; width: 16px; height: 16px; background: var(--main-green);
+            border: 3px solid #fff; border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        #status-badge {
+            position: absolute; bottom: 40px; right: 40px; padding: 12px 24px;
+            border-radius: 50px; font-weight: 700; font-size: 11px; color: white;
+            background: var(--main-green); z-index: 100;
+        }
+
+        canvas { position: absolute; top: 0; left: 0; }
+        #overlay-canvas { pointer-events: none; z-index: 10; }
+    </style>
+</head>
+<body>
+
+    <div id="top-info"><h1>Eco-Analyst System</h1></div>
+    <button id="mode-toggle">DEEP SCAN: 2D</button>
+
+    <div id="analysis-panel">
+        <div style="font-size: 10px; font-weight: 800; color: var(--text-dim);">CHRONOLOGY</div>
+        <div class="year-hero" id="year-display">2025</div>
+        <div id="json-stream">Initializing neural stream...</div>
+    </div>
+
+    <div id="ui-layer">
+        <div class="control-group">
+            <label>Sample Density</label>
+            <input type="range" id="density" min="5000" max="30000" step="1000" value="15000">
+        </div>
+        <div class="control-group">
+            <label>Timeline Shift</label>
+            <input type="range" id="timeline" min="1980" max="2025" step="1" value="2025">
+        </div>
+    </div>
+
+    <div id="status-badge">SYSTEM_READY</div>
+
+    <canvas id="overlay-canvas"></canvas>
+
+    <script type="importmap">
+        { "imports": {
+            "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/",
+            "gsap": "https://cdn.skypack.dev/gsap"
+        }}
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import gsap from 'gsap';
+
+        // --- 核心变量 ---
+        let is2D = false;
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 0.1, 100);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        const overlayCanvas = document.getElementById('overlay-canvas');
+        const oCtx = overlayCanvas.getContext('2d');
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+
+        // --- 材质与物体 ---
+        const material = new THREE.ShaderMaterial({
+            uniforms: {
+                uMorph: { value: 0.0 },
+                uCurrentYear: { value: 2025.0 },
+                uScanner: { value: 0.1 }
+            },
+            vertexShader: `
+                attribute vec3 aPos2D;
+                attribute vec3 aColor;
+                attribute float aYear;
+                varying vec3 vColor;
+                uniform float uMorph;
+                uniform float uCurrentYear;
+                void main() {
+                    vColor = aColor;
+                    vec3 morphed = mix(position, aPos2D, uMorph);
+                    vec4 mvPos = modelViewMatrix * vec4(morphed, 1.0);
+                    float size = (aYear <= uCurrentYear) ? 10.0 : 0.0;
+                    gl_PointSize = size * (1.0 / -mvPos.z);
+                    gl_Position = projectionMatrix * mvPos;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                void main() {
+                    if(distance(gl_PointCoord, vec2(0.5)) > 0.5) discard;
+                    gl_FragColor = vec4(vColor, 0.8);
+                }
+            `,
+            transparent: true
+        });
+
+        let points;
+        function createPoints(count) {
+            if(points) scene.remove(points);
+            const geo = new THREE.BufferGeometry();
+            const pos3D = [], pos2D = [], colors = [], years = [];
+            const palette = [new THREE.Color(0x2ecc71), new THREE.Color(0x27ae60), new THREE.Color(0x1abc9c)];
+
+            for(let i=0; i<count; i++) {
+                const phi = Math.acos(-1 + (2 * i) / count);
+                const theta = Math.sqrt(count * Math.PI) * phi;
+                pos3D.push(Math.cos(theta)*Math.sin(phi), Math.sin(theta)*Math.sin(phi), Math.cos(phi));
+                
+                // 展开算法：经纬度映射到平面
+                const x2d = ((theta % (Math.PI * 2)) / Math.PI - 1) * 2;
+                const y2d = (1 - phi / Math.PI) * 2 - 1;
+                pos2D.push(x2d, y2d, 0);
+
+                const c = palette[Math.floor(Math.random()*3)];
+                colors.push(c.r, c.g, c.b);
+                years.push(1980 + Math.random()*45);
+            }
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos3D, 3));
+            geo.setAttribute('aPos2D', new THREE.Float32BufferAttribute(pos2D, 3));
+            geo.setAttribute('aColor', new THREE.Float32BufferAttribute(colors, 3));
+            geo.setAttribute('aYear', new THREE.Float32BufferAttribute(years, 1));
+            points = new THREE.Points(geo, material);
+            scene.add(points);
+        }
+
+        createPoints(15000);
+
+        // --- 切换逻辑 ---
+        document.getElementById('mode-toggle').onclick = () => {
+            is2D = !is2D;
+            const targetMorph = is2D ? 1.0 : 0.0;
+            const btn = document.getElementById('mode-toggle');
+            btn.innerText = is2D ? "VIEW: GLOBAL 3D" : "DEEP SCAN: 2D";
+            
+            // 动画切换
+            gsap.to(material.uniforms.uMorph, { value: targetMorph, duration: 1.5, ease: "expo.inOut" });
+            gsap.to(camera.position, { z: is2D ? 4 : 5, duration: 1.5 });
+            
+            // UI 面板显隐
+            document.getElementById('analysis-panel').style.display = is2D ? 'block' : 'none';
+            controls.autoRotate = !is2D;
+            if(is2D) gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1 });
+        };
+
+        // --- 模拟代码2的 AI 识别框绘制 ---
+        function drawAIOverlay() {
+            oCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+            if(!is2D) return;
+
+            const w = overlayCanvas.width;
+            const h = overlayCanvas.height;
+            const time = Date.now() * 0.002;
+
+            // 绘制两个动态识别框
+            const boxes = [
+                { id: 'BIOMASS_A', x: w*0.4, y: h*0.3, bw: 120, bh: 80 },
+                { id: 'OXYGEN_NODE', x: w*0.6, y: h*0.5, bw: 100, bh: 150 }
+            ];
+
+            boxes.forEach(box => {
+                const bounce = Math.sin(time) * 5;
+                oCtx.strokeStyle = "#2ecc71";
+                oCtx.lineWidth = 2;
+                oCtx.setLineDash([5, 5]);
+                oCtx.strokeRect(box.x, box.y + bounce, box.bw, box.bh);
+                
+                oCtx.fillStyle = "#2ecc71";
+                oCtx.font = "bold 10px Inter";
+                oCtx.fillText(box.id, box.x, box.y + bounce - 10);
+                oCtx.fillText("OPTIMAL", box.x, box.y + bounce + box.bh + 15);
+            });
+
+            // 模拟代码2的 JSON 数据流
+            if(Math.random() > 0.95) {
+                const metrics = {
+                    stability: (0.8 + Math.random()*0.2).toFixed(2),
+                    nodes: boxes.length,
+                    timestamp: Date.now()
+                };
+                document.getElementById('json-stream').innerHTML = `<pre>${JSON.stringify(metrics, null, 2)}</pre>`;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+            drawAIOverlay();
+        }
+
+        window.onresize = () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            overlayCanvas.width = window.innerWidth;
+            overlayCanvas.height = window.innerHeight;
+        };
+
+        // 初始化滑块
+        document.getElementById('timeline').oninput = (e) => {
+            material.uniforms.uCurrentYear.value = e.target.value;
+            document.getElementById('year-display').innerText = e.target.value;
+        };
+        document.getElementById('density').oninput = (e) => createPoints(e.target.value);
+
+        window.onresize();
+        animate();
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Urban Layers - Unified Interface</title>
+    <style>
+        :root { 
+            --main-green: #2ecc71; 
+            --deep-green: #27ae60;
+            --accent-green: #e8f8f1;
+            --bg-white: #f8faf9;
+            --panel-bg: rgba(255, 255, 255, 0.4); /* 统一背板透明度 */
+            --text-dark: #2c3e50;
+        }
+        body { 
+            margin: 0; 
+            background-color: var(--bg-white); 
+            overflow: hidden; 
+            font-family: "SF Pro Display", "Helvetica Neue", Arial, sans-serif; 
+            color: var(--text-dark); 
+        }
+
+        /* --- 顶部标题 --- */
+        #top-info {
+            position: absolute; top: 40px; left: 50%; transform: translateX(-50%);
+            text-align: center; z-index: 5; pointer-events: none;
+        }
+        #top-info h1 { 
+            font-size: 24px; letter-spacing: 12px; margin: 0; 
+            font-weight: 300; text-transform: uppercase;
+            color: var(--deep-green); opacity: 0.7;
+        }
+
+        #exit-btn {
+            position: absolute; top: 30px; left: 30px; cursor: pointer; opacity: 0; scale: 0.8;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 25;
+            display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 50%; background: #ffffff; 
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.1); border: 1px solid var(--accent-green); pointer-events: none;
+        }
+        #exit-btn svg { width: 22px; height: 22px; fill: var(--main-green); transform: rotate(90deg); }
+
+        /* --- 数据面板 --- */
+        #data-panel {
+            position: absolute; top: 120px; left: 50px; background: rgba(255,255,255,0.8); padding: 20px; 
+            border-radius: 12px; border: 1px solid var(--accent-green); display: none; z-index: 20;
+            backdrop-filter: blur(10px); width: 220px;
+        }
+        #data-panel h2 { font-size: 10px; color: var(--deep-green); margin: 0 0 10px 0; letter-spacing: 2px; }
+        .data-item { font-family: 'Courier New', monospace; font-size: 12px; margin: 6px 0; display: flex; justify-content: space-between; color: #7f8c8d; }
+        .data-item b { color: var(--deep-green); }
+
+        /* --- 统一滑块样式 --- */
+.range-slider {
+  -webkit-appearance: none; /* Chrome, Safari, Edge */
+  -moz-appearance: none;    /* Firefox */
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ===== 轨道 ===== */
+.range-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(46, 204, 113, 0.2);
+  border-radius: 4px;
+}
+
+.range-slider::-moz-range-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(46, 204, 113, 0.2);
+  border-radius: 4px;
+}
+
+/* ===== 滑块 ===== */
+.range-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--main-green);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+  margin-top: -8px; /* 居中对齐轨道 */
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.range-slider::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+/* Firefox */
+.range-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--main-green);
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(46, 204, 113, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.range-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.range-slider::-moz-range-thumb:active {
+  transform: scale(1.2);
+}
+
+        /* --- 底部时间轴 (风格基准) --- */
+        #timeline-container {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            width: 85%; display: flex; flex-direction: column; align-items: center; gap: 10px;
+            z-index: 15; background: var(--panel-bg); padding: 20px 0; border-radius: 20px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(46, 204, 113, 0.1);
+        }
+        .label-group { display: flex; justify-content: space-between; width: 100%; padding: 0 30px; box-sizing: border-box; }
+        .label-group label { font-size: 10px; font-weight: 800; color: var(--main-green); letter-spacing: 3px; }
+        #display-year-large { font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; color: var(--deep-green); }
+        #timeline { width: 96%; }
+
+        /* --- 右侧垂直面板 (完全对齐底部风格) --- */
+        #ui-layer {
+            position: absolute; right: 40px; top: 50%; transform: translateY(-50%);
+            height: 70vh; width: 80px; display: none; 
+            flex-direction: column; justify-content: space-around; align-items: center;
+            background: var(--panel-bg); border-radius: 20px; padding: 30px 0;
+            backdrop-filter: blur(10px); border: 1px solid rgba(46, 204, 113, 0.1); z-index: 15;
+        }
+        #ui-layer.active { display: flex; animation: fadeIn 0.6s ease forwards; }
+
+        .v-control-group { 
+            height: 45%; width: 100%; display: flex; flex-direction: column; 
+            align-items: center; justify-content: space-between; /* 确保文字在两端，滑块在中 */
+        }
+        .v-control-group label { 
+            font-size: 9px; font-weight: 800; color: var(--main-green); 
+            letter-spacing: 1px; text-align: center; width: 100%;
+        }
+        /* 垂直滑块长度自适应容器 */
+        .vertical-slider { 
+            transform: rotate(-90deg); 
+            width: 25vh; /* 滑块长度 */
+            margin: 0;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; right: 20px; } to { opacity: 1; right: 40px; } }
+
+        .event-tag {
+            color: var(--deep-green); font-size: 11px; font-weight: bold;
+            padding: 6px 15px; border-radius: 20px; background: #fff;
+            border: 1px solid var(--main-green); display: none; white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="top-info"><h1>Nothing Is Too Far</h1></div>
+    <div id="exit-btn"><svg viewBox="0 0 24 24"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg></div>
+
+    <div id="data-panel">
+        <h2>COORDINATE INFORMATION</h2>
+        <div class="data-item"><span>PERIOD:</span> <b id="display-year">2025</b></div>
+        <div class="data-item"><span>LAT:</span> <b id="p-lat">0.00</b></div>
+        <div class="data-item"><span>LON:</span> <b id="p-lon">0.00</b></div>
+    </div>
+
+    <div id="ui-layer">
+        <div class="v-control-group">
+            <label>HIGH</label>
+            <input type="range" id="density" class="range-slider vertical-slider" min="1000" max="30000" step="100" value="12000">
+            <label>DENSITY</label>
+        </div>
+        <div style="width: 40%; height: 1px; background: rgba(46, 204, 113, 0.1);"></div> <div class="v-control-group">
+            <label>FOCUS</label>
+            <input type="range" id="focus-strength" class="range-slider vertical-slider" min="0" max="1" step="0.01" value="0.2">
+            <label>IMPORTANCE</label>
+        </div>
+    </div>
+
+    <div id="timeline-container">
+        <div class="label-group">
+            <label>1980</label>
+            <div id="display-year-large">2025</div>
+            <label>2025</label>
+        </div>
+        <input type="range" id="timeline" class="range-slider" min="1980" max="2025" step="1" value="2025">
+    </div>
+
+    <div id="mark-container" class="event-tag">NODE_SCANNING...</div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/",
+                "gsap": "https://cdn.skypack.dev/gsap"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        import gsap from 'gsap';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.z = 5;
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.5;
+
+        const globe = new THREE.Mesh(new THREE.SphereGeometry(0.99, 64, 64), new THREE.MeshBasicMaterial({ color: 0xffffff }));
+        scene.add(globe);
+        const wireGlobe = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 40), new THREE.MeshBasicMaterial({ color: 0x2ecc71, wireframe: true, transparent: true, opacity: 0.08 }));
+        scene.add(wireGlobe);
+
+        const colorPalette = [new THREE.Color(0x2ecc71), new THREE.Color(0x27ae60), new THREE.Color(0x1abc9c), new THREE.Color(0xbdc3c7), new THREE.Color(0xebf5fb)];
+        const temporalMaterial = new THREE.ShaderMaterial({
+            uniforms: { uScanner: { value: 0.2 }, uCurrentYear: { value: 2025.0 } },
+            vertexShader: `
+                attribute vec3 aColor; attribute float aIsActive; attribute float aYear;
+                varying vec3 vColor; uniform float uScanner; uniform float uCurrentYear;
+                void main() {
+                    vColor = aColor; float size = 0.0;
+                    if(aYear <= uCurrentYear) {
+                        size = 12.0;
+                        if(aIsActive > 0.5) { size = 18.0 + uScanner * 100.0; } 
+                        else { size = 12.0 + uScanner * 10.0; }
+                    }
+                    vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+                    gl_PointSize = size * (1.0 / -mvPosition.z);
+                    gl_Position = projectionMatrix * mvPosition;
+                }
+            `,
+            fragmentShader: `
+                varying vec3 vColor;
+                void main() {
+                    float r = distance(gl_PointCoord, vec2(0.5));
+                    if (r > 0.5) discard;
+                    gl_FragColor = vec4(vColor, smoothstep(0.5, 0.4, r) * 0.9);
+                }
+            `,
+            transparent: true, depthWrite: false
+        });
+
+        let points;
+        function createPoints(count) {
+            if(points) scene.remove(points);
+            const geo = new THREE.BufferGeometry();
+            const pos = [], colors = [], isActiveArr = [], years = [];
+            for(let i=0; i<count; i++) {
+                let phi = Math.acos(-1 + (2 * i) / count);
+                let theta = Math.sqrt(count * Math.PI) * phi;
+                phi += (Math.random() - 0.5) * 0.4; theta += (Math.random() - 0.5) * 2.0;
+                pos.push(Math.cos(theta)*Math.sin(phi)*1.01, Math.sin(theta)*Math.sin(phi)*1.01, Math.cos(phi)*1.01);
+                let colorIdx = Math.floor(Math.random() * colorPalette.length);
+                colors.push(colorPalette[colorIdx].r, colorPalette[colorIdx].g, colorPalette[colorIdx].b);
+                isActiveArr.push(Math.random() > 0.95 ? 1.0 : 0.0);
+                years.push(1980 + Math.random() * 45);
+            }
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            geo.setAttribute('aColor', new THREE.Float32BufferAttribute(colors, 3));
+            geo.setAttribute('aIsActive', new THREE.Float32BufferAttribute(isActiveArr, 1));
+            geo.setAttribute('aYear', new THREE.Float32BufferAttribute(years, 1));
+            points = new THREE.Points(geo, temporalMaterial);
+            scene.add(points);
+        }
+        createPoints(12000);
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const markDiv = document.getElementById('mark-container');
+        const probeMark = new CSS2DObject(markDiv);
+        scene.add(probeMark);
+
+        let isZoomed = false;
+        const uiLayer = document.getElementById('ui-layer');
+
+        window.addEventListener('click', (e) => {
+            if (isZoomed || e.target.closest('input') || e.target.closest('#exit-btn')) return;
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(wireGlobe);
+            if (intersects.length > 0) {
+                const point = intersects[0].point;
+                isZoomed = true; controls.autoRotate = false;
+                uiLayer.classList.add('active');
+                gsap.to('#exit-btn', { opacity: 1, scale: 1, duration: 0.4, pointerEvents: 'auto' });
+                document.getElementById('data-panel').style.display = 'block';
+                markDiv.style.display = 'block';
+                probeMark.position.copy(point.clone().multiplyScalar(1.02));
+                const sph = new THREE.Spherical().setFromVector3(point);
+                document.getElementById('p-lat').innerText = (90 - THREE.MathUtils.radToDeg(sph.phi)).toFixed(2);
+                document.getElementById('p-lon').innerText = (THREE.MathUtils.radToDeg(sph.theta)).toFixed(2);
+                gsap.to(camera.position, { x: point.x*1.3, y: point.y*1.3, z: point.z*1.3, duration: 1.2, ease: "power3.inOut" });
+                gsap.to(controls.target, { x: point.x, y: point.y, z: point.z, duration: 1.2 });
+            }
+        });
+
+        document.getElementById('exit-btn').onclick = () => {
+            isZoomed = false;
+            uiLayer.classList.remove('active');
+            gsap.to('#exit-btn', { opacity: 0, scale: 0.8, duration: 0.4, pointerEvents: 'none' });
+            document.getElementById('data-panel').style.display = 'none';
+            markDiv.style.display = 'none';
+            gsap.to(camera.position, { x: 0, y: 0, z: 5, duration: 1.2, ease: "expo.inOut" });
+            gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.2, onComplete: () => controls.autoRotate = true });
+        };
+
+        // UI Listeners
+        document.getElementById('density').oninput = (e) => createPoints(parseInt(e.target.value));
+        document.getElementById('timeline').oninput = (e) => {
+            const val = parseFloat(e.target.value);
+            temporalMaterial.uniforms.uCurrentYear.value = val;
+            document.getElementById('display-year').innerText = Math.floor(val);
+            document.getElementById('display-year-large').innerText = Math.floor(val);
+        };
+        document.getElementById('focus-strength').oninput = (e) => {
+            temporalMaterial.uniforms.uScanner.value = parseFloat(e.target.value);
+        };
+
+        function animate() {
+            controls.update();
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+        });
+    </script>
+</body>
+</html>

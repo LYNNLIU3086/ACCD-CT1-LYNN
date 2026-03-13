@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Future Era of Intelligence</title>
+<style>
+:root {
+  --blue: #2b8dd6;
+  --blue-light: #e9f5ff;
+  --accent: #d44b4b;
+  --text: #333;
+  --bg: #ffffff;
+}
+
+/* ===== Base ===== */
+body {
+  font-family: "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  padding: 60px 20px;
+  text-align: center;
+  line-height: 1.7;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== Titles ===== */
+h1 {
+  color: var(--blue);
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+}
+
+h2 {
+  color: #5b9bd5;
+  font-size: 1.3rem;
+  margin-bottom: 50px;
+  font-weight: 400;
+}
+
+/* ===== Label ===== */
+.machines {
+  display: inline-block;
+  background: linear-gradient(135deg, #ffdddd 0%, #ffecec 100%);
+  color: var(--accent);
+  border-radius: 50px;
+  padding: 12px 30px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 1rem;
+  margin-bottom: 50px;
+  box-shadow: 0 4px 12px rgba(255, 100, 100, 0.1);
+}
+
+/* ===== Relationship Grid ===== */
+.relationship-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+  margin-top: 20px;
+}
+
+/* ===== Card Style ===== */
+.relationship {
+  background: linear-gradient(180deg, #f9fcff 0%, #f3f8ff 100%);
+  border: 1.5px solid var(--blue-light);
+  border-radius: 14px;
+  padding: 24px 22px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  text-align: left;
+  transition: all 0.3s ease;
+}
+
+.relationship:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 20px rgba(43, 141, 214, 0.12);
+  border-color: var(--blue);
+  background: #f7fbff;
+}
+
+.relationship h3 {
+  color: var(--blue);
+  font-size: 1.05rem;
+  margin-bottom: 15px;
+  font-weight: 600;
+  border-left: 4px solid var(--blue);
+  padding-left: 8px;
+}
+
+/* ===== List Style ===== */
+.relationship ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.relationship li {
+  background-color: #fff;
+  border: 1px solid #d6e6ff;
+  border-radius: 18px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  color: #4a90e2;
+  font-size: 0.95em;
+  transition: all 0.2s ease;
+}
+
+.relationship li:hover {
+  background: #e9f4ff;
+  border-color: #b9dcff;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  h1 {font-size: 1.6rem;}
+  h2 {font-size: 1.1rem;}
+  .machines {font-size: 0.9rem; padding: 10px 20px;}
+  .relationship {padding: 20px;}
+}
+
+/* ===== Disable All Animations ===== */
+*,
+*::before,
+*::after {
+  animation: none !important;
+  transition: none !important;
+}
+</style>
+</head>
+<body>
+
+  <h1>‘The Future Era of Intelligence’</h1>
+  <h2>Redesigning “relationships” — the current status</h2>
+
+  <div class="machines">MACHINES</div>
+
+  <div class="relationship-container">
+
+    <div class="relationship">
+      <h3>Doctor–Patient Relationship</h3>
+      <ul>
+        <li>Doctor and Patient Positions</li>
+        <li>Nurse and Patient Positions</li>
+        <li>Doctor and Nurse Positions</li>
+      </ul>
+    </div>
+
+    <div class="relationship">
+      <h3>Machine–Machine Relationship</h3>
+      <ul>
+        <li>Screen and Dental Chair</li>
+        <li>Workstation and Screen</li>
+        <li>Workstation and Dental Chair</li>
+        <li>Screen Height/Angle</li>
+      </ul>
+    </div>
+
+    <div class="relationship">
+      <h3>Patient–Machine Relationship</h3>
+      <ul>
+        <li>Doctor and Robotic Arm</li>
+        <li>Doctor and Dental Chair</li>
+        <li>Doctor and Workstation</li>
+        <li>Doctor and Screen</li>
+      </ul>
+    </div>
+
+    <div class="relationship">
+      <h3>Doctor–Machine Relationship</h3>
+      <ul>
+        <li>Patient and Dental Chair</li>
+        <li>Head–Neck–Hand–Waist Coordination</li>
+        <li>Patient and Screen/Workstation/Robotic Arm</li>
+      </ul>
+    </div>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Simplified Ecosystem + Interaction</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Simulate a Snake game</h1>
+  <p>Click on the canvas to add food, and agents will automatically move to seek the nearest food.</p>
+  <div id="canvas-container"></div>
+
+  <div class="controls">
+    <label>Agent Count: <input type="range" id="numAgents" min="1" max="50" value="10"></label>
+    <label>speed: <input type="range" id="speed" min="0.5" max="5" step="0.1" value="2"></label>
+    <button id="resetBtn">Reset</button>
+  </div>
+
+  <h2>Instructions</h2>
+  <p>
+    I used an object-oriented programming (OOP) approach to build a simple snake-and-food model. The main body represents the moving snake, while the food represents the beans.<br>
+    <strong>Ecosystem</strong> Manages all elements<strong>Agent</strong> Represents moving organisms
+    <strong>Food</strong> Represents food resources<br>
+  </p>
+
+<h2>UML Diagram</h2>
+<img src="CT.jpg" alt="UML Diagram" class="uml">
+
+
+  <script src="script.js"></script>
+</body>
+</html>

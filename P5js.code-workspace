@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "Week5/Homework/P5js"
+		},
+		{
+			"path": "Week2/NewMy"
+		}
+	],
+	"settings": {
+		"liveServer.settings.port": 5501,
+		"liveServer.settings.multiRootWorkspaceName": "NewMy"
+	}
+}

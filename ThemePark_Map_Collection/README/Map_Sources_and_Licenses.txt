@@ -1,0 +1,31 @@
+
+ThemePark Map Collection — Sources & Notes
+=========================================
+
+This local bundle contains 110 placeholder high-resolution SVG maps, organized so you can replace each placeholder
+with real map files (SVG/PNG/JPG/PDF) collected from official sources, designers, and archives.
+
+Directory structure:
+- maps/                          -> individual map files (SVG placeholders)
+- 1_Isometric_Maps/              -> recommended storage for isometric originals (replace placeholders)
+- 2_Birdseye_Illustrations/
+- 3_Cartoon_Guide_Maps/
+- 4_Realistic_3D_Maps/
+- 5_Conceptual_Parks/
+- Reference_Icons_Symbols/       -> small SVG icons for wayfinding
+- index.html, css/, js/          -> local offline gallery viewer
+- data_maps.json                 -> metadata file used by the viewer
+
+How to replace placeholders:
+- Overwrite files in maps/ with real files using the same filename (e.g., map_001.svg).
+- If you replace an SVG with a PNG/JPG, update the "format" field inside data_maps.json accordingly.
+- For large PDF brochures, keep them in the relevant folder (e.g., 4_Realistic_3D_Maps/) and link them from maps.json.
+
+Licensing & Copyright:
+- This bundle is a collector's toolkit. Placeholder files are free to use.
+- When you add real park maps, pay attention to their licenses:
+  * Official park PDFs and images are usually copyrighted. Use them only for personal/non-commercial projects unless you have permission.
+  * Designer/artist works (Behance, Dribbble) often have licenses—contact the artist for commercial use.
+  * Stock vectors (Freepik, Depositphotos) have their own licenses.
+- Keep a record of the original source and license inside README/Map_Sources_and_Licenses.txt for each added file.
+

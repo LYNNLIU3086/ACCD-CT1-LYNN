@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>Simplified Ecosystem + Interaction</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Experiment with joysticks</h1>
+ 
+  <h2>Instructions</h2>
+  <p>
+  I wanted to use a joystick to control the effect we achieved in class with a potentiometer and a button. In the end, I successfully controlled the background changes, but I did not manage to control the movement of the ball.
+
+After the final class today, I realized the reasons. I followed GPT’s instructions, and the first problem was that I did not use the correct analog ports such as A0 and A1. The second problem was that I should not have used the PULLUP setting. The correct approach should have been, for example:
+const int joy1Y = A0;
+const int joy2X = A1;
+
+<p>At the same time, my actual wiring matched this configuration, which caused a mismatch and prevented the button from functioning properly.
+
+Now that I understand the cause, I am stopping the debugging here for the moment, because my music box is occupying the board and I really do not want to take it apart. However, I am confident that this kind of mistake will absolutely not happen again for this reason. Please forgive me, Maxim.
+  </p></p>
+
+<h2></h2>
+<p>New code</p>
+<img src="CT0.jpg" alt="UML Diagram" class="uml">
+<p>New Try</p>
+<video src="New.mp4" controls></video>
+<p>Old Try</p>
+<img src="CT1.jpg" alt="UML Diagram" class="uml">
+<img src="CT2.jpg" alt="UML Diagram" class="uml">
+<img src="CT3.jpg" alt="UML Diagram" class="uml">
+<img src="CT4.jpg" alt="UML Diagram" class="uml">
+<video src="Pon.mp4" controls></video>
+
+
+
+
+
+</body>
+</html>

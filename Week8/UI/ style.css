@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #111;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  padding: 10px;
+}
+
+section {
+  margin: 20px 0;
+  text-align: center;
+}
+
+#controls {
+  margin-top: 10px;
+}
+
+#controls label {
+  display: inline-block;
+  margin: 5px 10px;
+}
+
+button {
+  background: #ff6464;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #ff8888;
+}

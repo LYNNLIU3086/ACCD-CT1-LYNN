@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>？ - Pasadena</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<style>
+  body { margin:0; font-family:sans-serif; background:#111; color:#fff; }
+  #map { width:100vw; height:80vh; }
+  #sliderContainer { width:80%; margin:20px auto; text-align:center; }
+  input[type=range] { width:100%; }
+
+  /* 市集点样式 */
+  .market-marker {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: orange;
+    opacity: 0;
+    box-shadow: 0 0 10px rgba(255,165,0,0.7);
+    transition: opacity 0.5s, transform 0.5s, box-shadow 0.5s;
+  }
+  .market-marker.active {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 30px rgba(255,165,0,0.9);
+  }
+  .market-marker.inactive {
+    opacity: 0;
+    transform: scale(0.5);
+    box-shadow: 0 0 0 rgba(255,165,0,0);
+  }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="sliderContainer">
+  <label for="yearSlider"><span id="yearLabel">2011</span></label>
+  <input type="range" id="yearSlider" min="2011" max="2020" value="2011">
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  // 初始化地图
+  const map = L.map('map').setView([34.1478, -118.1445], 15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+  }).addTo(map);
+
+  // 市集数据
+  const marketsData = [
+    {lat:34.1478, lng:-118.1445, year:2012, info:"市集 A - Old Town"},
+    {lat:34.1470, lng:-118.1458, year:2013, info:"市集 B - Paseo Colorado"},
+    {lat:34.1489, lng:-118.1440, year:2014, info:"市集 C - Colorado Blvd & Raymond Ave"},
+    {lat:34.1449, lng:-118.1510, year:2015, info:"市集 D - Pasadena City Hall"},
+    {lat:34.1505, lng:-118.1530, year:2016, info:"市集 E - Victory Park"}
+  ];
+
+  const marketMarkers = [];
+
+  marketsData.forEach(data => {
+    // 直接用 Leaflet divIcon 创建元素并保留引用
+    const div = L.DomUtil.create('div', 'market-marker inactive');
+    const marker = L.marker([data.lat, data.lng], {
+      icon: L.divIcon({className:'', html: div.outerHTML, iconSize:[20,20]})
+    }).addTo(map);
+    marker._year = data.year;
+    marker._info = data.info;
+    marketMarkers.push(marker);
+
+    marker.on('click', () => alert(marker._info));
+  });
+
+  const slider = document.getElementById('yearSlider');
+  const yearLabel = document.getElementById('yearLabel');
+
+  slider.addEventListener('input', () => {
+    const year = parseInt(slider.value);
+    yearLabel.textContent = year;
+
+    marketMarkers.forEach(marker => {
+      const el = marker.getElement();
+      if(!el) return;
+      if(year >= marker._year){
+        el.classList.add('active');
+        el.classList.remove('inactive');
+      } else {
+        el.classList.add('inactive');
+        el.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

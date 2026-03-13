@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Evros / Meriç River — Counter-Cartography Project</title>
+  <meta name="description" content="A counter-cartographic investigation of the Evros / Meriç River border.">
+  <style>
+    /* Variables */
+    :root {
+      --dark-bg: #0f0f0f;
+      --light-bg: #ffffff;
+      --text-main: #eaeaea;
+      --text-muted: #9a9a9a;
+      --accent: #d62839;
+      --max-width: 1000px;
+      --gap: 20px;
+      --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--dark-bg);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header.site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+    }
+    header .brand h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 1px;
+    }
+    nav a {
+      margin-left: 18px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .hero {
+      position: relative;
+      margin: 24px 0 32px 0;
+    }
+    .hero .hero-media {
+      width: 100%;
+      height: 400px;
+      background: #333 center/cover no-repeat;
+    }
+    .hero .hero-content {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      background: rgba(0,0,0,0.6);
+      padding: 16px 24px;
+      max-width: 70%;
+      border-radius: 4px;
+    }
+    .hero .kicker {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .hero .title {
+      margin: 0 0 8px 0;
+      font-size: 32px;
+      line-height: 1.2;
+    }
+    .hero .lead {
+      margin: 0;
+      font-size: 16px;
+      color: #ddd;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: var(--gap);
+    }
+
+  
+    main.article h3 {
+      border-bottom: 1px solid #222;
+      padding-bottom: 8px;
+      margin-top: 40px;
+      font-size: 20px;
+      color: var(--text-main);
+    }
+    main.article p, main.article ul, main.article li {
+      font-size: 15px;
+      color: #ddd;
+    }
+    main.article a {
+      color: var(--accent);
+    }
+
+    .img-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .img-grid img {
+      width: 100%;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .map-placeholder {
+      width: 100%;
+      height: 360px;
+      background: #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      border-radius: 4px;
+      margin-top: 16px;
+    }
+
+    aside.meta {
+      position: sticky;
+      top: 20px;
+      align-self: start;
+    }
+    .meta .card {
+      background: #1a1a1a;
+      padding: 16px;
+      border-radius: 4px;
+      margin-bottom: 24px;
+    }
+    .meta .card h4 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .meta .card p {
+      margin: 0;
+      font-size: 14px;
+      color: #ddd;
+      line-height: 1.4;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 20px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      aside.meta {
+        position: static;
+        margin-top: 40px;
+      }
+      .hero .hero-content {
+        max-width: 90%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <header class="site-header">
+      <div class="brand">
+        <h1>Counter-Cartography</h1>
+      </div>
+      <nav aria-label="Main nav">
+        <a href="#">Home</a>
+        <a href="#">Investigations</a>
+        <a href="#">Team</a>
+        <a href="#">Support</a>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <article class="hero" role="article" aria-labelledby="page-title">
+      <div class="hero-media" id="hero-media" role="img" aria-label="Hero image placeholder"></div>
+      <div class="hero-content">
+        <div class="kicker">Date of incident · 1926–2025</div>
+        <h2 id="page-title" class="title">The Evros / Meriç River — A Century of Border Design</h2>
+        <p class="lead">An interactive investigation of shifting borders, infrastructures and enforced violence along the Evros / Meriç River.</p>
+      </div>
+    </article>
+
+    <div class="layout">
+
+      <main class="article">
+
+        <section id="overview">
+          <h3>Overview</h3>
+          <p>这里放项目摘要与背景介绍。说明研究目的、地缘环境、历史框架，以及为何该河流 / 边界是一处值得 counter-cartography 的地点。</p>
+        </section>
+
+        <section id="mapping">
+          <h3>Mapping the Border Apparatus</h3>
+          <div class="map-placeholder">Interactive map placeholder</div>
+          <p style="margin-top:12px; color: var(--text-muted);">说明：此处可嵌入交互地图 (Leaflet / Mapbox / Cesium)，并加载边界线、河流变化、围栏与监控设施等图层。</p>
+        </section>
+
+        <section id="media">
+          <h3>Media & Imagery</h3>
+          <div class="img-grid">
+            <img src="https://via.placeholder.com/600x400?text=Image+1" alt="placeholder 1">
+            <img src="https://via.placeholder.com/600x400?text=Image+2" alt="placeholder 2">
+            <img src="https://via.placeholder.com/600x400?text=Image+3" alt="placeholder 3">
+            <img src="https://via.placeholder.com/600x400?text=Image+4" alt="placeholder 4">
+          </div>
+        </section>
+
+        <section id="timeline">
+          <h3>Timeline & Key Events</h3>
+          <p>在这里列出关键年份与事件 — 如首次划界 (1926)、基础设施建设、最近围栏扩展、重大人权事件等。</p>
+          <ul>
+            <li><strong>1926</strong> — 原始边界划定 (“Athens Protocol”)</li>
+            <li><strong>2011</strong> — 第一段边境围栏建成</li>
+            <li><strong>2020–2024</strong> — 围栏扩展、河床干涸／迁移、被弃难民事件激增</li>
+          </ul>
+        </section>
+
+        <section id="analysis">
+          <h3>Analysis & Findings</h3>
+          <p>这里说明河流迁移、地形变化、领土模糊区（“灰色地带”）如何被结构化，用作边境控制与暴力工具。也可加入数据图、统计表、叙述证据分析等。</p>
+        </section>
+
+        <section id="methodologies">
+          <h3>Methodologies</h3>
+          <ul>
+            <li>Historic cartography + georeferencing</li>
+            <li>Satellite imagery / remote sensing</li>
+            <li>3D modelling & GIS layering</li>
+            <li>Field and testimonial data</li>
+            <li>OSINT & public-source documentation</li>
+          </ul>
+        </section>
+
+        <section id="resources">
+          <h3>Resources & References</h3>
+          <ul>
+            <li><a href="#" target="_blank" rel="noopener">Archival maps / 1926 Athens Protocol (UK National Archives)</a></li>
+            <li><a href="#" target="_blank" rel="noopener">Satellite imagery dataset</a></li>
+            <li><a href="#" target="_blank" rel="noopener">Testimony & field reports</a></li>
+          </ul>
+        </section>
+
+      </main>
+
+      <aside class="meta">
+        <div class="card">
+          <h4>Quick Facts</h4>
+          <p><strong>Date of Incident:</strong><br>1926 – 2025</p>
+          <p><strong>Location:</strong><br>Evros / Meriç River (Greece / Turkey)</p>
+          <p><strong>Publication date:</strong><br>15 Jan 2025</p>
+          <p><strong>Partners / Funders:</strong><br>Self-Initiated; Rosa Luxemburg Foundation; Open Society Foundations</p>
+        </div>
+
+        <div class="card">
+          <h4>Collaborators</h4>
+          <p>Alarm Phone<br>Border Violence Monitoring Network<br>Greek Council for Refugees</p>
+        </div>
+
+        <div class="card">
+          <h4>Methodologies</h4>
+          <p>Cartography · 3D / GIS · Remote Sensing · Fieldwork · OSINT</p>
+        </div>
+      </aside>
+
+    </div>
+
+    <footer>
+      © 2025 Counter-Cartography Project. All content placeholder — replace with actual materials.
+    </footer>
+
+  </div>
+
+  <script>
+    // 示例：将 hero-media 背景替换为远程图片（方便预览）
+    (function(){
+      var hero = document.getElementById('hero-media');
+      hero.style.backgroundImage = "url('https://via.placeholder.com/1600x900?text=Hero+Image')";
+      hero.style.backgroundSize = "cover";
+      hero.style.backgroundPosition = "center";
+    })();
+  </script>
+
+</body>
+</html>

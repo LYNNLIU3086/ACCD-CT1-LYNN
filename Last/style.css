@@ -1,0 +1,77 @@
+/* 基础页面设置 */
+body {
+  font-family: "Microsoft YaHei", Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 40px 20px;
+  line-height: 1.8;
+  color: #333;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* 统一标题风格：使用你要求的黄色 */
+h1 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #222;
+  border-bottom: 4px solid #F2D03B; /* 黄色底划线 */
+  display: inline-block;
+  margin: 0 auto 30px auto;
+  width: 100%;
+}
+
+h2, h3 {
+  color: #111;
+  margin-top: 40px;
+  border-left: 6px solid #F2D03B; /* 黄色左边框 */
+  padding-left: 15px;
+}
+
+/* 文字段落：无背景白块 */
+p {
+  background: transparent;
+  padding: 0;
+  margin: 20px 0;
+}
+
+/* 画布、图片、视频统一容器风格 */
+#canvas-container canvas, 
+img.uml, 
+video {
+  display: block;
+  margin: 30px auto;
+  
+  /* 统一的深色背景、圆角和黄色发光阴影 */
+  background: #222; 
+  border: 2px solid #F2D03B; /* 统一的黄色细边框 */
+  border-radius: 14px;
+  padding: 10px;
+  
+  /* 黄色调的柔和阴影 */
+  box-shadow: 0 8px 20px rgba(242, 208, 59, 0.2); 
+  
+  width: 90%;
+  max-width: 900px;
+  height: auto;
+}
+
+/* 针对视频的特殊处理 */
+video {
+  background: #000;
+  padding: 0; /* 视频通常不需要内边距 */
+}
+
+/* 补充说明文字的样式 (The code section has been added) */
+.update-note {
+  text-align: center;
+  font-weight: bold;
+  color: #F2D03B;
+  background: #222;
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 20px;
+  margin: 10px auto;
+  display: block;
+  width: fit-content;
+}

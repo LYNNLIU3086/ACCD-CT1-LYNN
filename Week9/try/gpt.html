@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>有机光流 — OOP + UML + 交互</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+</head>
+<body>
+<div id="container"></div>
+
+<div class="ui" id="uiPanel">
+  <div class="collapse-btn" id="collapseBtn">&#9664;</div>
+  <h3>Organic Flow — Controls</h3>
+
+  <div class="row">
+    <label>Agents: <span id="numAgentsLabel">80</span></label>
+    <input id="numAgents" type="range" min="10" max="300" value="80">
+  </div>
+
+  <div class="row">
+    <label>Noise Scale: <span id="noiseLabel">0.01</span></label>
+    <input id="noiseScale" type="range" min="0.002" max="0.05" step="0.001" value="0.01">
+  </div>
+
+  <div class="row">
+    <label>Flow Strength: <span id="flowStrengthLabel">1.2</span></label>
+    <input id="flowStrength" type="range" min="0" max="3" step="0.05" value="1.2">
+  </div>
+
+  <div class="row">
+    <label>Interaction (attract/repel): <span id="interactionLabel">0.9</span></label>
+    <input id="interaction" type="range" min="-2" max="2" step="0.05" value="0.9">
+  </div>
+
+  <div class="row">
+    <label>Trail (alpha): <span id="trailLabel">0.15</span></label>
+    <input id="trail" type="range" min="0.01" max="0.6" step="0.01" value="0.15">
+  </div>
+
+  <div class="row">
+    <label>Show Flow Field</label>
+    <input id="showField" type="checkbox" checked>
+  </div>
+
+  <div class="row">
+    <label>Show Links</label>
+    <input id="showLinks" type="checkbox" checked>
+  </div>
+
+  <div class="row" style="justify-content:space-between;">
+    <button id="addAgentBtn" class="btn">Add Agent</button>
+    <button id="resetBtn" class="btn">Reset</button>
+  </div>
+
+  <div class="small">
+    Click to add agent. Drag mouse to attract nearby agents. Press <kbd>Space</kbd> to pause.
+  </div>
+</div>
+
+<script src="sketch.js"></script>
+</body>
+</html>

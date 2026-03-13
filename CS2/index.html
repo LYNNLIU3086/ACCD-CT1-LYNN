@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Digital Probe Earth - Google Maps Style UI</title>
+    <style>
+        :root { 
+            --main-green: #27ae60; 
+            --ui-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #2d3436;
+        }
+        body { margin: 0; background-color: #f8f9fa; overflow: hidden; font-family: "Helvetica Neue", Arial, sans-serif; color: var(--text-color); }
+
+        @keyframes glitch {
+            0% { transform: translate(0); background: transparent; }
+            20% { transform: translate(-3px, 3px); background: rgba(39, 174, 96, 0.1); }
+            100% { transform: translate(0); }
+        }
+        .glitching { animation: glitch 0.3s linear; }
+
+        #top-label {
+            position: absolute; top: 40px; width: 100%; text-align: center;
+            font-size: 14px; letter-spacing: 8px; opacity: 0.5;
+            pointer-events: none; text-transform: uppercase; z-index: 5;
+        }
+
+        #data-panel {
+            position: absolute; top: 50px; left: 50px;
+            border-left: 3px solid var(--main-green);
+            padding-left: 25px; display: none; z-index: 20; pointer-events: none;
+        }
+        #data-panel h2 { font-size: 22px; margin: 0 0 15px 0; letter-spacing: 3px; font-weight: 600; color: var(--main-green); }
+        #data-panel p { font-size: 16px; margin: 8px 0; opacity: 0.9; font-family: "Courier New", monospace; font-weight: bold; }
+
+        /* --- 箭头式返回键 (Google Maps Style) --- */
+        #exit-btn {
+            position: absolute; top: 50px; right: 50px;
+            cursor: pointer; opacity: 0;
+            transition: all 0.3s; z-index: 25;
+            display: flex; align-items: center; justify-content: center;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--ui-bg); box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+        #exit-btn:hover { background: #fff; transform: scale(1.1); }
+        #exit-btn svg { width: 24px; height: 24px; fill: var(--text-color); }
+
+        /* --- 滑块基础样式 --- */
+        .range-slider { 
+          -webkit-appearance: none; appearance: none; width: 140px; background: transparent; outline: none;            
+        }
+        .range-slider::-webkit-slider-runnable-track { width: 100%; height: 2px; background: rgba(0,0,0,0.08); }
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 14px; width: 14px; border-radius: 50%;
+            background: var(--main-green); cursor: pointer; margin-top: -6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        /* --- 右下角竖版容器 (向上挪动) --- */
+        #focus-ctrl {
+            position: absolute; 
+            bottom: 160px; /* 从 120px 调大到 160px */
+            right: 20px; 
+            display: none; flex-direction: column; align-items: center; z-index: 20;
+        }
+        #focus-ctrl label { 
+            font-size: 11px; text-transform: uppercase; margin-bottom: 70px;
+            opacity: 0.5; letter-spacing: 2px; font-weight: bold;
+        }
+        #focus-strength {
+            transform: rotate(-90deg);
+            transform-origin: center;
+            width: 120px;
+            margin: 0;
+        }
+
+        /* 底部控制栏 */
+        #ui-layer {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 120px;
+            background: linear-gradient(to top, rgba(255,255,255,0.95), transparent);
+            display: flex; justify-content: center; align-items: center; gap: 60px;
+            padding-bottom: 30px; z-index: 10; transition: opacity 0.5s;
+        }
+        .control-group { display: flex; flex-direction: column; gap: 12px; }
+        .control-group label { font-size: 11px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.5; font-weight: bold; }
+
+        .probe-mark {
+            color: #fff; font-size: 13px; font-weight: bold;
+            padding: 8px 12px; border-radius: 4px;
+            background: var(--main-green); display: none;
+            box-shadow: 0 8px 16px rgba(25, 168, 84, 0.3);
+        }
+    </style>
+</head>
+<body id="main-body">
+
+    <div id="top-label">Nothing Is Too Far </div>
+    
+    <div id="exit-btn">
+        <svg viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </div>
+
+    <div id="data-panel">
+        <h2>OBJECT_DATA</h2>
+        <p id="p-lat">LAT: --</p>
+        <p id="p-lon">LON: --</p>
+        <p id="p-sig" style="color: var(--main-green)">SIGNAL: STABLE</p>
+    </div>
+
+    <div id="focus-ctrl">
+        <label>Detail</label>
+        <input type="range" id="focus-strength" class="range-slider" min="0" max="0.5" step="0.01" value="0.15">
+    </div>
+
+    <div id="ui-layer">
+        <div class="control-group"><label>Surface Density</label><input type="range" id="count" class="range-slider" min="1" max="10" step="0.1" value="3.5"></div>
+        <div class="control-group"><label>importance</label><input type="range" id="scale" class="range-slider" min="0.1" max="1.0" step="0.01" value="0.6"></div>
+        <div class="control-group"><label>FIELD-of-VIEW</label><input type="range" id="bloom" class="range-slider" min="0" max="2" step="0.1" value="0.5"></div>
+    </div>
+
+    <div id="mark-container" class="probe-mark">SIGNAL_LOCKED</div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/",
+                "gsap": "https://cdn.skypack.dev/gsap"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+        import gsap from 'gsap';
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xf8f9fa);
+
+        const camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.1, 100);
+        camera.position.set(0, 0, 4.5);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 0.6;
+
+        const sphereMat = new THREE.ShaderMaterial({
+            uniforms: { uTime: {value:0}, uScale: {value:0.6}, uCount: {value:3.5}, uStrength: {value:0.15} },
+            vertexShader: `
+                varying float vHeight;
+                varying vec3 vNormal;
+                uniform float uTime, uScale, uCount, uStrength;
+                vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec4 mod289(vec4 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+                vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+                float snoise(vec3 v) {
+                    const vec2 C = vec2(1.0/6.0, 1.0/3.0); const vec4 D = vec4(0.0, 0.5, 1.0, 2.0);
+                    vec3 i = floor(v + dot(v, C.yyy)); vec3 x0 = v - i + dot(i, C.xxx);
+                    vec3 g = step(x0.yzx, x0.xyz); vec3 l = 1.0 - g;
+                    vec3 i1 = min(g.xyz, l.zxy); vec3 i2 = max(g.xyz, l.zxy);
+                    vec3 x1 = x0 - i1 + C.xxx; vec3 x2 = x0 - i2 + C.yyy; vec3 x3 = x0 - D.yyy;
+                    i = mod289(i);
+                    vec4 p = permute(permute(permute(i.z + vec4(0.0, i1.z, i2.z, 1.0)) + i.y + vec4(0.0, i1.y, i2.y, 1.0)) + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+                    vec4 j = p - 49.0 * floor(p * (1.0/49.0)); vec4 x_ = floor(j * (1.0/7.0)); vec4 y_ = floor(j - 7.0 * x_ );
+                    vec4 x = x_ * (1.0/7.0) + 0.5/7.0; vec4 y = y_ * (1.0/7.0) + 0.5/7.0;
+                    vec4 h = 1.0 - abs(x) - abs(y); vec4 b0 = vec4(x.xy, y.xy); vec4 b1 = vec4(x.zw, y.zw);
+                    vec4 s0 = floor(b0)*2.0 + 1.0; vec4 s1 = floor(b1)*2.0 + 1.0; vec4 sh = -step(h, vec4(0.0));
+                    vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy; vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww;
+                    vec3 p0 = vec3(a0.xy,h.x); vec3 p1 = vec3(a0.zw,h.y); vec3 p2 = vec3(a1.xy,h.z); vec3 p3 = vec3(a1.zw,h.w);
+                    vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+                    return 42.0 * dot(m*m*m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+                }
+                float fractalNoise(vec3 pos) {
+                    float n1 = snoise(pos * uCount + uTime * 0.2); 
+                    float n2 = snoise(pos * uCount * 2.0 + uTime * 0.4) * 0.5; 
+                    return n1 + n2;
+                }
+                void main() {
+                    vNormal = normal;
+                    float noiseValue = fractalNoise(normal * uScale); 
+                    vHeight = smoothstep(0.0, 1.0, noiseValue * 0.8 + 0.2); 
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position + normal * vHeight * uStrength, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying float vHeight;
+                varying vec3 vNormal;
+                void main() {
+                    vec3 ocean = vec3(0.8, 0.9, 0.95); 
+                    vec3 sand = vec3(0.8, 0.75, 0.65);
+                    vec3 grass = vec3(0.25, 0.5, 0.15); 
+                    vec3 forest = vec3(0.1, 0.3, 0.05); 
+                    vec3 color;
+                    if (vHeight < 0.2) { color = mix(ocean, sand, smoothstep(0.0, 0.2, vHeight)); } 
+                    else if (vHeight < 0.6) { color = mix(sand, grass, smoothstep(0.2, 0.6, vHeight)); } 
+                    else { color = mix(grass, forest, smoothstep(0.6, 1.0, vHeight)); }
+                    vec3 lightDir = normalize(vec3(1, 1, 1));
+                    float diff = dot(vNormal, lightDir);
+                    float light = diff * 0.35 + 0.65; 
+                    gl_FragColor = vec4(color * light, 1.0);
+                }
+            `
+        });
+        const globe = new THREE.Mesh(new THREE.SphereGeometry(1, 256, 256), sphereMat);
+        scene.add(globe);
+
+        const markDiv = document.getElementById('mark-container');
+        const probeMark = new CSS2DObject(markDiv);
+        scene.add(probeMark);
+
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        let isZoomed = false;
+
+        window.addEventListener('click', (e) => {
+            if (isZoomed || e.target.closest('input') || e.target.closest('#exit-btn')) return;
+            mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObject(globe);
+            if (intersects.length > 0) triggerEnter(intersects[0].point);
+        });
+
+        function triggerEnter(point) {
+            document.body.classList.add('glitching');
+            setTimeout(() => document.body.classList.remove('glitching'), 300);
+            isZoomed = true;
+            controls.autoRotate = false;
+            gsap.to('#ui-layer', { opacity: 0, duration: 0.4 });
+            gsap.to('#exit-btn', { opacity: 1, pointerEvents: 'auto', duration: 0.4 });
+            document.getElementById('data-panel').style.display = 'block';
+            document.getElementById('focus-ctrl').style.display = 'flex';
+            markDiv.style.display = 'block';
+            probeMark.position.copy(point.clone().multiplyScalar(1.05));
+            const spherical = new THREE.Spherical().setFromVector3(point);
+            document.getElementById('p-lat').innerText = `LAT: ${THREE.MathUtils.radToDeg(Math.PI / 2 - spherical.phi).toFixed(4)}`;
+            document.getElementById('p-lon').innerText = `LON: ${(THREE.MathUtils.radToDeg(spherical.theta) + 180).toFixed(4)}`;
+            const targetPos = point.clone().normalize().multiplyScalar(1.5);
+            gsap.to(camera.position, { x: targetPos.x, y: targetPos.y, z: targetPos.z, duration: 1, ease: "power4.out" });
+            gsap.to(controls.target, { x: point.x, y: point.y, z: point.z, duration: 1, ease: "power4.out" });
+        }
+
+        document.getElementById('exit-btn').onclick = () => {
+            isZoomed = false;
+            gsap.to('#ui-layer', { opacity: 1, duration: 0.4 });
+            gsap.to('#exit-btn', { opacity: 0, pointerEvents: 'none', duration: 0.4 });
+            document.getElementById('data-panel').style.display = 'none';
+            document.getElementById('focus-ctrl').style.display = 'none';
+            markDiv.style.display = 'none';
+            gsap.to(camera.position, { x: 0, y: 0, z: 4.5, duration: 1.2, ease: "expo.inOut" });
+            gsap.to(controls.target, { x: 0, y: 0, z: 0, duration: 1.2, ease: "expo.inOut", onComplete: () => controls.autoRotate = true });
+        };
+
+        const composer = new EffectComposer(renderer);
+        composer.addPass(new RenderPass(scene, camera));
+        const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.85);
+        composer.addPass(bloom);
+
+        document.getElementById('count').oninput = (e) => sphereMat.uniforms.uCount.value = parseFloat(e.target.value);
+        document.getElementById('scale').oninput = (e) => sphereMat.uniforms.uScale.value = 1.1 - parseFloat(e.target.value);
+        document.getElementById('focus-strength').oninput = (e) => sphereMat.uniforms.uStrength.value = parseFloat(e.target.value);
+        document.getElementById('bloom').oninput = (e) => bloom.strength = parseFloat(e.target.value);
+
+        function animate(t) {
+            sphereMat.uniforms.uTime.value = t * 0.0002;
+            controls.update();
+            composer.render();
+            labelRenderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            composer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

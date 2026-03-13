@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MY PORTFOLIO</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;background:#000;color:#fff;overflow-x:hidden;}
+header{position:fixed;top:0;left:0;right:0;height:68px;display:flex;justify-content:space-between;align-items:center;padding:0 28px;background:rgba(0,0,0,0.85);z-index:1500;}
+header h1{font-size:16px;letter-spacing:2px;font-weight:700;}
+nav a{color:#fff;text-decoration:none;margin-left:18px;font-weight:600;font-size:14px;opacity:.95;transition:color .2s,opacity .2s;}
+nav a:hover{color:crimson;opacity:1;}
+/* 粒子背景 */
+#bg-canvas {
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:0; /* 背景在最底层 */
+  pointer-events:none; /* 不阻止点击 */
+}
+
+/* 保证内容在背景上方 */
+body header, body main, body footer, .intro {
+  position:relative;
+  z-index:1;
+}
+
+
+/* intro splash */
+
+.intro{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#000;z-index:2000;pointer-events:auto;}
+.intro .title{font-size:clamp(36px,7vw,72px);letter-spacing:4px;font-weight:700;transform:translateY(12px);opacity:0;animation:introTitle 900ms ease forwards;color:#fff;}
+.intro .sub{margin-top:18px;color:#aaa;font-size:14px;opacity:0;animation:introSub 900ms ease 200ms forwards;}
+.intro .enter{margin-top:36px;border:1px solid rgba(255,255,255,0.12);padding:10px 18px;border-radius:6px;color:#fff;background:transparent;cursor:pointer;font-weight:600;transition:transform .18s ease,background .18s;opacity:0;animation:introBtn .9s ease .35s forwards;}
+.intro .enter:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03);}
+@keyframes introTitle{to{transform:none;opacity:1;}}
+@keyframes introSub{to{opacity:1;}}
+@keyframes introBtn{to{opacity:1;}}
+.intro.hidden{opacity:0;pointer-events:none;transition:opacity .6s ease;}
+
+/* projects grid */
+.grid{max-width:1200px;margin:120px auto 80px;padding:0 20px;display:grid;gap:28px;grid-template-columns:1fr;}
+@media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}.project--lead{grid-column:1 / -1}}
+@media(min-width:1100px){.grid{grid-template-columns:repeat(3,1fr)}.project--lead{grid-column:1 / -1}}
+
+.project{position:relative;overflow:hidden;border-radius:10px;cursor:pointer;background:#0b0b0b;display:block;text-decoration:none;color:inherit;transform:translateY(12px);opacity:0;transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;}
+.project.is-visible{transform:none;opacity:1;}
+.project__media{display:block;width:100%;height:100%;min-height:180px;object-fit:cover;transition:transform .6s ease,filter .5s ease;}
+.project:hover .project__media{transform:scale(1.06);filter:brightness(.6);}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:28px;text-align:center;background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.6));opacity:0;transition:opacity .45s ease;}
+.project:hover .overlay,.project:focus .overlay{opacity:1;}
+.overlay h2{font-size:clamp(18px,2.2vw,28px);margin-bottom:8px;letter-spacing:1px;}
+.overlay p{color:#ddd;font-size:13px;max-width:80%;line-height:1.55;}
+.meta{position:absolute;left:12px;bottom:12px;color:#bbb;font-size:12px;opacity:.9;background:rgba(255,255,255,0.02);padding:6px 8px;border-radius:6px;}
+footer{text-align:center;padding:20px 0;color:#777;background:rgba(0,0,0,0.85);}
+</style>
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+
+<body>
+
+<div id="bg-canvas"></div>
+<div class="intro" id="intro">
+  <div class="title">MY PORTFOLIO</div>
+  <div class="sub">作品集 · 视觉 / 交互 / 影像</div>
+  <button class="enter" id="introEnter">ENTER</button>
+</div>
+
+<header>
+  <h1>YOUR NAME</h1>
+  <nav>
+    <a href="index.html">Projects</a>
+    <a href="resume.html" target="_blank">Resume</a>
+    <a href="contact.html" target="_blank">Contact</a>
+  </nav>
+</header>
+
+<main>
+<section class="grid" id="projectsGrid">
+
+  <a href="project1.html" class="project project--lead" target="_blank">
+    <img class="project__media" src="assets/thumb1.jpg" alt="Project One">
+    <div class="overlay"><h2>Project One — Lead</h2><p>实验短片，结合叙事与动态影像设计</p></div>
+    <div class="meta">Video · 2025</div>
+  </a>
+
+  <a href="project2.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb2.jpg" alt="Project Two">
+    <div class="overlay"><h2>Project Two</h2><p>交互装置 —— 光与空间的实验</p></div>
+    <div class="meta">Installation · 2024</div>
+  </a>
+
+  <a href="project3.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb3.jpg" alt="Project Three">
+    <div class="overlay"><h2>Project Three</h2><p>3D 动画系列，受有机形态启发</p></div>
+    <div class="meta">Animation · 2023</div>
+  </a>
+
+  <a href="project4.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb4.jpg" alt="Project Four">
+    <div class="overlay"><h2>Project Four</h2><p>摄影系列，捕捉城市瞬间与氛围</p></div>
+    <div class="meta">Photo · 2022</div>
+  </a>
+
+  <a href="project5.html" class="project" target="_blank">
+    <img class="project__media" src="assets/thumb5.jpg" alt="Project Five">
+    <div class="overlay"><h2>Project Five</h2><p>概念设计：未来居住系统的想象与实验</p></div>
+    <div class="meta">Speculative · 2025</div>
+  </a>
+  <a href="project6.html" class="project" target="_blank">
+  <img class="project__media" src="assets/thumb6.jpg" alt="Project Six">
+  <div class="overlay"><h2>Project Six</h2><p>这里一句话描述项目 6</p></div>
+  <div class="meta">类型 · 年份</div>
+</a>
+
+<a href="project7.html" class="project" target="_blank">
+  <img class="project__media" src="assets/thumb7.jpg" alt="Project Seven">
+  <div class="overlay"><h2>Project Seven</h2><p>这里一句话描述项目 7</p></div>
+  <div class="meta">类型 · 年份</div>
+</a>
+
+
+</section>
+</main>
+
+<footer>© 2025 YOUR NAME — design & code</footer>
+
+<script>
+// intro splash
+(function(){
+  const intro=document.getElementById('intro');
+  const enter=document.getElementById('introEnter');
+  enter.addEventListener('click',hideIntro);
+  setTimeout(hideIntro,3200);
+  function hideIntro(){
+    if(!intro.classList.contains('hidden')){
+      intro.classList.add('hidden');
+      document.documentElement.style.overflow='auto';
+    }
+  }
+  document.documentElement.style.overflow='hidden';
+})();
+
+// scroll reveal
+(function(){
+  const items=document.querySelectorAll('.project');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('is-visible');
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  items.forEach(i=>obs.observe(i));
+})();
+
+// keyboard accessibility
+document.querySelectorAll('.project').forEach(card=>{
+  card.setAttribute('tabindex','0');
+  card.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){
+      window.open(card.getAttribute('href'),'_blank');
+    }
+  });
+});
+// === Three.js 粒子背景 ===
+(function(){
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 5;
+
+  const renderer = new THREE.WebGLRenderer({alpha:true});
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000,0);
+  document.getElementById('bg-canvas').appendChild(renderer.domElement);
+
+  // 粒子
+  const particleCount = 1000;
+  const particles = new THREE.BufferGeometry();
+  const positions = [];
+
+  for(let i=0;i<particleCount;i++){
+    positions.push((Math.random()-0.5)*50);
+    positions.push((Math.random()-0.5)*50);
+    positions.push((Math.random()-0.5)*50);
+  }
+
+  particles.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({color:0xffffff, size:0.05});
+  const particleSystem = new THREE.Points(particles, material);
+  scene.add(particleSystem);
+
+  function animate(){
+    requestAnimationFrame(animate);
+    particleSystem.rotation.y += 0.001;
+    particleSystem.rotation.x += 0.0005;
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+
+// === 滚动动画升级 ===
+const items = document.querySelectorAll('.project');
+items.forEach(item => {
+  const observer = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.style.transform = "translateY(0) scale(1)";
+        e.target.style.opacity = "1";
+        e.target.style.transition = "all 0.8s cubic-bezier(.2,.9,.2,1)";
+        observer.unobserve(e.target);
+      }
+    });
+  },{threshold:0.15});
+  item.style.transform = "translateY(30px) scale(0.95)";
+  item.style.opacity = "0";
+  observer.observe(item);
+});
+
+
+</script>
+
+</body>
+</html>

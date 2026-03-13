@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Moon Texture Test - Floating Rooms with Shapes</title>
+  <link rel="stylesheet" href="style1.css" />
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+</head>
+<body>
+
+  <!-- 中心菜单 -->
+  <div class="center-menu" id="center-menu">
+  <div class="menu-dot" id="menu-dot"></div>
+  <div class="menu-items">
+    <div class="menu-item"><div class="menu-shape"></div>Crater</div>
+    <div class="menu-item"><div class="menu-shape"></div>About</div>
+    <div class="menu-item"><div class="menu-shape"></div>Moon</div>
+    <div class="menu-item"><div class="menu-shape"></div>World</div>
+    <div class="menu-item"><div class="menu-shape"></div>Author</div>
+    <div class="menu-item"><div class="menu-shape"></div>Mars</div>
+    <div class="menu-item"><div class="menu-shape"></div>Mercury</div>
+    <div class="menu-item"><div class="menu-shape"></div>3</div>
+    <div class="menu-item"><div class="menu-shape"></div>Archive</div>
+  </div>
+</div>
+
+
+  <!-- Canvas 动画 -->
+  <div class="canvas-container" id="canvas-container"></div>
+
+  <script src="arcs.js"></script>
+  <script>
+    const centerMenu = document.getElementById('center-menu');
+    const menuItems = centerMenu.querySelectorAll('.menu-item');
+    const menuDot = document.getElementById('menu-dot');
+    let expanded = false;
+
+    function expandMenu() {
+      menuDot.style.display = 'none';
+      menuItems.forEach(item => {
+        // 随机角度 + 半径 + 高低错落
+        const angle = Math.random() * Math.PI * 2;
+        const radius = 250 + Math.random() * 120;
+        const yOffset = -40 + Math.random() * 80;
+        item.dataset.x = Math.cos(angle) * radius;
+        item.dataset.y = Math.sin(angle) * radius + yOffset;
+        item.style.transform = `translate(${item.dataset.x}px, ${item.dataset.y}px)`;
+        item.style.opacity = 1;
+
+        // 漂浮动画文字
+        const duration = 3 + Math.random() * 2;
+        item.style.animation = `floatRoomText ${duration}s ease-in-out infinite alternate`;
+
+        // 漂浮动画形状
+        const shape = item.querySelector('.menu-shape');
+        const shapeDuration = 4 + Math.random() * 2;
+        shape.style.animation = `floatRoomShape ${shapeDuration}s ease-in-out infinite alternate`;
+        shape.style.transform = `rotate(${Math.random()*360}deg)`; 
+      });
+    }
+
+    function collapseMenu() {
+      menuDot.style.display = 'block';
+      menuItems.forEach(item => {
+        item.style.transform = 'translate(0,0)';
+        item.style.opacity = 0;
+        item.style.animation = '';
+        const shape = item.querySelector('.menu-shape');
+        shape.style.animation = '';
+      });
+    }
+
+    centerMenu.addEventListener('click', () => {
+      expanded = !expanded;
+      if(expanded) expandMenu();
+      else collapseMenu();
+    });
+
+    window.addEventListener('resize', () => {
+      if(expanded) expandMenu();
+    });
+  </script>
+</body>
+</html>

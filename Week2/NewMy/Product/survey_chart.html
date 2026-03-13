@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire Survey</title>
+<style>
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background-color: #ffffff;
+    color: #007bff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 32px;
+    color: #1a75ff;
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .chart {
+    position: relative;
+    width: 900px;
+    height: 650px;
+    border-left: 2px dashed #b8d9ff;
+    border-right: 2px dashed #b8d9ff;
+    border-top: 2px dashed #b8d9ff;
+    border-bottom: 2px dashed #b8d9ff;
+    background: linear-gradient(to right, transparent 49.9%, #e9f4ff 50%, transparent 50.1%),
+                linear-gradient(to bottom, transparent 49.9%, #e9f4ff 50%, transparent 50.1%);
+    background-size: 100% 100%;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(26, 117, 255, 0.08);
+  }
+
+  .axis-label {
+    position: absolute;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1a75ff;
+  }
+
+  .axis-label.top { top: -40px; left: 50%; transform: translateX(-50%); }
+  .axis-label.bottom { bottom: -40px; left: 50%; transform: translateX(-50%); }
+  .axis-label.left { left: -70px; top: 50%; transform: translateY(-50%) rotate(-90deg); }
+  .axis-label.right { right: -70px; top: 50%; transform: translateY(-50%) rotate(90deg); }
+
+  .point {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #4da6ff;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(102, 179, 255, 0.5);
+  }
+
+  .point:hover {
+    transform: scale(1.4);
+    background-color: #1a75ff;
+  }
+
+  .label {
+    position: absolute;
+    color: #004c99;
+    font-size: 14px;
+    background: rgba(255,255,255,0.9);
+    padding: 4px 8px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .point:hover + .label {
+    opacity: 1;
+  }
+
+  /* Points placement */
+  /* Plan quadrant (left) */
+  .p1 { left: 20%; top: 50%; }
+  .p2 { left: 23%; top: 55%; }
+  .p3 { left: 32%; top: 45%; }
+  .p4 { left: 40%; top: 35%; }
+
+  /* Cost quadrant (right) */
+  .p5 { left: 60%; top: 45%; }
+  .p6 { left: 68%; top: 48%; }
+  .p7 { left: 76%; top: 50%; }
+  .p8 { left: 85%; top: 44%; }
+
+  /* Doctor Experience (top) */
+  .p9 { left: 47%; top: 20%; }
+  .p10 { left: 49%; top: 25%; }
+  .p11 { left: 53%; top: 22%; }
+
+  /* Medical Expertise (bottom) */
+  .p12 { left: 45%; top: 72%; }
+  .p13 { left: 48%; top: 78%; }
+  .p14 { left: 53%; top: 80%; }
+  .p15 { left: 57%; top: 85%; }
+
+  /* Animation */
+  .point {
+    animation: fadeIn 1.2s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.5); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+</head>
+<body>
+
+  <pre>
+    
+    <h1>Questionnaire Survey</h1>
+</pre>
+
+  <div class="chart">
+    <div class="axis-label top">Doctor Experience</div>
+    <div class="axis-label right">Cost</div>
+    <div class="axis-label bottom">Medical Expertise</div>
+    <div class="axis-label left">Plan</div>
+
+    <!-- Plan -->
+    <div class="point p1"></div><div class="label" style="left: 10%; top: 48%;">Duration (weeks) – 8.33%</div>
+    <div class="point p2"></div><div class="label" style="left: 13%; top: 58%;">Cost Suitability – 8.33%</div>
+    <div class="point p3"></div><div class="label" style="left: 22%; top: 42%;">Treatment Safety – 34.72%</div>
+    <div class="point p4"></div><div class="label" style="left: 28%; top: 32%;">Doctor’s Advice – 48.61%</div>
+
+    <!-- Cost -->
+    <div class="point p5"></div><div class="label" style="left: 58%; top: 42%;">Complex Cases – 50.28%</div>
+    <div class="point p6"></div><div class="label" style="left: 64%; top: 46%;">Treatment Service – 61.11%</div>
+    <div class="point p7"></div><div class="label" style="left: 72%; top: 54%;">Advanced Equipment – 18.06%</div>
+    <div class="point p8"></div><div class="label" style="left: 80%; top: 40%;">Doctor’s Advice – 61.11%</div>
+
+    <!-- Doctor Experience -->
+    <div class="point p9"></div><div class="label" style="left: 46%; top: 15%;">Age – 9.87%</div>
+    <div class="point p10"></div><div class="label" style="left: 48%; top: 19%;">Academic Credentials – 9.96%</div>
+    <div class="point p11"></div><div class="label" style="left: 52%; top: 23%;">Years of Practice – 50.28%</div>
+
+    <!-- Medical Expertise -->
+    <div class="point p12"></div><div class="label" style="left: 44%; top: 75%;">Doctor’s Qualifications – 13.89%</div>
+    <div class="point p13"></div><div class="label" style="left: 46%; top: 80%;">Clinic Reputation – 25%</div>
+    <div class="point p14"></div><div class="label" style="left: 52%; top: 83%;">Advanced Equipment – 8.33%</div>
+    <div class="point p15"></div><div class="label" style="left: 56%; top: 87%;">Complex Cases – 52.78%</div>
+  </div>
+</body>
+</html>

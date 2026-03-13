@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Yake Robot — Lynn Liu</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Helvetica Neue", "PingFang SC", Arial, sans-serif;
+  background: #ffffff;
+  color: #222;
+  line-height: 1.8;
+}
+
+/* ===== 顶部导航栏 ===== */
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 20px 60px;
+  display: flex;
+  justify-content: space-between;
+  align-items:flex-start;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  transition: all 0.4s ease;
+}
+header.scrolled {
+  background: rgba(0, 0, 0, 0.85);
+}
+header h1 {
+  font-size: 1.5em;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 40px;
+  font-weight: 400;
+  font-size: 1em;
+  transition: color 0.3s;
+}
+nav a:hover {
+  color: crimson;
+}
+
+/* ===== 主体部分：图片容器 ===== */
+.media-wrapper {
+  width: 100%;
+  max-width: 900px;
+  margin: 40px auto 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+.media-wrapper:first-of-type {
+  margin-top: 100px;
+}
+.media-wrapper + .media-wrapper {
+  margin-top: 30px;
+}
+.media-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.media-wrapper img:hover {
+  transform: scale(1.02);
+}
+
+/* ===== 中间主容器 ===== */
+.container {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* 项目标题 */
+.section h1 {
+  color: #0073ff;
+  font-size: 2em;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* 第二层导航按钮 */
+.sub-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 10px 0 30px;
+}
+.sub-nav a {
+  color: #0073ff;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: 1px solid #0073ff;
+  transition: all 0.3s ease;
+}
+.sub-nav a:hover {
+  color: #fff;
+  background-color: #0073ff;
+  box-shadow: 0 4px 10px rgba(0,115,255,0.3);
+  transform: translateY(-2px);
+}
+
+/* ===== 描述文字（核心优化部分） ===== */
+.section .description {
+  max-width: 720px;
+  color: #333;
+  text-align: left;            /* ✅ 左对齐，阅读性更好 */
+  line-height: 1.9;
+  font-size: 1.05rem;
+  margin: 10px auto 40px;
+}
+.section .description h3 {
+  color: #0073ff;
+  font-size: 1.2rem;
+  margin: 32px 0 12px;
+  font-weight: 700;
+}
+.section .description p {
+  margin-bottom: 16px;
+  text-indent: 2em;            /* ✅ 每段首行缩进，中文阅读体验更自然 */
+}
+
+/* pre 样式 */
+pre {
+  color: #333;
+  font-family: Consolas, monospace;
+  white-space: pre-wrap;
+  background: #f7f9fc;
+  padding: 16px;
+  border-radius: 8px;
+  line-height: 1.5;
+  margin-top: 8px;
+  text-align: left;
+}
+
+/* ===== 底部项目导航 ===== */
+.project-nav {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 700px;
+  margin: 80px auto 0;
+  padding-top: 20px;
+  border-top: 1px solid #333;
+  font-weight: 600;
+}
+.project-nav a {
+  text-decoration: none;
+  color: #0073ff;
+  transition: color 0.3s;
+}
+.project-nav a:hover {
+  color: crimson;
+}
+
+/* ===== 响应式调整 ===== */
+@media (max-width: 768px) {
+  header {
+    padding: 8px 24px;
+  }
+  header h1 {
+    font-size: 1.2em;
+  }
+  nav a {
+    font-size: 0.9em;
+    margin-left: 20px;
+  }
+  .container {
+    margin-top: 70px;
+    padding: 0 24px;
+  }
+  .section .description {
+    font-size: 1rem;
+    text-indent: 1.5em;
+  }
+}
+
+</style>
+</head>
+
+<body>
+<header>
+  <h1>LYNN LIU</h1>
+  <nav>
+    <a href="../index.html">Works</a>
+    <a href="../resume.html">Resume</a>
+    <a href="../about.html">About</a>
+  </nav>
+</header>
+
+<div class="media-wrapper">
+  <img src="../assets/project10_img0.jpg" alt="Project 1 image 1" />
+</div>
+
+<div class="container section">
+  <h1>Yake Robot</h1>
+  <div class="description">
+    <h3>'Overview'</h3>
+    <p>
+      Dental implant surgery affects both the physical and emotional experience of the patient.  
+      As medical technology advances, operating rooms will transform, and traditional elements like dental chairs, procedures, and doctor-patient interactions will evolve.  
+      This design aims to help patients better adapt to these new technologies.
+    </p>
+    
+  <nav class="sub-nav">
+    <a href="chart.html">Market Scale</a>
+    <a href="chart1.html">Current Status</a>
+    <a href="survey_chart.html">Questionnaire Survey</a>
+  </nav>
+
+    <h3>'Tech Powered Medicine'</h3>
+    <p>
+      Robotic-Assisted Healthcare in the Era of High Digitization.  
+      The involvement of implant robots in surgeries offers significant advantages.  
+      Robotic technology provides reliable and consistent intraoperative support for surgeons and surgical teams.  
+      Robotic surgical assistants can be seen as an extension of the surgeon, acting as a "hand" during surgery — one that never tires and never deviates from its position.
+    </p>
+  </div>
+</div>
+
+<div class="media-wrapper">
+  <img src="../assets/project10_img2-1.jpg" alt="Project Four image 4">
+</div>
+<div class="media-wrapper">
+  <img src="../assets/project10_img4.jpg" alt="Project Four image 4">
+</div>
+<div class="media-wrapper">
+  <img src="../assets/project10_img6.jpg" alt="Project Four image 4">
+</div>
+
+<!-- 底部三连导航 -->
+<div class="project-nav">
+  <a href="project7.html" class="prev">←</a>
+  <a href="../index.html" class="overview">Works</a>
+</div>
+
+<script>
+  // Lightbox 功能（如需启用需加对应元素）
+  const lightbox = document.getElementById('lightbox');
+  if (lightbox) {
+    const lightboxImg = lightbox.querySelector('img');
+    document.querySelectorAll('.media-wrapper img').forEach(img => {
+      img.addEventListener('click', () => {
+        lightboxImg.src = img.src;
+        lightbox.classList.add('active');
+      });
+    });
+    lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+  }
+
+  // 禁止右键菜单与复制
+  document.addEventListener('contextmenu', e => { e.preventDefault(); alert("右键已禁用"); });
+  document.addEventListener('copy', e => e.preventDefault());
+  document.addEventListener('cut', e => e.preventDefault());
+  document.addEventListener('selectstart', e => e.preventDefault());
+
+  // 滚动隐藏/显示菜单栏
+  let lastScrollTop = 0;
+  const navbar = document.querySelector("header");
+  window.addEventListener("scroll", function() {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    if (scrollTop > lastScrollTop) {
+      navbar.style.transform = "translateY(-100%)";
+    } else {
+      navbar.style.transform = "translateY(0)";
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    if (scrollTop > 80) navbar.classList.add("scrolled");
+    else navbar.classList.remove("scrolled");
+  });
+</script>
+</body>
+</html>

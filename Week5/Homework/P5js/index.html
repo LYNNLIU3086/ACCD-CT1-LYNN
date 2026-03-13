@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Orbital Drift – Interactive Exhibition Version by Liu</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+  <script src="sketch.js" defer></script>
+</head>
+
+<body>
+  <h1>🌌 Orbital Drift – Interactive Version</h1>
+
+  <div class="controls">
+    <button id="pauseBtn">Pause</button>
+    <button id="toggleTrailBtn">Trail</button>
+    <button id="randomColorBtn">Colors</button>
+    <button id="randomParamsBtn">Speed</button>
+  </div>
+
+  <div id="sketch-holder"></div>
+
+  <div class="iterations">
+    <div class="iteration">
+      <img src="images/iteration1.png" alt="Iteration 1" class="lightbox-img">
+      <p>add a star and planet</p>
+    </div>
+    <div class="iteration">
+      <img src="images/iteration2.png" alt="Iteration 2" class="lightbox-img">
+      <p>add a drifting satellite </p>
+    </div>
+    <div class="iteration">
+      <img src="images/iteration3.png" alt="Iteration 3" class="lightbox-img">
+      <p>incorporate Perlin noise</p>
+    </div>
+    <div class="iteration">
+      <img src="images/iteration4.png" alt="Iteration 4" class="lightbox-img">
+      <p>enhance planetary halos</p>
+    </div>
+    <div class="iteration">
+      <img src="images/iteration5.png" alt="Iteration 5" class="lightbox-img">
+      <p>add background star points</p>
+    </div>
+    <div class="iteration">
+      <img src="images/iteration6.png" alt="Iteration 6" class="lightbox-img">
+      <p>include control buttons</p>
+    </div>
+  </div>
+
+  <!-- Lightbox 弹窗 -->
+  <div id="lightbox" class="lightbox">
+    <span class="close">&times;</span>
+    <img class="lightbox-content" id="lightbox-img">
+  </div>
+
+  <script src="lightbox.js"></script>
+</body>
+</html>

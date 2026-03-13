@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>决策路线机器 — 动画版</title>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script async
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAy8RulrBRn6y5Qon_wtgturyCyWCOQEFU&callback=initMap">
+</script>
+<style>
+body { display:flex; font-family:sans-serif; margin:0; height:100vh; }
+#tree { flex:1; border-right:1px solid #ccc; overflow:auto; background:#f9f9f9; }
+#sidebar { width:360px; padding:15px; box-sizing:border-box; background:#fff; }
+.node circle{ cursor:pointer; stroke-width:2px; }
+.node text{ font:12px sans-serif; user-select:none; }
+.link{ fill:none; stroke:#555; stroke-width:2px; }
+.Category circle{ fill:#1f77b4; }
+.Brand circle{ fill:#2ca02c; }
+.Location circle{ fill:#ff7f0e; }
+.tooltip{ position:absolute; background:#fff; border:1px solid #ccc; padding:5px; pointer-events:none; font-size:12px; }
+#map { width:100%; height:300px; margin-top:10px; }
+</style>
+</head>
+<body>
+<div id="tree"><svg width="1000" height="1000"></svg></div>
+<div id="sidebar">
+    <h3>节点信息</h3>
+    <div id="info">点击节点查看详情</div>
+    <h3>总统计</h3>
+    <p id="totalInfo">总停留:0 分钟<br>总旅行:0 分钟</p>
+    <div id="map"></div>
+</div>
+<div class="tooltip" style="opacity:0;"></div>
+
+<script>
+let map, mapPolyline, fullRouteLine, markers=[];
+
+// 初始化地图
+function initMap(){
+    map = new google.maps.Map(document.getElementById("map"), {
+        center: {lat:34.05, lng:-118.25},
+        zoom: 12
+    });
+}
+
+// 加载 JSON 数据
+d3.json("treeData.json").then(data=>{
+    initTree(data);
+}).catch(err=>console.error("加载 JSON 失败:", err));
+
+function initTree(data){
+    const svg = d3.select("svg");
+    const width = +svg.attr("width");
+    const height = +svg.attr("height");
+    const g = svg.append("g").attr("transform","translate(80,20)");
+
+    const treeLayout = d3.tree().size([height-100, width-160]);
+    const tooltip = d3.select(".tooltip");
+    let i=0;
+
+    const root = d3.hierarchy(data);
+    root.x0 = height/2; root.y0 = 0;
+    root.children?.forEach(collapse);
+    update(root);
+
+    animateFullRoute(root); // 动画显示完整路线
+
+    function collapse(d){
+        if(d.children){ d._children=d.children; d._children.forEach(collapse); d.children=null; }
+    }
+
+    function update(source){
+        const treeData = treeLayout(root);
+        const nodes = treeData.descendants();
+        const links = treeData.links();
+        nodes.forEach(d=>d.y = d.depth * 180);
+
+        const node = g.selectAll("g.node").data(nodes,d=>d.id||(d.id=++i));
+        const nodeEnter = node.enter().append("g")
+            .attr("class","node")
+            .attr("transform", d=>`translate(${source.y0},${source.x0})`)
+            .on("click", click);
+
+        nodeEnter.append("circle").attr("r",1e-6)
+            .style("fill", d=>d._children?"#555":"#999")
+            .on("mouseover",(event,d)=>{
+                tooltip.transition().duration(200).style("opacity",0.9);
+                tooltip.html(`${d.data.name}<br>类型:${d.data.type}<br>停留:${d.data.stayTime||0} 分钟<br>旅行:${d.data.travelTime||0} 分钟`)
+                    .style("left",(event.pageX+10)+"px").style("top",(event.pageY-28)+"px");
+            })
+            .on("mouseout",()=>tooltip.transition().duration(500).style("opacity",0));
+
+        nodeEnter.append("text")
+            .attr("dy",5)
+            .attr("x",d=>d.children||d._children?-15:15)
+            .style("text-anchor",d=>d.children||d._children?"end":"start")
+            .text(d=>d.data.name);
+
+        const nodeUpdate = nodeEnter.merge(node);
+        nodeUpdate.transition().duration(300).attr("transform", d=>`translate(${d.y},${d.x})`);
+        nodeUpdate.select("circle").attr("r",12);
+
+        const nodeExit = node.exit().transition().duration(300)
+            .attr("transform",d=>`translate(${source.y},${source.x})`).remove();
+        nodeExit.select("circle").attr("r",1e-6);
+
+        const link = g.selectAll("path.link").data(links,d=>d.target.id);
+        link.enter().insert("path","g").attr("class","link")
+            .attr("d", d=>{ const o={x:source.x,y:source.y}; return diagonal(o,o); })
+            .merge(link).transition().duration(300)
+            .attr("d",d=>diagonal(d.source,d.target));
+        link.exit().transition().duration(300)
+            .attr("d",d=>{ const o={x:source.x,y:source.y}; return diagonal(o,o); }).remove();
+
+        nodes.forEach(d=>{d.x0=d.x; d.y0=d.y;});
+        updateTotal(nodes);
+    }
+
+    function diagonal(s,d){ return `M ${s.y} ${s.x} C ${(s.y+d.y)/2} ${s.x}, ${(s.y+d.y)/2} ${d.x}, ${d.y} ${d.x}`; }
+
+    function click(event,d){
+        if(d.children){ d._children=d.children; d.children=null; } 
+        else if(d._children){ d.children=d._children; d._children=null; }
+        showInfo(d);
+        update(d);
+        animateFullRoute(root);
+    }
+
+    function showInfo(d){
+        const info = d3.select("#info");
+        info.html(`<b>${d.data.name}</b><br>类型:${d.data.type}<br>停留:${d.data.stayTime||0} 分钟<br>旅行:${d.data.travelTime||0} 分钟<br>坐标:${d.data.coordinates||""}`);
+        if(d.data.coordinates){
+            const [lng,lat]=d.data.coordinates.split(",").map(Number);
+
+            // 清空旧 marker
+            markers.forEach(m=>m.setMap(null));
+            markers=[];
+
+            // 添加 marker
+            markers.push(new google.maps.Marker({position:{lat,lng}, map:map, title:d.data.name}));
+
+            // 父子连线
+            if(mapPolyline) mapPolyline.setMap(null);
+            if(d.parent && d.parent.data.coordinates){
+                const [plng,plat]=d.parent.data.coordinates.split(",").map(Number);
+                mapPolyline=new google.maps.Polyline({
+                    path:[{lat:plat,lng:plng},{lat:lat,lng:lng}],
+                    geodesic:true,
+                    strokeColor:"#FF0000",
+                    strokeOpacity:1.0,
+                    strokeWeight:2,
+                    map:map
+                });
+            }
+
+            // 平滑飞到新中心并自动缩放
+            const bounds = new google.maps.LatLngBounds();
+            bounds.extend(new google.maps.LatLng(lat,lng));
+            if(d.parent && d.parent.data.coordinates){
+                const [plng,plat]=d.parent.data.coordinates.split(",").map(Number);
+                bounds.extend(new google.maps.LatLng(plat,plng));
+            }
+            map.fitBounds(bounds);  // 自动缩放
+            map.panTo({lat,lng});   // 平滑中心移动
+        }
+    }
+
+    function updateTotal(nodes){
+        let totalStay=0,totalTravel=0;
+        nodes.forEach(d=>{ totalStay+= +(d.data.stayTime||0); totalTravel+= +(d.data.travelTime||0); });
+        d3.select("#totalInfo").html(`总停留:${totalStay} 分钟<br>总旅行:${totalTravel} 分钟`);
+    }
+
+    function getFullRoute(root){
+        const route=[];
+        root.each(d=>{
+            if(d.data.coordinates){
+                const [lng,lat]=d.data.coordinates.split(",").map(Number);
+                route.push({lat,lng,name:d.data.name});
+            }
+        });
+        return route;
+    }
+
+    function animateFullRoute(root){
+        const route=getFullRoute(root);
+        if(fullRouteLine) fullRouteLine.setMap(null);
+        fullRouteLine=new google.maps.Polyline({path:[],geodesic:true,strokeColor:"#0000FF",strokeOpacity:0.6,strokeWeight:3,map:map});
+
+        // 自动缩放显示完整路线
+        const bounds = new google.maps.LatLngBounds();
+        route.forEach(p=>bounds.extend(new google.maps.LatLng(p.lat,p.lng)));
+        map.fitBounds(bounds);
+
+        let index=0;
+        const interval=setInterval(()=>{
+            if(index>=route.length){clearInterval(interval); return;}
+            fullRouteLine.getPath().push(new google.maps.LatLng(route[index].lat, route[index].lng));
+            index++;
+        },400);
+    }
+}
+</script>
+</body>
+</html>

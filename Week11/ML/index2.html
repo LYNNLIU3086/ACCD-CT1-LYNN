@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<title>时间消失的市集 - Pasadena</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<style>
+  body { margin:0; font-family:sans-serif; background:#111; color:#fff; }
+  #map { width:100vw; height:80vh; }
+  #sliderContainer { width:80%; margin:20px auto; text-align:center; }
+  input[type=range] { width:100%; }
+
+  /* 图标样式 */
+  .market-marker {
+    font-size: 28px;
+    opacity: 0;
+    transition: opacity 0.5s, transform 0.5s, text-shadow 0.5s;
+  }
+  .market-marker.active {
+    opacity: 1;
+    transform: scale(1);
+    text-shadow: 0 0 20px rgba(255,255,255,0.9);
+  }
+  .market-marker.inactive {
+    opacity: 0;
+    transform: scale(0.5);
+    text-shadow: 0 0 0 rgba(255,255,255,0);
+  }
+  /* 类型颜色 */
+  .food i { color: orange; }
+  .clothing i { color: deepskyblue; }
+  .craft i { color: violet; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="sliderContainer">
+  <label for="yearSlider">年份: <span id="yearLabel">2011</span></label>
+  <input type="range" id="yearSlider" min="2011" max="2020" value="2011">
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const map = L.map('map', {
+    zoomControl: false,
+    attributionControl: false
+  }).setView([34.1478, -118.1445], 15);
+
+  // 纯灰背景瓦片
+  L.tileLayer('https://stamen-tiles.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.png', {
+    subdomains: 'abcd'
+  }).addTo(map);
+
+  // 市集数据
+  const marketsData = [
+    {lat:34.1478, lng:-118.1445, year:2012, type:'food', info:"市集 A - Old Town"},
+    {lat:34.1470, lng:-118.1458, year:2013, type:'clothing', info:"市集 B - Paseo Colorado"},
+    {lat:34.1489, lng:-118.1440, year:2014, type:'food', info:"市集 C - Colorado Blvd & Raymond Ave"},
+    {lat:34.1449, lng:-118.1510, year:2015, type:'craft', info:"市集 D - Pasadena City Hall"},
+    {lat:34.1505, lng:-118.1530, year:2016, type:'clothing', info:"市集 E - Victory Park"}
+  ];
+
+  const iconMap = {
+    food: '<i class="fas fa-utensils"></i>',
+    clothing: '<i class="fas fa-tshirt"></i>',
+    craft: '<i class="fas fa-gem"></i>'
+  };
+
+  const marketMarkers = [];
+
+  marketsData.forEach(data => {
+    // 创建真实 DOM 元素
+    const div = document.createElement('div');
+    div.className = `market-marker ${data.type} inactive`;
+    div.innerHTML = iconMap[data.type] || '<i class="fas fa-circle"></i>';
+
+    // 创建 Leaflet marker
+    const marker = L.marker([data.lat, data.lng], {
+      icon: L.divIcon({className:'', html: div.outerHTML, iconSize:[28,28]})
+    }).addTo(map);
+
+    marker._year = data.year;
+    marker._info = data.info;
+    marker._type = data.type;
+    marketMarkers.push({marker, div});
+
+    // 点击显示信息
+    marker.on('click', () => alert(marker._info));
+  });
+
+  const slider = document.getElementById('yearSlider');
+  const yearLabel = document.getElementById('yearLabel');
+
+  slider.addEventListener('input', () => {
+    const year = parseInt(slider.value);
+    yearLabel.textContent = year;
+
+    marketMarkers.forEach(item => {
+      const markerEl = item.marker.getElement();
+      if (!markerEl) return;
+      if (year >= item.marker._year) {
+        markerEl.classList.add('active');
+        markerEl.classList.remove('inactive');
+      } else {
+        markerEl.classList.add('inactive');
+        markerEl.classList.remove('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

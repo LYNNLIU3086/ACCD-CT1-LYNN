@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<title>Sample</title>
+<style>
+:root {
+  --neon-green: #1fe689;
+  --neon-red: #ff3e3e;
+  --bg-dark: #0a0b10;
+  --card-bg: rgba(20, 22, 30, 0.8);
+  --text-main: #e0e6ed;
+  --text-dim: #64748b00;
+  --border-color: rgba(255, 255, 255, 0);
+}
+
+body {
+  font-family: "JetBrains Mono", "Inter", monospace;
+  background: var(--bg-dark); 
+  color: var(--text-main); 
+  margin: 0; 
+  padding: 0;
+  height: 100vh; 
+  display: flex; 
+  overflow: hidden;
+}
+
+/* 科技感网格背景 */
+body::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+  z-index: 0;
+}
+
+.floating-sidebar {
+  position: absolute; top: 30px; left: 30px; width: 340px; z-index: 100;
+  display: flex; flex-direction: column; gap: 20px;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(15px);
+  border-radius: 12px; 
+  padding: 24px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+}
+
+.main-viewport {
+  flex: 1; position: relative; 
+  background: #000;
+  margin: 15px; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+/* 核心年份显示 */
+.year-hero {
+  font-size: 5rem; font-weight: 900; letter-spacing: -4px;
+  color: var(--neon-green); 
+  text-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  line-height: 0.8; margin: 15px 0;
+}
+
+/* 霓虹滑块 */
+input[type="range"] {
+  appearance: none; background: #1e293b; height: 4px; border-radius: 2px;
+  width: 100%; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none; width: 20px; height: 20px; 
+  background: var(--neon-green);
+  border-radius: 4px; cursor: pointer;
+  box-shadow: 0 0 15px var(--neon-green);
+}
+
+.data-tag {
+  font-size: 0.7rem; font-weight: 800; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--neon-green);
+  opacity: 0.8;
+}
+
+#json-stream {
+  font-family: "JetBrains Mono", monospace; font-size: 0.75rem; 
+  color: #88c0d0; /* Nord Palette Blue */
+  line-height: 1.6; overflow-y: auto; height: 350px;
+}
+
+.status-badge {
+  position: absolute; bottom: 30px; right: 30px; 
+  padding: 10px 20px; border-radius: 4px;
+  font-weight: bold; font-size: 0.7rem; letter-spacing: 2px;
+  border: 1px solid var(--neon-green);
+  color: var(--neon-green);
+  text-shadow: 0 0 10px var(--neon-green);
+  background: rgba(0, 255, 136, 0.1);
+}
+
+/* 扫描线动画效果 */
+.scanline {
+  width: 100%; height: 2px; background: rgba(0, 255, 136, 0.1);
+  position: absolute; top: 0; left: 0;
+  animation: scan 4s linear infinite;
+  pointer-events: none; z-index: 10;
+}
+@keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+
+</style>
+</head>
+<body>
+
+<aside class="floating-sidebar">
+  <div class="glass-card">
+    <div class="data-tag">// TEMPORAL_AXIS</div>
+    <div class="year-hero" id="year-display">2010</div>
+    <input type="range" id="time-slider" min="0" max="2" step="0.005" value="0">
+    <div style="display:flex; justify-content:space-between; margin-top:12px; font-size:0.6rem; color:var(--text-dim);">
+      <span>ORIGIN_2013</span>
+      <span>LATEST_PROJ</span>
+    </div>
+  </div>
+
+  <div class="glass-card" style="flex:1;">
+    <div class="data-tag">// RAW_TELEMETRY</div>
+    <div id="json-stream"></div>
+  </div>
+</aside>
+
+<main class="main-viewport" id="viewer">
+  <div class="scanline"></div>
+  <canvas id="base-canvas"></canvas>
+  <canvas id="morph-canvas"></canvas>
+  <canvas id="ai-canvas"></canvas>
+  <div id="status-tag" class="status-badge">SYSTEM_READY</div>
+</main>
+
+<script>
+const neonGreen = "#00ff88";
+const neonRed = "#ff3e3e";
+
+const timeNodes = [
+  { year: 2013, img: 'images/tree2.jpg' },
+  { year: 2017, img: 'images/tree3.png' },
+  { year: 2023, img: 'images/tree6.png' }
+];
+
+const detectionPoints = [
+  { id: 'Oxygen', x: 0.45, y: 0.4, w: 0.20, h: 0.35 },
+  { id: 'Phytoncides', x: 0.62, y: 0.28, w: 0.12, h: 0.15 }
+];
+
+let state = { t: 0, images: [] };
+const canvases = {
+  morph: document.getElementById('morph-canvas').getContext('2d'),
+  ai: document.getElementById('ai-canvas').getContext('2d')
+};
+
+function init() {
+  let loaded = 0;
+  timeNodes.forEach((node, idx) => {
+    const img = new Image();
+    img.src = node.img; 
+    img.onload = () => { if(++loaded === timeNodes.length) start(); };
+    state.images[idx] = img;
+  });
+  window.addEventListener('resize', resize);
+  resize();
+}
+
+function resize() {
+  const viewer = document.getElementById('viewer');
+  const w = viewer.offsetWidth, h = viewer.offsetHeight;
+  Object.values(canvases).forEach(ctx => { 
+    ctx.canvas.width = w; ctx.canvas.height = h; 
+  });
+}
+
+function start() {
+  function frame() {
+    renderMorph();
+    renderAI();
+    requestAnimationFrame(frame);
+  }
+  frame();
+}
+
+function renderMorph() {
+  const ctx = canvases.morph;
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  const base = Math.floor(state.t);
+  const next = Math.min(base + 1, timeNodes.length - 1);
+  const ratio = state.t - base;
+  
+  // 增加基础对比度
+  ctx.filter = "contrast(1.1) brightness(0.8)";
+  
+  if (state.images[base]) {
+    ctx.globalAlpha = 1;
+    ctx.drawImage(state.images[base], 0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+  if(ratio > 0 && state.images[next]) {
+    ctx.globalAlpha = ratio;
+    ctx.drawImage(state.images[next], 0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+  ctx.filter = "none";
+}
+
+function renderAI() {
+  const ctx = canvases.ai;
+  ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+  const w = ctx.canvas.width, h = ctx.canvas.height;
+  const isAlert = state.t >= 1.85;
+  const activeColor = isAlert ? neonRed : neonGreen;
+
+  let detected = [];
+
+  detectionPoints.forEach(p => {
+    const bx = p.x*w, by = p.y*h, bw = p.w*w, bh = p.h*h;
+    const val = (85 + Math.sin(Date.now()*0.005)*5 - state.t*15).toFixed(2);
+    
+    // 1. 赛博框线
+    ctx.strokeStyle = activeColor;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(bx-bw/2, by-bh/2, bw, bh);
+    
+    // 角隅装饰
+    const s = 15;
+    ctx.beginPath();
+    ctx.moveTo(bx-bw/2-5, by-bh/2+s); ctx.lineTo(bx-bw/2-5, by-bh/2-5); ctx.lineTo(bx-bw/2+s, by-bh/2-5);
+    ctx.stroke();
+
+    // 2. 悬浮数据
+    ctx.fillStyle = "rgba(0,0,0,0.7)";
+    ctx.fillRect(bx-bw/2, by-bh/2-50, 120, 40);
+    ctx.fillStyle = activeColor;
+    ctx.font = "bold 10px 'JetBrains Mono'";
+    ctx.fillText(`ID: ${p.id}`, bx-bw/2+8, by-bh/2-35);
+    ctx.fillText(`INDEX: ${val}%`, bx-bw/2+8, by-bh/2-18);
+
+    detected.push({ id: p.id, stability: val + "%" });
+  });
+
+  const badge = document.getElementById('status-tag');
+  if (isAlert) {
+    badge.innerText = "CRITICAL_DEGRADATION";
+    badge.style.borderColor = neonRed;
+    badge.style.color = neonRed;
+    badge.style.background = "rgba(255, 62, 62, 0.1)";
+  } else {
+    badge.innerText = "ECO_STABLE_ACTIVE";
+    badge.style.borderColor = neonGreen;
+    badge.style.color = neonGreen;
+    badge.style.background = "rgba(0, 255, 136, 0.1)";
+  }
+
+  if(Math.random() > 0.8) {
+    document.getElementById('json-stream').innerHTML = `<pre>{
+  "timestamp": ${Date.now()},
+  "status": "${isAlert ? 'ERROR' : 'OK'}",
+  "nodes": ${JSON.stringify(detected, null, 2)}
+}</pre>`;
+  }
+}
+
+document.getElementById('time-slider').oninput = e => {
+  state.t = parseFloat(e.target.value);
+  const idx = Math.min(Math.round(state.t), timeNodes.length - 1);
+  const yearEl = document.getElementById('year-display');
+  yearEl.innerText = timeNodes[idx].year;
+  yearEl.style.color = state.t >= 1.85 ? neonRed : neonGreen;
+  yearEl.style.textShadow = `0 0 20px ${state.t >= 1.85 ? 'rgba(255,62,62,0.4)' : 'rgba(0,255,136,0.4)'}`;
+};
+
+init();
+</script>
+</body>
+</html>

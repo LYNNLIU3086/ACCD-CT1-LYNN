@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quotes & Responses</title>
+<style>
+  body {
+    font-family: 'Helvetica', sans-serif;
+    background: #000000;
+    color: hsl(0, 0%, 0%);
+    margin: 0;
+    padding: 20px;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #ffffff;
+  }
+  .quote-card {
+    background: #000000;
+    border-radius: 8px;
+    max-width: 900px;
+    margin: 15px auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .quote-card:hover {
+    transform: translateY(-3px);
+  }
+
+  blockquote {
+    margin: 0;
+    padding: 20px;
+    font-style: italic;
+    color: #ffffff;
+    border-left: 4px solid #bc0000;
+  }
+  .response {
+    display: none;
+    padding: 0 20px 20px 20px;
+    color: #a5a5a5;
+    line-height: 1.5;
+    border-top: 1px solid #000000;
+  }
+</style>
+</head>
+<body>
+
+<h1>Quotes & Responses</h1>
+
+<div class="quote-card">
+  <blockquote>
+    We are now in transition from an object-oriented to a systems-oriented culture. Here change emanates, not from things, but from the way things are done.
+  </blockquote>
+  <div class="response">
+  Our core mindset needs to change: we must stop being obsessed with building individual 'features' and start thinking about how to operate a complete 'ecosystem'. This means our top priority is not to pile on features, but to design better connections and interactions—between features, between users, and between people and services. The value no longer lies within the features themselves, but in the relationships and interactions between them.
+  </div>
+</div>
+<div class="quote-card">
+  <blockquote>
+   Digital products allow users to interact with their content, and take advantage of motion and animation. Furthermore, digital products often have temporal logic where a linear narrative is replaced by a set of complex states and transitions.
+  </blockquote>
+  <div class="response">
+  The quality of an app isn't about how many features it has, but whether it feels fluid, intuitive, and even addictive to use. Take WeChat as an example: its power doesn't come from having chat, payments, and Moments, but from how seamlessly these features are woven together, making the experience feel natural and 'obvious'. That 'smoothness' you feel is the result of the product team repeatedly designing and refining countless pages, pop-ups, loading states, and navigation logic... When you find it easy to use, you're essentially endorsing the sophisticated 'workflow' they've designed.
+  </div>
+</div>
+<div class="quote-card">
+  <blockquote>
+   Second, code enables designers to do things they couldn't do before. Variations of a design can be tested much faster during the prototyping phase, and randomization can be used to reveal designs that the designer would never have created with a pencil.
+  </blockquote>
+  <div class="response">
+  With coding skills, a designer is no longer just a "drawer." Instead of manually creating hundreds of buttons, they can write a set of rules—for example, "this button's color changes automatically based on the context." They become the architect of their own "automation factory." At this point, their most remarkable work is not any single image they've drawn, but the intelligent system they've built. Take the London Tube map as an example: the designer's greatest value lies not in drawing the lines and stations, but in creating a simplified, logical system that perfectly serves its purpose.
+   <p>How should we view the phenomenon of AI generating code?</p>
+
+  </div>
+</div>
+
+<div class="quote-card">
+  <blockquote>
+   If we are to exploit the ability of prototypes to push ahead into the future of design, we must think of them as vehicles for inquiry, rather than simply as ways to document the present state of affairs.
+  </blockquote>
+  <div class="response">
+Shifting design from being the presentation of a solution to the exploration of a problem; transforming the process from a linear, procedural "production line" into a nonlinear, vibrant "cycle of discovery".
+  </div>
+</div>
+
+<div class="quote-card">
+  <blockquote>
+    Prototypes that focus on one dimension (role, look & feel, or implementation) can clarify trade-offs and make hidden assumptions visible to both designers and stakeholders.
+  </blockquote>
+
+  <div class="response">
+    A single-dimension prototype feels like intentionally leaving things incomplete so that problems have nowhere to hide.  
+    <br><br>
+    For example, assumptions like “users should be able to figure it out” need to be exposed, so we can see clearly what is actually being sacrificed. Once everything is filled in, problems can sometimes be masked by completeness.
+    <br><br>
+    From my recent experience with our music box, I realized that if I had spent less time making the box itself and more time strengthening the connections, it might have been more effective in some ways. Pulling this question out and forcing myself to confront the importance of the code and the connections directly may actually be a better approach.
+  </div>
+</div>
+
+  <div class="quote-card">
+  <blockquote>
+
+
+Look & feel prototypes allow designers to explore aesthetics and sensory feedback, helping stakeholders understand the experience without needing full functionality.
+
+  </blockquote>
+  <div class="response">
+Bottom line: Stop obsessing over polishing that one 'final' prototype masterpiece.
+
+  </div>
+</div>
+
+
+
+<script>
+  const cards = document.querySelectorAll('.quote-card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const response = card.querySelector('.response');
+      response.style.display = response.style.display === 'block' ? 'none' : 'block';
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+/* 基础页面样式 */
+body {
+  font-family: "Microsoft YaHei", Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 20px;
+  line-height: 1.6;
+  color: #333;
+  max-width: 900px; /* 限制正文最大宽度，让排版更像文档 */
+  margin: 0 auto;   /* 居中显示 */
+}
+
+/* 标题样式 */
+h1, h2, h3 {
+  color: #222;
+  border-left: 5px solid #F2D03B; /* 加入你作业中的黄色元素作为装饰 */
+  padding-left: 15px;
+}
+
+/* 画布、视频、图片的统一容器控制 */
+#canvas-container, 
+video, 
+.uml {
+  display: block;
+  margin: 20px auto;       /* 上下留白，左右自动居中 */
+  max-width: 100%;         /* 确保不超出屏幕宽度 */
+  border-radius: 8px;      /* 稍微圆角化，看起来更精致 */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* 统一的阴影感 */
+}
+
+/* 强制视频和代码截图宽度一致 */
+video, .uml {
+  width: 800px;  /* 这里建议设置成跟你 Canvas 一样的宽度 */
+  height: auto;  /* 保持比例，不会拉伸 */
+  background-color: #fff;
+}
+
+/* 修正 canvas-container 的间距 */
+#canvas-container {
+  min-height: 400px; /* 给未加载出的 canvas 预留空间 */
+  margin-bottom: 40px;
+}
+
+/* 修改 p 标签，去掉白色块和边距 */
+p {
+  background-color: transparent; /* 或者直接删掉这一行 */
+  padding: 0;                   /* 去掉内边距 */
+  margin: 15px 0;               /* 保留上下间距，让文字不拥挤 */
+  line-height: 1.8;             /* 增加行高，提升阅读体验 */
+}
+
+/* 专门为容器增加一点间距，防止文字贴着 Canvas */
+#canvas-container {
+  display: block;
+  margin: 0 auto 40px auto; /* 底部留出 40px 间距 */
+}
+
+/* 如果你希望文字部分也不要有最大宽度限制，可以修改 body */
+body {
+  font-family: "Microsoft YaHei", Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 40px; /* 增加页面整体边距 */
+  color: #333;
+}
+
+/* 确保标题下方没有多余的空白 */
+h2, h3 {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}

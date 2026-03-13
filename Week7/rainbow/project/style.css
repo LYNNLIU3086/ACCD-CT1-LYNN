@@ -1,0 +1,56 @@
+body {
+  background: #111;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2 {
+  color: #4fc3f7;
+  margin-top: 20px;
+}
+
+p {
+  max-width: 800px;
+  margin: 10px auto;
+  line-height: 1.5;
+}
+
+.controls {
+  margin: 20px auto;
+  background: #222;
+  padding: 10px 20px;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+input[type="range"] {
+  width: 120px;
+}
+
+button {
+  background: #4fc3f7;
+  color: #000;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #81d4fa;
+}
+
+/* UML 图样式 */
+img.uml, svg.uml {
+  max-width: 90%;       /* 最大宽度 90% 居中 */
+  height: auto;         /* 保持比例 */
+  background: #222;
+  margin: 30px auto;
+  display: block;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  padding: 10px;
+}

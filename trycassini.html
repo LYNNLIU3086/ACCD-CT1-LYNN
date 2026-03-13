@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spatial Distribution – Cassini</title>
+<style>
+body {
+    margin:0;
+    overflow:hidden;
+    background:#05070d;
+    font-family:Arial, sans-serif;
+    color:white;
+}
+
+#legend {
+    position:absolute;
+    top:30px;
+    left:30px;
+    background:rgba(20,25,40,0.85);
+    padding:18px 22px;
+    border-radius:8px;
+    line-height:1.8;
+    font-size:14px;
+}
+
+#legend h3 {
+    margin:0 0 8px 0;
+    font-weight:600;
+}
+
+.dot {
+    display:inline-block;
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    margin-right:8px;
+}
+</style>
+</head>
+<body>
+
+<div id="legend">
+<h3>Grain Type</h3>
+<div><span class="dot" style="background:#63b3ff"></span>Ice</div>
+<div><span class="dot" style="background:#9b7bff"></span>Other</div>
+<div><span class="dot" style="background:#00ffbf"></span>Salt</div>
+<div><span class="dot" style="background:#ff7b3b"></span>Organic</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+
+<script>
+const scene = new THREE.Scene();
+
+const camera = new THREE.OrthographicCamera(
+    window.innerWidth / -40,
+    window.innerWidth / 40,
+    window.innerHeight / 40,
+    window.innerHeight / -40,
+    1,
+    1000
+);
+camera.position.set(0,150,0);
+camera.lookAt(0,0,0);
+
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+document.body.appendChild(renderer.domElement);
+
+// Saturn
+const saturnGeo = new THREE.CircleGeometry(6,64);
+const saturnMat = new THREE.MeshBasicMaterial({color:0xf1c40f});
+const saturn = new THREE.Mesh(saturnGeo, saturnMat);
+saturn.rotation.x = -Math.PI/2;
+scene.add(saturn);
+
+// Ring guide circles
+for(let r=15;r<=60;r+=15){
+    const ringGeo = new THREE.RingGeometry(r-0.3,r+0.3,64);
+    const ringMat = new THREE.MeshBasicMaterial({
+        color:0xffffff,
+        transparent:true,
+        opacity:0.06,
+        side:THREE.DoubleSide
+    });
+    const ring = new THREE.Mesh(ringGeo,ringMat);
+    ring.rotation.x = Math.PI/2;
+    scene.add(ring);
+}
+
+// Particle system
+const particleCount = 8000;
+const positions = new Float32Array(particleCount*3);
+const colors = new Float32Array(particleCount*3);
+
+for(let i=0;i<particleCount;i++){
+
+    const angle = Math.random()*Math.PI*2;
+    const radius = 20 + Math.random()*45;
+
+    positions[i*3] = radius*Math.cos(angle);
+    positions[i*3+1] = (Math.random()-0.5)*10;
+    positions[i*3+2] = radius*Math.sin(angle);
+
+    const r = Math.random();
+    if(r<0.6){ // Ice
+        colors[i*3]=0.39;
+        colors[i*3+1]=0.7;
+        colors[i*3+2]=1;
+    }
+    else if(r<0.8){ // Other
+        colors[i*3]=0.6;
+        colors[i*3+1]=0.48;
+        colors[i*3+2]=1;
+    }
+    else if(r<0.93){ // Salt
+        colors[i*3]=0;
+        colors[i*3+1]=1;
+        colors[i*3+2]=0.75;
+    }
+    else{ // Organic
+        colors[i*3]=1;
+        colors[i*3+1]=0.48;
+        colors[i*3+2]=0.23;
+    }
+}
+
+const geometry = new THREE.BufferGeometry();
+geometry.setAttribute('position', new THREE.BufferAttribute(positions,3));
+geometry.setAttribute('color', new THREE.BufferAttribute(colors,3));
+
+const material = new THREE.PointsMaterial({
+    size:1.8,
+    vertexColors:true,
+    transparent:true,
+    opacity:0.9,
+    blending:THREE.AdditiveBlending,
+    depthWrite:false
+});
+
+const particles = new THREE.Points(geometry, material);
+scene.add(particles);
+
+// subtle rotation
+function animate(){
+    requestAnimationFrame(animate);
+    particles.rotation.y += 0.0005;
+    renderer.render(scene,camera);
+}
+animate();
+
+window.addEventListener("resize",()=>{
+    camera.left = window.innerWidth / -40;
+    camera.right = window.innerWidth / 40;
+    camera.top = window.innerHeight / 40;
+    camera.bottom = window.innerHeight / -40;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>

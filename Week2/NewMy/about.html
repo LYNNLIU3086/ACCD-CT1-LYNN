@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About | Lynn Liu</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+  font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  line-height:1.8;
+}
+
+/* 顶部导航栏统一风格 */
+header {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+
+header h1 {
+  font-size:1.5em;
+  font-weight:600;
+  letter-spacing:1px;
+}
+
+header nav a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:40px;
+  font-weight:400; /* 正常字体 */
+  font-size:1em;
+  transition:color 0.3s;
+}
+
+header nav a:hover {
+  color:#aaa;
+}
+
+/* 页面主体容器 */
+.container {
+  max-width:900px;
+  margin:120px auto 60px; /* 顶部留空间给固定导航 */
+  padding:0 50px;
+  text-align:left;
+}
+
+/* 返回按钮 */
+.back-btn {
+  display:inline-block;
+  margin-bottom:50px;
+  padding:10px 18px;
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:6px;
+  color:#fff;
+  text-decoration:none;
+  transition:0.2s;
+}
+.back-btn:hover {
+  background:rgba(255,255,255,0.03);
+  transform:translateY(-2px);
+}
+
+/* section 标题 */
+.section {
+  margin-bottom:50px;
+}
+
+.section h2 {
+  font-size:1.4em;
+  margin-bottom:20px;
+  color:#ccc;
+  border-bottom:1px solid #333;
+  padding-bottom:5px;
+}
+
+/* 每条经历分层 */
+.item {
+  margin-bottom:25px;
+}
+
+.item .role {
+  font-weight:600;
+  font-size:1.05em;
+  color:#fff;
+  margin-bottom:4px;
+}
+
+.item .company {
+  font-weight:400;
+  font-size:0.95em;
+  color:#ccc;
+  margin-bottom:4px;
+}
+
+.item .date {
+  font-size:0.85em;
+  color:#888;
+  margin-bottom:8px;
+}
+
+.item ul {
+  margin-left:25px;
+  color:#eee;
+  font-size:0.9em;
+  line-height:1.5;
+}
+
+ul.skills, ul.exhibitions {
+  margin-left:25px;
+  font-size:0.95em;
+  color:#eee;
+  margin-bottom:20px;
+}
+
+ul.skills li,
+ul.exhibitions li {
+  margin-bottom:8px;
+}
+
+/* 响应式 */
+@media (max-width: 800px) {
+  nav {
+    padding: 16px 24px;
+  }
+  nav .menu {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  nav {
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+  }
+  nav .menu {
+    flex-direction: row;
+    gap: 16px;
+    margin-top: 8px;
+  }
+  nav .logo {
+    font-size: 1.2rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 导航栏 -->
+<header>
+  <h1>LYNN LIU</h1>
+  <nav>
+    <a href="index.html">Works</a>
+    <a href="resume.html">Resume</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<!-- 页面主体 -->
+<div class="container">
+  <a class="back-btn" href="index.html">← Back to Works</a>
+
+  <!-- About Me -->
+  <div class="section">
+    <h2>ABOUT ME</h2>
+    <div class="item">
+      <p>Hello! I’m Lynn. As a media designer and visual artist, I architect innovative solutions through the structured synthesis of complex information and methodical research, guiding projects from conception to tangible results. My skill set—encompassing immersive environments, digital exhibitions, 3D rendering, interactive prototypes, AI, and front-end development—is focused on guaranteeing that every creative vision is supported by deep insights and brought to life through seamless integration.</p>
+
+  
+    </div>
+  </div>
+
+ 
+
+  <!-- Skills (optional to show on About) -->
+  <div class="section">
+    <h2>What I Bring to the Table</h2>
+    <ul class="skills">
+      <li><strong></strong> Bridging User Research & Technical Implementation </li>
+      <li><strong></strong> End-to-End Prototyping & Front-end Development</li>
+      <li><strong></strong> Full-Process Ownership of Product Design & Development</li>
+    </ul>
+  </div>
+   <!-- Contact Info -->
+  <div class="section">
+    <h2>CONTACT</h2>
+    <div class="item">
+      <!-- <p class="role">Tel: 626-567-5250</p> -->
+      <p class="role">Email: <a href="mailto:yliu84@inside.artcenter.edu" style="color:#ccc; text-decoration:underline;">yliu84@inside.artcenter.edu</a></p>
+    </div>
+  </div>
+</div>
+<script>
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+
+let lastScrollTop = 0;
+const navbar = document.querySelector("nav"); // 你的菜单栏标签是 nav 的话
+
+window.addEventListener("scroll", function() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  if (scrollTop > lastScrollTop) {
+    // 向下滚动 -> 隐藏菜单栏
+    navbar.style.transform = "translateY(-100%)";
+  } else {
+    // 向上滚动 -> 显示菜单栏
+    navbar.style.transform = "translateY(0)";
+  }
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // 防止负值
+});
+</script>
+
+
+</body>
+</html>

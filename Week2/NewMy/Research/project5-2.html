@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hormone1.0 — Lynn Liu</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+  font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  line-height:1.7;
+}
+
+/* 导航栏 */
+header {
+  position: fixed;
+  top:0; left:0; right:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
+  background: rgba(0,0,0,0.3);   /* ✅ 初始半透明 */
+  backdrop-filter: blur(6px);
+  transition: all 0.4s ease;      /* ✅ 平滑过渡 */
+}
+header.scrolled {
+  background: rgba(0,0,0,0.85);  /* ✅ 滚动后更不透明 */
+}
+header h1 {
+  font-size:1.5em;
+  font-weight:400;
+  letter-spacing:1px;
+}
+nav a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:40px;
+  font-weight:400;
+  font-size:1em;
+  transition:color 0.3s;
+}
+nav a:hover {color:crimson;}
+
+/* 主体容器 */
+.container {
+  max-width:900px;
+  margin:100px auto 60px;
+  padding:0 40px;
+  display:flex;
+  flex-direction:column;
+  gap:32px;
+}
+
+/* 项目标题与简介 */
+.section h1 {
+  font-size:1.8em;
+  font-weight:700;
+  margin-bottom:12px;
+}
+.section .description {
+  color:#ddd;
+  font-size:1rem;
+  line-height:1.6;
+  margin-bottom:24px;
+}
+
+/* 媒体比例统一 */
+.media-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 比例 */
+  border-radius:8px;
+  overflow:hidden;
+  background:#111;
+}
+
+.media-wrapper iframe,
+.media-wrapper img {
+  position:absolute;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border:none;
+  cursor:pointer;
+  transition: transform 0.3s ease;
+}
+.media-wrapper img:hover {transform:scale(1.02);}
+
+/* Lightbox */
+.lightbox {
+  display:none;
+  position:fixed;
+  z-index:3000;
+  top:0; left:0;
+  width:100%;
+  height:100%;
+  background: rgba(0,0,0,0.85);
+  justify-content:center;
+  align-items:center;
+}
+.lightbox img {
+  max-width:90%;
+  max-height:80%;
+  border-radius:12px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+}
+.lightbox.active {display:flex;}
+/* 底部项目导航 */
+.project-nav {display:flex; justify-content:space-between; margin-top:60px; padding-top:20px; border-top:1px solid #333; font-weight:600;}
+.project-nav a {text-decoration:none; color:#fff; transition:color .3s;}
+.project-nav a:hover {color: crimson;}
+
+
+/* ========= 响应式调整 ========= */
+@media (max-width: 768px) {
+  header {
+    padding:8px 24px;        /* ✅ 菜单栏变细 */
+  }
+  header h1 {
+    font-size:1.2em;         /* ✅ 字体稍小 */
+  }
+  nav a {
+    font-size:0.9em;
+    margin-left:20px;        /* ✅ 间距缩小 */
+  }
+  .container {
+    margin-top:70px;         /* ✅ 内容下移防止被挡 */
+  }
+}
+
+@media (max-width: 500px) {
+  header {
+    flex-direction:column;
+    align-items:center;
+    padding:10px 0;
+  }
+  nav a {
+    margin:0 12px;
+  }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>LYNN LIU</h1>
+  <nav>
+    <a href="../index.html">Works</a>
+    <a href="../resume.html">Resume</a>
+    <a href="../about.html">About</a>
+  </nav>
+</header>
+
+<div class="media-wrapper" style="position:relative;">
+    <img src="../assets/project5_img.jpg" alt="Project 1 image 1">
+    <div style="position:absolute; top:0; left:0; width:100%; height:100%;"></div>
+</div>
+
+
+<div class="container section">
+  <h1>Project Five — 光影装置实验</h1>
+  <p class="description">
+    本项目探索 <b>空间互动与光影实验</b>，通过感应装置捕捉观众动作，
+    生成动态光影效果，使静态空间呈现出呼吸般的生命感。
+  </p>
+
+  <!-- 图片展示 -->
+  <div class="media-wrapper">
+    <img src="../assets/project5_img1.jpg" alt="Project Five image 1">
+  </div>
+  <div class="media-wrapper">
+    <img src="../assets/project5_img2.jpg" alt="Project Five image 2">
+  </div>
+  <div class="media-wrapper">
+    <img src="../assets/project5_img3.jpg" alt="Project Five image 3">
+  </div>
+
+  <!-- 底部三连导航 -->
+  <div class="project-nav">
+    <a href="../index.html" class="overview">Works</a>
+    <a href="project5.html" class="next"> →</a>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <img src="" alt="Expanded view">
+</div>
+
+<script>
+  // Lightbox 功能
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+  document.querySelectorAll('.media-wrapper img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightbox.classList.add('active');
+    });
+  });
+  lightbox.addEventListener('click', () => lightbox.classList.remove('active'));
+
+// 禁止右键菜单
+document.addEventListener('contextmenu', function(e){
+    e.preventDefault();
+    alert("右键已禁用");
+});
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+// ✅ 滚动时隐藏/显示菜单栏 + 透明渐变效果
+let lastScrollTop = 0;
+const navbar = document.querySelector("header");
+
+window.addEventListener("scroll", function() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  // 滚动方向控制隐藏/出现
+  if (scrollTop > lastScrollTop) {
+    navbar.style.transform = "translateY(-100%)";
+  } else {
+    navbar.style.transform = "translateY(0)";
+  }
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+
+  // ✅ 滚动距离控制透明度变化
+  if (scrollTop > 80) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,992 @@
+[
+  {
+    "id": 1,
+    "name": "Isometric Park 001",
+    "style": "Isometric",
+    "region": "North America",
+    "filename": "maps/map_001.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 2,
+    "name": "Birdseye Park 002",
+    "style": "Birdseye",
+    "region": "Europe",
+    "filename": "maps/map_002.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 3,
+    "name": "Cartoon Park 003",
+    "style": "Cartoon",
+    "region": "Asia",
+    "filename": "maps/map_003.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 4,
+    "name": "Realistic Park 004",
+    "style": "Realistic",
+    "region": "Oceania",
+    "filename": "maps/map_004.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 5,
+    "name": "Conceptual Park 005",
+    "style": "Conceptual",
+    "region": "Latin America",
+    "filename": "maps/map_005.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 6,
+    "name": "Isometric Park 006",
+    "style": "Isometric",
+    "region": "Africa",
+    "filename": "maps/map_006.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 7,
+    "name": "Birdseye Park 007",
+    "style": "Birdseye",
+    "region": "North America",
+    "filename": "maps/map_007.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 8,
+    "name": "Cartoon Park 008",
+    "style": "Cartoon",
+    "region": "Europe",
+    "filename": "maps/map_008.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 9,
+    "name": "Realistic Park 009",
+    "style": "Realistic",
+    "region": "Asia",
+    "filename": "maps/map_009.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 10,
+    "name": "Conceptual Park 010",
+    "style": "Conceptual",
+    "region": "Oceania",
+    "filename": "maps/map_010.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 11,
+    "name": "Isometric Park 011",
+    "style": "Isometric",
+    "region": "Latin America",
+    "filename": "maps/map_011.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 12,
+    "name": "Birdseye Park 012",
+    "style": "Birdseye",
+    "region": "Africa",
+    "filename": "maps/map_012.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 13,
+    "name": "Cartoon Park 013",
+    "style": "Cartoon",
+    "region": "North America",
+    "filename": "maps/map_013.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 14,
+    "name": "Realistic Park 014",
+    "style": "Realistic",
+    "region": "Europe",
+    "filename": "maps/map_014.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 15,
+    "name": "Conceptual Park 015",
+    "style": "Conceptual",
+    "region": "Asia",
+    "filename": "maps/map_015.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 16,
+    "name": "Isometric Park 016",
+    "style": "Isometric",
+    "region": "Oceania",
+    "filename": "maps/map_016.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 17,
+    "name": "Birdseye Park 017",
+    "style": "Birdseye",
+    "region": "Latin America",
+    "filename": "maps/map_017.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 18,
+    "name": "Cartoon Park 018",
+    "style": "Cartoon",
+    "region": "Africa",
+    "filename": "maps/map_018.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 19,
+    "name": "Realistic Park 019",
+    "style": "Realistic",
+    "region": "North America",
+    "filename": "maps/map_019.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 20,
+    "name": "Conceptual Park 020",
+    "style": "Conceptual",
+    "region": "Europe",
+    "filename": "maps/map_020.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 21,
+    "name": "Isometric Park 021",
+    "style": "Isometric",
+    "region": "Asia",
+    "filename": "maps/map_021.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 22,
+    "name": "Birdseye Park 022",
+    "style": "Birdseye",
+    "region": "Oceania",
+    "filename": "maps/map_022.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 23,
+    "name": "Cartoon Park 023",
+    "style": "Cartoon",
+    "region": "Latin America",
+    "filename": "maps/map_023.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 24,
+    "name": "Realistic Park 024",
+    "style": "Realistic",
+    "region": "Africa",
+    "filename": "maps/map_024.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 25,
+    "name": "Conceptual Park 025",
+    "style": "Conceptual",
+    "region": "North America",
+    "filename": "maps/map_025.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 26,
+    "name": "Isometric Park 026",
+    "style": "Isometric",
+    "region": "Europe",
+    "filename": "maps/map_026.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 27,
+    "name": "Birdseye Park 027",
+    "style": "Birdseye",
+    "region": "Asia",
+    "filename": "maps/map_027.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 28,
+    "name": "Cartoon Park 028",
+    "style": "Cartoon",
+    "region": "Oceania",
+    "filename": "maps/map_028.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 29,
+    "name": "Realistic Park 029",
+    "style": "Realistic",
+    "region": "Latin America",
+    "filename": "maps/map_029.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 30,
+    "name": "Conceptual Park 030",
+    "style": "Conceptual",
+    "region": "Africa",
+    "filename": "maps/map_030.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 31,
+    "name": "Isometric Park 031",
+    "style": "Isometric",
+    "region": "North America",
+    "filename": "maps/map_031.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 32,
+    "name": "Birdseye Park 032",
+    "style": "Birdseye",
+    "region": "Europe",
+    "filename": "maps/map_032.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 33,
+    "name": "Cartoon Park 033",
+    "style": "Cartoon",
+    "region": "Asia",
+    "filename": "maps/map_033.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 34,
+    "name": "Realistic Park 034",
+    "style": "Realistic",
+    "region": "Oceania",
+    "filename": "maps/map_034.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 35,
+    "name": "Conceptual Park 035",
+    "style": "Conceptual",
+    "region": "Latin America",
+    "filename": "maps/map_035.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 36,
+    "name": "Isometric Park 036",
+    "style": "Isometric",
+    "region": "Africa",
+    "filename": "maps/map_036.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 37,
+    "name": "Birdseye Park 037",
+    "style": "Birdseye",
+    "region": "North America",
+    "filename": "maps/map_037.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 38,
+    "name": "Cartoon Park 038",
+    "style": "Cartoon",
+    "region": "Europe",
+    "filename": "maps/map_038.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 39,
+    "name": "Realistic Park 039",
+    "style": "Realistic",
+    "region": "Asia",
+    "filename": "maps/map_039.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 40,
+    "name": "Conceptual Park 040",
+    "style": "Conceptual",
+    "region": "Oceania",
+    "filename": "maps/map_040.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 41,
+    "name": "Isometric Park 041",
+    "style": "Isometric",
+    "region": "Latin America",
+    "filename": "maps/map_041.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 42,
+    "name": "Birdseye Park 042",
+    "style": "Birdseye",
+    "region": "Africa",
+    "filename": "maps/map_042.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 43,
+    "name": "Cartoon Park 043",
+    "style": "Cartoon",
+    "region": "North America",
+    "filename": "maps/map_043.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 44,
+    "name": "Realistic Park 044",
+    "style": "Realistic",
+    "region": "Europe",
+    "filename": "maps/map_044.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 45,
+    "name": "Conceptual Park 045",
+    "style": "Conceptual",
+    "region": "Asia",
+    "filename": "maps/map_045.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 46,
+    "name": "Isometric Park 046",
+    "style": "Isometric",
+    "region": "Oceania",
+    "filename": "maps/map_046.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 47,
+    "name": "Birdseye Park 047",
+    "style": "Birdseye",
+    "region": "Latin America",
+    "filename": "maps/map_047.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 48,
+    "name": "Cartoon Park 048",
+    "style": "Cartoon",
+    "region": "Africa",
+    "filename": "maps/map_048.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 49,
+    "name": "Realistic Park 049",
+    "style": "Realistic",
+    "region": "North America",
+    "filename": "maps/map_049.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 50,
+    "name": "Conceptual Park 050",
+    "style": "Conceptual",
+    "region": "Europe",
+    "filename": "maps/map_050.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 51,
+    "name": "Isometric Park 051",
+    "style": "Isometric",
+    "region": "Asia",
+    "filename": "maps/map_051.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 52,
+    "name": "Birdseye Park 052",
+    "style": "Birdseye",
+    "region": "Oceania",
+    "filename": "maps/map_052.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 53,
+    "name": "Cartoon Park 053",
+    "style": "Cartoon",
+    "region": "Latin America",
+    "filename": "maps/map_053.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 54,
+    "name": "Realistic Park 054",
+    "style": "Realistic",
+    "region": "Africa",
+    "filename": "maps/map_054.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 55,
+    "name": "Conceptual Park 055",
+    "style": "Conceptual",
+    "region": "North America",
+    "filename": "maps/map_055.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 56,
+    "name": "Isometric Park 056",
+    "style": "Isometric",
+    "region": "Europe",
+    "filename": "maps/map_056.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 57,
+    "name": "Birdseye Park 057",
+    "style": "Birdseye",
+    "region": "Asia",
+    "filename": "maps/map_057.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 58,
+    "name": "Cartoon Park 058",
+    "style": "Cartoon",
+    "region": "Oceania",
+    "filename": "maps/map_058.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 59,
+    "name": "Realistic Park 059",
+    "style": "Realistic",
+    "region": "Latin America",
+    "filename": "maps/map_059.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 60,
+    "name": "Conceptual Park 060",
+    "style": "Conceptual",
+    "region": "Africa",
+    "filename": "maps/map_060.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 61,
+    "name": "Isometric Park 061",
+    "style": "Isometric",
+    "region": "North America",
+    "filename": "maps/map_061.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 62,
+    "name": "Birdseye Park 062",
+    "style": "Birdseye",
+    "region": "Europe",
+    "filename": "maps/map_062.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 63,
+    "name": "Cartoon Park 063",
+    "style": "Cartoon",
+    "region": "Asia",
+    "filename": "maps/map_063.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 64,
+    "name": "Realistic Park 064",
+    "style": "Realistic",
+    "region": "Oceania",
+    "filename": "maps/map_064.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 65,
+    "name": "Conceptual Park 065",
+    "style": "Conceptual",
+    "region": "Latin America",
+    "filename": "maps/map_065.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 66,
+    "name": "Isometric Park 066",
+    "style": "Isometric",
+    "region": "Africa",
+    "filename": "maps/map_066.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 67,
+    "name": "Birdseye Park 067",
+    "style": "Birdseye",
+    "region": "North America",
+    "filename": "maps/map_067.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 68,
+    "name": "Cartoon Park 068",
+    "style": "Cartoon",
+    "region": "Europe",
+    "filename": "maps/map_068.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 69,
+    "name": "Realistic Park 069",
+    "style": "Realistic",
+    "region": "Asia",
+    "filename": "maps/map_069.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 70,
+    "name": "Conceptual Park 070",
+    "style": "Conceptual",
+    "region": "Oceania",
+    "filename": "maps/map_070.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 71,
+    "name": "Isometric Park 071",
+    "style": "Isometric",
+    "region": "Latin America",
+    "filename": "maps/map_071.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 72,
+    "name": "Birdseye Park 072",
+    "style": "Birdseye",
+    "region": "Africa",
+    "filename": "maps/map_072.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 73,
+    "name": "Cartoon Park 073",
+    "style": "Cartoon",
+    "region": "North America",
+    "filename": "maps/map_073.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 74,
+    "name": "Realistic Park 074",
+    "style": "Realistic",
+    "region": "Europe",
+    "filename": "maps/map_074.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 75,
+    "name": "Conceptual Park 075",
+    "style": "Conceptual",
+    "region": "Asia",
+    "filename": "maps/map_075.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 76,
+    "name": "Isometric Park 076",
+    "style": "Isometric",
+    "region": "Oceania",
+    "filename": "maps/map_076.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 77,
+    "name": "Birdseye Park 077",
+    "style": "Birdseye",
+    "region": "Latin America",
+    "filename": "maps/map_077.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 78,
+    "name": "Cartoon Park 078",
+    "style": "Cartoon",
+    "region": "Africa",
+    "filename": "maps/map_078.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 79,
+    "name": "Realistic Park 079",
+    "style": "Realistic",
+    "region": "North America",
+    "filename": "maps/map_079.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 80,
+    "name": "Conceptual Park 080",
+    "style": "Conceptual",
+    "region": "Europe",
+    "filename": "maps/map_080.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 81,
+    "name": "Isometric Park 081",
+    "style": "Isometric",
+    "region": "Asia",
+    "filename": "maps/map_081.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 82,
+    "name": "Birdseye Park 082",
+    "style": "Birdseye",
+    "region": "Oceania",
+    "filename": "maps/map_082.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 83,
+    "name": "Cartoon Park 083",
+    "style": "Cartoon",
+    "region": "Latin America",
+    "filename": "maps/map_083.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 84,
+    "name": "Realistic Park 084",
+    "style": "Realistic",
+    "region": "Africa",
+    "filename": "maps/map_084.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 85,
+    "name": "Conceptual Park 085",
+    "style": "Conceptual",
+    "region": "North America",
+    "filename": "maps/map_085.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 86,
+    "name": "Isometric Park 086",
+    "style": "Isometric",
+    "region": "Europe",
+    "filename": "maps/map_086.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 87,
+    "name": "Birdseye Park 087",
+    "style": "Birdseye",
+    "region": "Asia",
+    "filename": "maps/map_087.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 88,
+    "name": "Cartoon Park 088",
+    "style": "Cartoon",
+    "region": "Oceania",
+    "filename": "maps/map_088.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 89,
+    "name": "Realistic Park 089",
+    "style": "Realistic",
+    "region": "Latin America",
+    "filename": "maps/map_089.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 90,
+    "name": "Conceptual Park 090",
+    "style": "Conceptual",
+    "region": "Africa",
+    "filename": "maps/map_090.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 91,
+    "name": "Isometric Park 091",
+    "style": "Isometric",
+    "region": "North America",
+    "filename": "maps/map_091.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 92,
+    "name": "Birdseye Park 092",
+    "style": "Birdseye",
+    "region": "Europe",
+    "filename": "maps/map_092.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 93,
+    "name": "Cartoon Park 093",
+    "style": "Cartoon",
+    "region": "Asia",
+    "filename": "maps/map_093.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 94,
+    "name": "Realistic Park 094",
+    "style": "Realistic",
+    "region": "Oceania",
+    "filename": "maps/map_094.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 95,
+    "name": "Conceptual Park 095",
+    "style": "Conceptual",
+    "region": "Latin America",
+    "filename": "maps/map_095.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 96,
+    "name": "Isometric Park 096",
+    "style": "Isometric",
+    "region": "Africa",
+    "filename": "maps/map_096.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 97,
+    "name": "Birdseye Park 097",
+    "style": "Birdseye",
+    "region": "North America",
+    "filename": "maps/map_097.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 98,
+    "name": "Cartoon Park 098",
+    "style": "Cartoon",
+    "region": "Europe",
+    "filename": "maps/map_098.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 99,
+    "name": "Realistic Park 099",
+    "style": "Realistic",
+    "region": "Asia",
+    "filename": "maps/map_099.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 100,
+    "name": "Conceptual Park 100",
+    "style": "Conceptual",
+    "region": "Oceania",
+    "filename": "maps/map_100.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 101,
+    "name": "Isometric Park 101",
+    "style": "Isometric",
+    "region": "Latin America",
+    "filename": "maps/map_101.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 102,
+    "name": "Birdseye Park 102",
+    "style": "Birdseye",
+    "region": "Africa",
+    "filename": "maps/map_102.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 103,
+    "name": "Cartoon Park 103",
+    "style": "Cartoon",
+    "region": "North America",
+    "filename": "maps/map_103.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 104,
+    "name": "Realistic Park 104",
+    "style": "Realistic",
+    "region": "Europe",
+    "filename": "maps/map_104.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 105,
+    "name": "Conceptual Park 105",
+    "style": "Conceptual",
+    "region": "Asia",
+    "filename": "maps/map_105.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 106,
+    "name": "Isometric Park 106",
+    "style": "Isometric",
+    "region": "Oceania",
+    "filename": "maps/map_106.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 107,
+    "name": "Birdseye Park 107",
+    "style": "Birdseye",
+    "region": "Latin America",
+    "filename": "maps/map_107.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 108,
+    "name": "Cartoon Park 108",
+    "style": "Cartoon",
+    "region": "Africa",
+    "filename": "maps/map_108.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 109,
+    "name": "Realistic Park 109",
+    "style": "Realistic",
+    "region": "North America",
+    "filename": "maps/map_109.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  },
+  {
+    "id": 110,
+    "name": "Conceptual Park 110",
+    "style": "Conceptual",
+    "region": "Europe",
+    "filename": "maps/map_110.svg",
+    "format": "SVG",
+    "notes": "Placeholder file — swap with real map image (SVG/PNG/PDF)."
+  }
+]

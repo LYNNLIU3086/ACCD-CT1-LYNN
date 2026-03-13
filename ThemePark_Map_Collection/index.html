@@ -1,0 +1,33 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Theme Park Map Collection — Local Gallery</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="sidebar">
+    <h1>Theme Park Map Collection</h1>
+    <p>Offline gallery — replace placeholder SVGs in /maps/ with real map files (SVG, PNG, JPG).</p>
+    <label>Filter by style:
+      <select id="filterStyle">
+        <option value="All">All</option>
+        <option>Isometric</option>
+        <option>Birdseye</option>
+        <option>Cartoon</option>
+        <option>Realistic</option>
+        <option>Conceptual</option>
+      </select>
+    </label>
+    <div id="mapList"></div>
+  </div>
+  <div id="viewer">
+    <div id="mapContainer">
+      <img id="currentMap" src="" alt="Select a map from the left" />
+    </div>
+  </div>
+<script src="js/viewer.js"></script>
+</body>
+</html>

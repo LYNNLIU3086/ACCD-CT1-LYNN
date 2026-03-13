@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UML & p5.js</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>UML & p5.js</h1>
+  </header>
+
+  <section id="canvasSection">
+    <h2>p5.js</h2>
+    <div id="canvasContainer"></div>
+    <div id="controls">
+      <label>color:
+        <input type="color" id="colorPicker" value="#ff6464">
+      </label>
+      <label>size:
+        <input type="range" id="sizeSlider" min="2" max="50" value="10">
+        <span id="sizeValue">10</span>
+      </label>
+      <button id="clearBtn">clean</button>
+    </div>
+  </section>
+
+    <section id="uml">
+    <h2>UML</h2>
+    <img src="uml-diagram.png" alt="UML Diagram" width="400">
+  </section>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
+  <script src="brush.js"></script>
+  <script src="sketch.js"></script>
+</body>
+</html>

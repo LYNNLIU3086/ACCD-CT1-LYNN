@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Works | Lynn Liu</title>
+<style>
+* {margin:0; padding:0; box-sizing:border-box;}
+body {
+  font-family:"Helvetica Neue","PingFang SC",Arial,sans-serif;
+  background:#000;
+  color:#fff;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+
+/* 顶部导航栏 */
+header {
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  padding:20px 60px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  z-index:100;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(6px);
+}
+header h1 {
+  font-size:1.5em;
+  font-weight:400;
+  letter-spacing:1px;
+}
+header nav a {
+  color:#fff;
+  text-decoration:none;
+  margin-left:40px;
+  font-weight:400;
+  font-size:1em;
+  transition:color 0.3s;
+}
+header nav a:hover { color:#aaa; }
+
+/* intro splash */
+.intro{
+  position:fixed; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  background:#000; z-index:2000;
+}
+.intro .title{
+  font-size:clamp(36px,7vw,72px);
+  letter-spacing:4px;font-weight:700;
+  transform:translateY(12px);opacity:0;
+  animation:introTitle 900ms ease forwards;
+  color:#fff;
+}
+.intro .sub{
+  margin-top:18px;color:#aaa;font-size:14px;
+  opacity:0;animation:introSub 900ms ease 200ms forwards;
+}
+.intro .skip{
+  margin-top:36px;color:#888;font-size:0.9em;cursor:pointer;
+  opacity:0;animation:introBtn .9s ease .35s forwards;
+}
+@keyframes introTitle{to{transform:none;opacity:1;}}
+@keyframes introSub{to{opacity:1;}}
+@keyframes introBtn{to{opacity:1;}}
+.intro.hidden{opacity:0;pointer-events:none;transition:opacity .6s ease;}
+
+/* 分类筛选器 */
+.filter-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 40px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.filter-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+.filter-btn:hover { background: rgba(255, 255, 255, 0.2); }
+.filter-btn.active {
+  background: #fff;
+  color: #000;
+}
+
+/* 主容器 */
+main {
+  max-width:1200px;
+  margin:140px auto 80px;
+  padding:0 40px;
+}
+
+/* 项目网格 */
+.grid{
+  display:grid;
+  gap:40px; /* 加大间距 */
+  grid-template-columns:repeat(2,1fr); /* 每行两列 */
+}
+@media(max-width:720px){
+  .grid{
+    grid-template-columns:1fr; /* 小屏一列 */
+  }
+}
+
+/* 项目框 */
+.project{
+  position:relative;overflow:hidden;
+  border-radius:10px;cursor:pointer;
+  background:#0b0b0b;display:block;
+  text-decoration:none;color:inherit;
+  transform:translateY(12px);opacity:0;
+  transition:transform .7s cubic-bezier(.2,.9,.2,1),opacity .7s;
+}
+.project.is-visible{transform:none;opacity:1;}
+
+.project__media{
+  display:block;
+  width:100%;
+  height:300px; /* 加高作品框 */
+  object-fit:cover;
+  transition:transform .6s ease,filter .5s ease;
+}
+.project:hover .project__media{transform:scale(1.06);filter:brightness(.6);}
+
+.overlay{
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  padding:28px; text-align:center;
+  background:linear-gradient(180deg,rgba(0,0,0,0.15),rgba(0,0,0,0.6));
+  opacity:0; transition:opacity .45s ease;
+}
+.project:hover .overlay,.project:focus .overlay{opacity:1;}
+.overlay h2{
+  font-size:clamp(18px,2.2vw,28px);
+  margin-bottom:8px;letter-spacing:1px;
+}
+.overlay p{
+  color:#ddd;font-size:13px;max-width:80%;line-height:1.55;
+}
+
+.meta{
+  position:absolute;left:12px;bottom:12px;
+  color:#bbb;font-size:12px;opacity:.9;
+  background:rgba(255,255,255,0.02);
+  padding:6px 8px;border-radius:6px;
+}
+
+/* Footer */
+footer{
+  text-align:center;padding:20px 0;
+  color:#777;background:rgba(0,0,0,0.85);
+}
+
+/* 响应式 */
+@media (max-width: 500px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 0;
+  }
+  header nav {
+    margin-top: 8px;
+  }
+  header h1 {
+    font-size: 1.2rem;
+  }
+  .filter-container { gap: 8px; }
+  .filter-btn { padding: 6px 14px; font-size: 12px; }
+  .project__media{ height:220px; } /* 手机适配高度 */
+}
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro">
+  <video autoplay muted loop playsinline id="introVideo">
+    <source src="assets/intro.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <!-- <div class="title">My Profile</div>
+  <div class="sub">作品集 · 视觉 / 交互 / 影像</div>
+  <div class="skip">点击任意位置跳过</div> -->
+</div>
+
+<!-- 导航栏 -->
+<header id="header">
+  <h1>LYNN LIU</h1>
+  <nav>
+    <a href="index.html">Works</a>
+    <a href="resume.html">Resume</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<!-- 主体内容 -->
+<main>
+  <!-- 分类筛选器 -->
+  <div class="filter-container">
+    <button class="filter-btn active" data-filter="all">All Projects</button>
+    <button class="filter-btn" data-filter="exhibition">Exhibition</button>
+    <button class="filter-btn" data-filter="AI">Machine</button>
+    <!-- <button class="filter-btn" data-filter="UI">Product</button> -->
+    <button class="filter-btn" data-filter="research">Research</button>
+    <button class="filter-btn" data-filter="animation">Practices</button>
+    
+  
+  </div>
+
+  <section class="grid" id="projectsGrid">
+
+    <a href="Exhibition/project1.html" class="project project--lead" data-category="exhibition">
+      <img class="project__media" src="assets/thumb1.jpg" alt="Self-comb">
+      <div class="overlay"><h2>Self-comb</h2><p>Immersive Spatial & Interactive Experience</p></div>
+      <div class="meta">Virtual Reality · 2.2023-1.2025</div>
+    </a>
+
+    <a href="Exhibition/project2.html" class="project" data-category="exhibition">
+      <img class="project__media" src="assets/thumb2.jpg" alt="She is me">
+      <div class="overlay"><h2>She is me</h2><p>Data visualization & Hardware</p></div>
+      <div class="meta">Exhibition and Installation · 1.2024-7.2024</div>
+    </a>
+
+    <a href="Exhibition/project3.html" class="project" data-category="exhibition">
+      <img class="project__media" src="assets/thumb3.jpg" alt="The gifts of the land">
+      <div class="overlay"><h2>The Gifts of the Land</h2><p>Data Visualization & Hardware</p></div>
+      <div class="meta">Exhibition and Social practice · 7.2023-9.2023</div>
+    </a>
+    <a href="Machine/project4-2.html" class="project" data-category="AI">
+      <img class="project__media" src="assets/thumb4-2.jpg" alt="Meteorite-Crater">
+      <div class="overlay"><h2>Meteorite-Crater</h2><p>ML & Map & NASA</p></div>
+      <div class="meta">Machine Learning · 10.2025-now</div>
+      
+    <a href="Machine/project4.html" class="project" data-category="AI">
+      <img class="project__media" src="assets/thumb4.jpg" alt="Acupoint">
+      <div class="overlay"><h2>Acupoint</h2><p>Object Detection & Fashion</p></div>
+      <div class="meta">Machine Learning · 10.2023-12.2023</div>
+
+
+    <a href="Research/project6.html" class="project" data-category="research">
+      <img class="project__media" src="assets/thumb6.jpg" alt="The Brainy Gut">
+      <div class="overlay"><h2>The Brainy Gut</h2><p>Interactive Health & Conceptual Hardware Design</p></div>
+      <div class="meta">Creative Design Research · 11.2024-1.2025</div>
+    </a>
+
+
+    <a href="Research/project5-2.html" class="project" data-category="research">
+      <img class="project__media" src="assets/thumb5.jpg" alt="Hormone1.0">
+      <div class="overlay"><h2>Hormone1.0</h2><p>Imagination, Digital Sculpture, and Experimentation</p></div>
+      <div class="meta">Creative Design Research · 8.2022-8.2023</div>
+    </a>
+
+   <a href="Research/project5.html" class="project" data-category="research">
+      <img class="project__media" src="assets/thumb5-2.jpg" alt="Hormone2.0">
+      <div class="overlay"><h2>Hormone2.0</h2><p>Imagination, Digital Sculpture, and Experimentation</p></div>
+      <div class="meta">Creative Design Research · 6.2023-9.2023</div>
+    </a>
+
+<!-- 
+    <a href="Practices/project8.html" class="project" data-category="animation">
+      <img class="project__media" src="assets/thumb8.jpg" alt="A Kaleidoscopic World">
+      <div class="overlay"><h2>A Kaleidoscopic World</h2><p>Concept Mock-up</p></div>
+      <div class="meta">Cinema4D · 2024</div>
+    </a> -->
+    <a href="Product/project10.html" class="project" data-category="UI">
+      <img class="project__media" src="assets/thumb10.jpg" alt="Yake Robot">
+      <div class="overlay"><h2>Yake Robot</h2><p>User Research & Product Design</div>
+      <div class="meta">Future Product · 8.2022-10.2022</div>
+
+
+    <a href="Practices/project7.html" class="project" data-category="animation">
+      <img class="project__media" src="assets/thumb7.jpg" alt="Ecuador">
+      <div class="overlay"><h2>Ecuador</h2><p>Motion Capture & Experimental Video</p></div>
+      <div class="meta">Cinema4D · 2023</div>
+    </a>
+
+     <a href="Practices/project9.html" class="project" data-category="animation">
+      <img class="project__media" src="assets/thumb9.jpg" alt="Body Temple">
+      <div class="overlay"><h2>Body Temple</h2><p>Experimental Video</p></div>
+      <div class="meta">Cinema4D · 2022</div>
+    </a>
+
+  </section>
+</main>
+
+<footer>© 2025 LYNN LIU — design & code</footer>
+
+<script>
+// 启动页逻辑
+(function(){
+  const intro=document.getElementById('intro');
+  const header=document.getElementById('header');
+  const grid=document.getElementById('projectsGrid');
+  const video=document.getElementById('introVideo');
+
+  function showMain(){
+    intro.classList.add('hidden');
+    setTimeout(()=>{
+      header.classList.add('visible');
+      grid.classList.add('visible');
+      document.documentElement.style.overflow='auto';
+    },800);
+    localStorage.setItem('visitedPortfolio','true');
+  }
+
+  if(localStorage.getItem('visitedPortfolio')){
+    showMain();
+  } else {
+    video.addEventListener('ended', showMain);
+    intro.addEventListener('click', showMain);
+    setTimeout(showMain, 4000);
+  }
+})();
+
+// Scroll reveal
+(function(){
+  const items=document.querySelectorAll('.project');
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('is-visible');
+        obs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.12});
+  items.forEach(i=>obs.observe(i));
+})();
+
+// 项目分类筛选功能
+(function(){
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const projects = document.querySelectorAll('.project');
+  
+  filterButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      // 更新活动按钮
+      filterButtons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+      
+      const filter = button.getAttribute('data-filter');
+      
+      // 筛选项目
+      projects.forEach(project => {
+        const category = project.getAttribute('data-category');
+        
+        if (filter === 'all' || category === filter) {
+          project.style.display = 'block';
+          // 添加延迟显示动画
+          setTimeout(() => {
+            project.style.opacity = '1';
+            project.style.transform = 'translateY(0)';
+          }, 50);
+        } else {
+          project.style.opacity = '0';
+          project.style.transform = 'translateY(12px)';
+          setTimeout(() => {
+            project.style.display = 'none';
+          }, 500);
+        }
+      });
+      
+      // 重新触发滚动动画
+      setTimeout(() => {
+        const visibleProjects = document.querySelectorAll('.project[style*="display: block"]');
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(e => {
+            if(e.isIntersecting){
+              e.target.classList.add('is-visible');
+              observer.unobserve(e.target);
+            }
+          });
+        },{threshold:0.12});
+        
+        visibleProjects.forEach(project => {
+          observer.observe(project);
+        });
+      }, 50);
+    });
+  });
+})();
+
+// Keyboard accessibility
+document.querySelectorAll('.project').forEach(card=>{
+  card.setAttribute('tabindex','0');
+  card.addEventListener('keydown',e=>{
+    if(e.key==='Enter'||e.key===' '){
+      window.open(card.getAttribute('href'),'_blank');
+    }
+  });
+});
+
+// 禁止复制、剪切、选择
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('selectstart', e => e.preventDefault());
+let lastScrollTop = 0;
+const navbar = document.querySelector("nav"); // 你的菜单栏标签是 nav 的话
+
+window.addEventListener("scroll", function() {
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  if (scrollTop > lastScrollTop) {
+    // 向下滚动 -> 隐藏菜单栏
+    navbar.style.transform = "translateY(-100%)";
+  } else {
+    // 向上滚动 -> 显示菜单栏
+    navbar.style.transform = "translateY(0)";
+  }
+  lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // 防止负值
+});
+</script>
+
+</body>
+</html>

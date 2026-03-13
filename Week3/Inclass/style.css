@@ -1,0 +1,162 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', 'Montserrat', Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+h1, h2, h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+}
+
+header {
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  margin: 0;
+}
+
+nav ul li {
+  margin: 10px 0;
+}
+
+nav ul li a {
+  text-decoration: none;
+  font-weight: 500;
+  color: #333;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+nav ul li a:hover {
+  color: #d600f3;
+}
+
+.thumbnails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.gallery-thumb {
+  width: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-thumb img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
+.gallery-thumb:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.current-thumb {
+  outline: 3px solid #d600f3;
+  outline-offset: 4px;
+}
+
+.imgShowcase {
+  position: relative;
+  max-width: 600px; 
+  margin: 30px auto;
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+}
+
+.imgShowcase img {
+  width: 100%;
+  display: block;
+  transition: opacity 0.3s ease;
+}
+
+
+.showcase-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.showcase-arrow:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.showcase-arrow-left {
+  left: 15px;
+}
+
+.showcase-arrow-right {
+  right: 15px;
+}
+
+
+@media (min-width: 768px) {
+  nav ul {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  nav ul li {
+    margin: 0 15px;
+  }
+
+  .gallery-thumb {
+    width: 120px;
+  }
+}
+
+@media (min-width: 1024px) {
+  nav ul {
+    justify-content: flex-end;
+  }
+
+  .gallery-thumb {
+    width: 140px;
+  }
+
+  .imgShowcase {
+    max-width: 900px;
+  }
+}

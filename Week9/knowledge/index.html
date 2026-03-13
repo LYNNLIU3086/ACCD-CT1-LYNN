@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>交互式知识库网络</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/p5@1.6.0/lib/p5.min.js"></script>
+</head>
+<body>
+<div id="container"></div>
+
+<div class="ui" id="sidePanel">
+  <h3>知识库 — Controls</h3>
+
+  <div class="row">
+    <label>标题</label>
+    <input id="nodeTitle" type="text" placeholder="输入知识点标题">
+  </div>
+  <div class="row">
+    <label>内容</label>
+    <textarea id="nodeContent" placeholder="输入知识点内容"></textarea>
+  </div>
+
+  <div class="row" style="justify-content:flex-end;">
+    <button id="addNodeBtn" class="btn">添加知识点</button>
+  </div>
+
+  <div class="row">
+    <label>搜索节点</label>
+    <input id="searchNode" type="text" placeholder="输入关键字高亮">
+  </div>
+
+  <div class="row" style="justify-content:space-between;">
+    <button id="saveBtn" class="btn">导出 JSON</button>
+    <button id="loadBtn" class="btn">导入 JSON</button>
+  </div>
+
+  <div class="small">
+    点击节点两次可建立关系。拖拽节点调整位置。悬停显示内容。
+  </div>
+
+  <input type="file" id="fileInput" style="display:none;">
+</div>
+
+<script src="sketch.js"></script>
+</body>
+</html>
