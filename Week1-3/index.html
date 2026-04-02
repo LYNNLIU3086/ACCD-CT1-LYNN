@@ -303,6 +303,22 @@
       display: block;
       background: #000;
     }
+    /* ── Video single (full-width, matches hero ratio) ── */
+.video-hero {
+  margin: 0 -72px 56px;
+  line-height: 0;
+}
+.video-hero video {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+@media (max-width: 1000px) {
+  .video-hero { margin-left: -32px; margin-right: -32px; }
+}
 
     /* ── Q&A ── */
     .sub-label {
@@ -661,6 +677,215 @@ framework or method.</p>
           <img src="images4-6/q2.jpg" alt="Q2 answer">
         </div>
       </div>
+
+
+      <!-- ═══ PROJECT 03 ═══ -->
+<div class="project-divider" id="project-3">
+  <div class="proj-num">03</div>
+  <div class="proj-info">
+    <div class="proj-tag">Build for play</div>
+    <h2>无限文本世界</h2>
+    <p>是一个梦想中的房间进一步完善的，即空间化思维落地的探索性交互实验</p>
+  </div>
+</div>
+
+<section class="section" id="p3-step1">
+  <div class="section-header">
+    <span class="part-label">Part 01</span>
+    <h2 class="section-title">氛围搭建</h2>
+  </div>
+
+<div class="video-hero">
+  <video controls playsinline>
+    <source src="videos/MID.mp4" type="video/mp4">
+  </video>
+</div>
+
+  <div class="prose"> 
+    <p>我做了一个游戏气氛视频，它补全了我对这个项目的构想的完全流程。</p>  
+</div>
+</section>
+
+<section class="section" id="p3-step2">
+  <div class="section-header">
+    <span class="part-label">Part 02</span>
+    <h2 class="section-title">Proposal & Experiment</h2>
+  </div>
+
+  <div class="prose">
+    <p>Proposal and Debug:</p>
+  </div>
+  <div class="split">
+    <img src="images7-11/2.jpg" alt="Prototype iteration">
+    <div class="split-text">
+      <p>[我主要是用的方法是用文本替换了方块，让文字在场景中流动。最初版本是球面分布，但后来为了自由度改为随机分布。]</p>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>[我主要完成的是相机作为player视角，点击抓去和随机生成更多的文字，一起当文字饱和时，可以摁键减少文字。]</p>
+   <p>涉及的脚本有：TextSpawner，CameraLook，ClickandDrag，Floating，PlayerMovement，GradientBackground，Seriallnput。
+    其中我硬件使用了两个joysticks实现全部功能，利于玩家仅用左右手协调即可体验全部过程。一个控制视角移动，一个控制玩家移动，同时joystcik的按键实现增加和减少文字。</p> 
+  </div>
+  <div class="split">
+    <img src="images7-11/3.jpg" alt="Prototype iteration">
+
+    </div>
+</section>
+
+<section class="section" id="p3-step3">
+  <div class="section-header">
+    <span class="part-label">Part 03</span>
+    <h2 class="section-title">My Outcome</h2>
+  </div>
+
+  <div class="showcase-label">Final Model Showcase and Test</div>
+
+  <div class="img-primary">
+    <img src="images7-11/5.png" alt="Project 3 — final model">
+  </div>
+
+  <div class="video-pair">
+    <video controls muted playsinline>
+      <source src="videos/6.mp4" type="video/mp4">
+    </video>
+    <video controls muted playsinline>
+      <source src="videos/7.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="showcase-label">Feedback</div>
+
+  <div class="img-primary">
+
+      <p>玩家1:</p>
+        <p>玩家2:</p>
+        <p>玩家3:</p>
+    </p>
+  </div>
+
+  </div>
+
+  
+
+  <!-- ═══ PROJECT 04 ═══
+<div class="project-divider" id="project-4">
+  <div class="proj-num">04</div>
+  <div class="proj-info">
+    <div class="proj-tag">Week 10–12 · [Your Tag]</div>
+    <h2>[Project Title]</h2>
+    <p>[Project description.]</p>
+  </div>
+</div>
+
+<section class="section" id="p4-step1">
+  <div class="section-header">
+    <span class="part-label">Part 01</span>
+    <h2 class="section-title">Knowledge Collection</h2>
+  </div>
+
+  <div class="img-hero">
+    <img src="images7-9/idea1.jpg" alt="Project 4 — concept overview">
+  </div>
+
+  <div class="prose">
+    <p>[Knowledge collection content.]</p>
+  </div>
+
+  <div class="img-secondary right">
+    <img src="images7-9/1.jpg" alt="Research reference">
+    <div class="caption">Material</div>
+  </div>
+</section>
+
+<section class="section" id="p4-step2">
+  <div class="section-header">
+    <span class="part-label">Part 02</span>
+    <h2 class="section-title">Proposal & Experiment</h2>
+  </div>
+
+  <div class="prose">
+    <p>Current Proposal:</p>
+    <p>1. [Proposal point one]</p>
+    <p>2. [Proposal point two]</p>
+  </div>
+
+  <div class="img-trio">
+    <div class="trio-main">
+      <img src="images7-9/4-6.jpg" alt="Main experiment view">
+    </div>
+    <img src="images7-9/34.jpg" alt="Detail view">
+    <img src="images7-9/35.jpg" alt="Detail view 2">
+  </div>
+
+  <div class="split">
+    <img src="images7-9/3.jpg" alt="Prototype iteration">
+    <div class="split-text">
+      <p>[Experiment notes.]</p>
+    </div>
+  </div>
+
+  <div class="video-pair">
+    <video controls muted playsinline>
+      <source src="videos/p4-space1.mp4" type="video/mp4">
+    </video>
+    <video controls muted playsinline>
+      <source src="videos/p4-space2.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="prose">
+    <p>[Experiment summary.]</p>
+    <p><strong class="hl">Left — [Left label]</strong></p>
+    <p><strong class="hl">Right — [Right label]</strong></p>
+  </div>
+</section>
+
+<section class="section" id="p4-step3">
+  <div class="section-header">
+    <span class="part-label">Part 03</span>
+    <h2 class="section-title">My Outcome</h2>
+  </div>
+
+  <div class="prose">
+    <p>[Design direction and vision.]</p>
+    <p>[Outcome description.]</p>
+  </div>
+
+  <div class="showcase-label">Final Model Showcase</div>
+
+  <div class="img-primary">
+    <img src="images7-9/outcome1.jpg" alt="Project 4 — final model">
+  </div>
+
+  <div class="video-pair">
+    <video controls muted playsinline>
+      <source src="videos/p4-outcome1.mov" type="video/mp4">
+    </video>
+    <video controls muted playsinline>
+      <source src="videos/p4-outcome2.mov" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="sub-label">Question & Learn</div>
+
+  <div class="qa-item">
+    <div class="qa-question">Q1 — [Question one description]</div>
+    <div class="qa-answer">[Answer one.]</div>
+    <div class="img-pair">
+      <img src="images7-9/p4-1.jpg" alt="Q1 reference">
+      <img src="images7-9/p4-1-1.jpg" alt="Q1 answer">
+    </div>
+  </div>
+
+  <div class="qa-item">
+    <div class="qa-question">Q2 — [Question two description]</div>
+    <div class="qa-answer">[Answer two.]</div>
+    <div class="img-pair">
+      <img src="images7-9/p4-2.jpg" alt="Q2 reference">
+      <img src="images7-9/p4-2-1.jpg" alt="Q2 answer">
+    </div>
+  </div> -->
+
     </section>
 
   </div>
