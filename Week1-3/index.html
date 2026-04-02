@@ -557,7 +557,7 @@
       <div class="proj-num">02</div>
       <div class="proj-info">
         <div class="proj-tag">Week 4–6 · Spatial Intelligence</div>
-        <h2>空间智能</h2>
+        <h2>Dream Room</h2>
         <p>A speculative design exploration focusing on spatial interaction and data-driven environments.</p>
       </div>
     </div>
@@ -612,7 +612,7 @@ framework or method.</p>
       <div class="split">
         <img src="images4-6/3.jpg" alt="Prototype iteration">
         <div class="split-text">
-          <p>[我试图使用点状物作为模拟思维或者目标的方法。]</p>
+          <p>[I attempted to use dot-like objects as a basic method for simulating thought or targets.]</p>
         </div>
       </div>
 
@@ -625,9 +625,9 @@ framework or method.</p>
         </video>
       </div>
       <div class="prose">
-        <p>[我实验了两种典型的基础形状点和方形]</p>
-        <p><strong class="hl">Left — [方块系统]</strong> &nbsp;</p>
-        <p><strong class="hl">Right — [点系统]</strong> &nbsp;</p>
+        <p>[I experimented with two typical basic shapes: dots and squares.]</p>
+        <p><strong class="hl">Left — [Cube System]</strong> &nbsp;</p>
+        <p><strong class="hl">Right — [Dot System]</strong> &nbsp;</p>
       </div>
     </section>
 
@@ -639,8 +639,8 @@ framework or method.</p>
 
       <div class="prose">
         <p>[Design direction and vision.]</p>
-        <p>主要做的几个控制是1-空格随机增加方块，2-鼠标或者F键点击选择方块跟随和移动，3-键盘和鼠标方向键控制丝滑的视角移动，同时要把相机绑在player上。</p>
-        <p>主要是用了这几个script：BlockSpawner，CameraLook，Drag，Floating，PlayerMovement</p>
+        <p>The main controls implemented are: 1-Spacebar to randomly add blocks; 2-Mouse click or pressing the F key to select a block, which then follows and moves; 3-Keyboard and mouse arrow keys to control smooth camera movement, while also binding the camera to the player. </p>
+        <p>These were mainly achieved using a few scripts: BlockSpawner, CameraLook, Drag, Floating, PlayerMovement</p>
       </div>
 
       <div class="showcase-label">Final Model Showcase</div>
@@ -662,7 +662,7 @@ framework or method.</p>
 
       <div class="qa-item">
         <div class="qa-question">Q1 — [Question one description]</div>
-        <div class="qa-answer">这个我在实践让本身有位置信息的数据点驱动物体，然后主要的修改点在于数据文件本身的格式和命名，作为数据驱动的动态设计效果还行，但无法分别交互单个点。</div>
+        <div class="qa-answer">In practice, I'm using data points that already contain position information to drive objects. The main modifications involve the format and naming of the data file itself. As a data-driven dynamic design, it works reasonably well, but I cannot interact with individual points separately.</div>
         <div class="img-pair">
           <img src="images4-6/p2-1.jpg" alt="Q1 reference">
           <img src="images4-6/p2-1-1.jpg" alt="Q1 answer">
@@ -671,7 +671,7 @@ framework or method.</p>
 
       <div class="qa-item">
         <div class="qa-question">Q2 — [Question two description]</div>
-        <div class="qa-answer">建立多个 script 来控制交互。同时要注意不同 script 会 target 在不同的物体上，甚至 main camera 也会搭载在别的物体上，然后也要注意 trigger 等小属性是否选中。</div>
+        <div class="qa-answer">I've set up multiple scripts to handle the interaction. At the same time, I need to ensure that different scripts target different objects—even the main camera may be attached to another object—and also pay attention to whether small properties like Trigger are checked/enabled.</div>
         <div class="img-pair">
           <img src="images4-6/p2-2.jpg" alt="Q2 reference">
           <img src="images4-6/q2.jpg" alt="Q2 answer">
@@ -684,15 +684,15 @@ framework or method.</p>
   <div class="proj-num">03</div>
   <div class="proj-info">
     <div class="proj-tag">Build for play</div>
-    <h2>无限文本世界</h2>
-    <p>是一个梦想中的房间进一步完善的，即空间化思维落地的探索性交互实验</p>
+    <h2>Infinite Thinking</h2>
+    <p>It is an exploratory interactive experiment that further refines a dream room, namely the realization of spatialized thinking.</p>
   </div>
 </div>
 
 <section class="section" id="p3-step1">
   <div class="section-header">
     <span class="part-label">Part 01</span>
-    <h2 class="section-title">氛围搭建</h2>
+    <h2 class="section-title">Atmosphere construction:</h2>
   </div>
 
 <div class="video-hero">
@@ -702,7 +702,7 @@ framework or method.</p>
 </div>
 
   <div class="prose"> 
-    <p>我做了一个游戏气氛视频，它补全了我对这个项目的构想的完全流程。</p>  
+    <p>I made a game atmosphere video, which completes the atmosphere process of my vision for this project.</p>  
 </div>
 </section>
 
@@ -718,15 +718,14 @@ framework or method.</p>
   <div class="split">
     <img src="images7-11/2.jpg" alt="Prototype iteration">
     <div class="split-text">
-      <p>[我主要是用的方法是用文本替换了方块，让文字在场景中流动。最初版本是球面分布，但后来为了自由度改为随机分布。]</p>
+      <p>[The main method I used was replacing blocks with text, allowing the text to flow through the scene. The initial version used a spherical distribution, but later I changed it to a random distribution for greater freedom.]</p>
     </div>
   </div>
 
   <div class="prose">
-    <p>[我主要完成的是相机作为player视角，点击抓去和随机生成更多的文字，一起当文字饱和时，可以摁键减少文字。]</p>
-   <p>涉及的脚本有：TextSpawner，CameraLook，ClickandDrag，Floating，PlayerMovement，GradientBackground，Seriallnput。
-    其中我硬件使用了两个joysticks实现全部功能，利于玩家仅用左右手协调即可体验全部过程。一个控制视角移动，一个控制玩家移动，同时joystcik的按键实现增加和减少文字。</p> 
-  </div>
+   <p>The main tasks I completed were: using the camera as the player's perspective, clicking to grab and randomly generating more text, and when the text becomes saturated, pressing a button to reduce the text.</p>
+<p>The scripts involved include: TextSpawner, CameraLook, ClickAndDrag, Floating, PlayerMovement, GradientBackground, SerialInput. For hardware, I used two joysticks to implement all functions, allowing the player to experience the entire process using only left and right hand coordination. One joystick controls view movement, the other controls player movement, while the joystick buttons are used to add and remove text.</p>
+</div>
   <div class="split">
     <img src="images7-11/3.jpg" alt="Prototype iteration">
 
@@ -758,9 +757,9 @@ framework or method.</p>
 
   <div class="img-primary">
 
-      <p>玩家1:</p>
-        <p>玩家2:</p>
-        <p>玩家3:</p>
+        <p>Player 1:</p>
+        <p>Player 2:</p>
+        <p>Player 3:</p>
     </p>
   </div>
 
