@@ -169,28 +169,27 @@
   <div class="detail-left">
 
     <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-title">[4-方块云]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [上层以音频 RMS 振幅经峰谷分析后映射驱动球体的噪声形变与运动；
+      下层用噪声 TOP 的像素值作为点坐标来源，实例化方块群经强光渲染形成高对比黑白方块丛林。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+  <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+    <div class="effect-media"><img src="images/preview10.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
-      <!-- ↑ REPLACE ↑ -->
+<div class="effect-media"><img src="images/preview11.jpg" alt=""></div>      <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">trail1 记录振幅历史，max/mini 分别捕捉峰值与谷值，两者之差控制运动的动态范围。</div>
 
   </div>
 
@@ -203,12 +202,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[noise, render, out]</span><span class="node-type">TOP</span></li>
+        <li><span>[audiofilein, audiodevout, analyze, audiospect, select, trail, math, max, mini, speed]</span><span class="node-type">CHOP</span></li>
+        <li><span>[sphere, transform, noise, pointtransform, limit, box]</span><span class="node-type">SOP</span></li>
+        <li><span>[-]</span><span class="node-type">DAT</span></li>
+        <li><span>[constant, line]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, light, geo]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,28 +217,28 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [· audiofilein1：音频文件输入，双通道（chan1/chan2）
+· audiodevout1：同步播放音频至设备输出
+· audiospect1：实时频谱监控（辅助可视化）]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        <p>1-球体几何管线（SOP）
+sphere1 → transform1（音频驱动位置）→ noise1（音频驱动形变强度）
+→ geo1 + constant1（球体渲染）/ geo2 + line1（连线辅助层）</p>
+
+<p>2-噪声方块云管线
+noise2（彩色噪声 TOP）→ pointtransform1（像素 RGB 值映射为点 XYZ 坐标）
+→ limit1（约束点范围，输出密集白色点阵）
+→ geo3 + box1（每点实例化小方块）
+cam1 + light1（强方向光）→ render1（高对比黑白方块丛林）→ out1]</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [双层输出：音频驱动的球体随节奏形变游走（geo1/geo2）；噪声坐标实例化的方块群在强光下呈现高对比度黑白建筑感画面（out1），两层可后续合成叠加]
       </div>
-    </div>
-
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
     </div>
 
   </div>
