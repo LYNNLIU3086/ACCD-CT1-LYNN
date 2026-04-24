@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Effect Name] — TouchDesigner</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #999;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    /* ── Nav ── */
+    nav {
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: #444;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #999; }
+
+    /* ── Hero media ── */
+    .detail-hero {
+      margin: 0 40px 60px;
+      width: calc(100% - 80px);
+      aspect-ratio: 16/9;
+      background: #111;
+      overflow: hidden;
+    }
+    .detail-hero video,
+    .detail-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Layout: two columns ── */
+    .detail-body {
+      margin: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px 80px;
+      padding-bottom: 100px;
+    }
+
+    /* ── Left col ── */
+    .detail-left {}
+
+    .detail-index {
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .detail-title {
+      font-size: 22px;
+      color: #ccc;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+    .detail-desc {
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    /* secondary images/videos */
+    .media-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-bottom: 2px;
+    }
+    .media-row video,
+    .media-row img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+    .media-single {
+      margin-bottom: 2px;
+    }
+    .media-single video,
+    .media-single img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+    .media-caption {
+      color: #333;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+
+    /* ── Right col: tech specs ── */
+    .detail-right {}
+
+    .spec-section {
+      margin-bottom: 40px;
+    }
+    .spec-label {
+      color: #333;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    /* nodes list */
+    .nodes {
+      list-style: none;
+      margin-bottom: 0;
+    }
+    .nodes li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #141414;
+      color: #555;
+    }
+    .nodes li span:first-child { color: #777; }
+    .node-type {
+      font-size: 10px;
+      color: #333;
+    }
+
+    /* logic / notes */
+    .logic-block {
+      color: #555;
+      padding: 16px;
+      background: #0e0e0e;
+      border-left: 2px solid #1e1e1e;
+      margin-bottom: 12px;
+    }
+    .logic-block strong { color: #666; display: block; margin-bottom: 6px; }
+
+    .ph {
+      width: 100%; height: 100%;
+      min-height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      color: #2a2a2a;
+      border: 1px dashed #1e1e1e;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <a href="index.html">← Back</a>
+  <span>TouchDesigner · 2026</span>
+</nav>
+
+
+
+<div class="detail-body">
+
+  <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
+  <div class="detail-left">
+
+    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[Effect Name]</div>
+
+    <div class="detail-desc">
+      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+    </div>
+
+    <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
+
+    <div class="media-row">
+      <!-- ↓ REPLACE ↓ -->
+      <div class="ph">Screenshot 1</div>
+      <div class="ph">Screenshot 2</div>
+      <!-- ↑ REPLACE ↑ -->
+    </div>
+    <div class="media-caption">节点截图 / 过程截图</div>
+
+    <div class="media-single">
+      <!-- ↓ REPLACE ↓ -->
+      <div class="ph">Process video or extra image</div>
+      <!-- ↑ REPLACE ↑ -->
+    </div>
+    <div class="media-caption">过程视频或补充截图</div>
+
+  </div>
+
+
+  <!-- ══ RIGHT: 技术参数 ══ -->
+  <div class="detail-right">
+
+    <!-- 节点列表 -->
+    <div class="spec-section">
+      <div class="spec-label">Nodes Used</div>
+      <ul class="nodes">
+        <!-- 格式：节点名 + 类型标签，按需增删 -->
+        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
+        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
+        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
+        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
+        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
+        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+      </ul>
+    </div>
+
+    <!-- 逻辑说明 -->
+    <div class="spec-section">
+      <div class="spec-label">Logic</div>
+
+      <div class="logic-block">
+        <strong>Input</strong>
+        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+      </div>
+
+      <div class="logic-block">
+        <strong>Process</strong>
+        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+      </div>
+
+      <div class="logic-block">
+        <strong>Output</strong>
+        [描述输出：屏幕、投影、文件渲染等]
+      </div>
+    </div>
+
+    <!-- 参数 -->
+    <div class="spec-section">
+      <div class="spec-label">Key Parameters</div>
+      <ul class="nodes">
+        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
+        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
+        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

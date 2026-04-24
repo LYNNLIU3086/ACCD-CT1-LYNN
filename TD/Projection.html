@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projection Mapping — TouchDesigner</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0a0a0a;
+      color: #999;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    nav {
+      padding: 32px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav a {
+      color: #444;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #999; }
+
+    /* ── Hero: wide ratio for projection ── */
+    .detail-hero {
+      margin: 0 40px 60px;
+      width: calc(100% - 80px);
+      aspect-ratio: 16/6;
+      background: #111;
+      overflow: hidden;
+    }
+    .detail-hero video, .detail-hero img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Two columns ── */
+    .detail-body {
+      margin: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px 80px;
+      padding-bottom: 100px;
+    }
+
+    .detail-index { color: #333; margin-bottom: 8px; }
+    .detail-title {
+      font-size: 22px;
+      color: #ccc;
+      margin-bottom: 24px;
+      letter-spacing: -0.5px;
+    }
+    .detail-desc { color: #666; margin-bottom: 40px; }
+
+    .media-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-bottom: 2px;
+    }
+    .media-row video, .media-row img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+    .media-single { margin-bottom: 2px; }
+    .media-single video, .media-single img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+    .media-caption { color: #333; margin-top: 8px; margin-bottom: 24px; }
+
+    .spec-section { margin-bottom: 40px; }
+    .spec-label {
+      color: #333;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .nodes { list-style: none; }
+    .nodes li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #141414;
+      color: #555;
+    }
+    .nodes li span:first-child { color: #777; }
+    .node-type { font-size: 10px; color: #333; }
+
+    .logic-block {
+      color: #555;
+      padding: 16px;
+      background: #0e0e0e;
+      border-left: 2px solid #1e1e1e;
+      margin-bottom: 12px;
+    }
+    .logic-block strong { color: #666; display: block; margin-bottom: 6px; }
+
+    .ph {
+      width: 100%; height: 100%;
+      min-height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      color: #2a2a2a;
+      border: 1px dashed #1e1e1e;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html">← Back</a>
+  <span>TouchDesigner · 2026</span>
+</nav>
+
+<!-- ══ HERO — 替换为你的投影视频或截图 ══ -->
+<div class="detail-hero">
+  <!-- ↓ REPLACE ↓ -->
+  <div class="ph">Projection main video / image</div>
+  <!-- ↑ REPLACE ↑ -->
+</div>
+
+<div class="detail-body">
+
+  <!-- ── LEFT ── -->
+  <div class="detail-left">
+
+    <div class="detail-index">Projection Mapping</div>
+    <div class="detail-title">[Project Title]</div>
+
+    <div class="detail-desc">
+      [描述这个投影项目：投影到什么表面、想传达的视觉效果、场地或展览背景。]
+    </div>
+
+    <div class="media-row">
+      <!-- ↓ REPLACE ↓ -->
+      <div class="ph">Setup photo</div>
+      <div class="ph">Projection surface</div>
+      <!-- ↑ REPLACE ↑ -->
+    </div>
+    <div class="media-caption">现场安装 / 投影表面</div>
+
+    <div class="media-single">
+      <!-- ↓ REPLACE ↓ -->
+      <div class="ph">Process / rehearsal video</div>
+      <!-- ↑ REPLACE ↑ -->
+    </div>
+    <div class="media-caption">排练或测试视频</div>
+
+  </div>
+
+  <!-- ── RIGHT: 技术参数 ── -->
+  <div class="detail-right">
+
+    <div class="spec-section">
+      <div class="spec-label">Nodes Used</div>
+      <ul class="nodes">
+        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
+        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
+        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
+        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
+        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+      </ul>
+    </div>
+
+    <div class="spec-section">
+      <div class="spec-label">Logic</div>
+      <div class="logic-block">
+        <strong>Input</strong>
+        [输入源：实时视频、生成内容、传感器数据等]
+      </div>
+      <div class="logic-block">
+        <strong>Mapping</strong>
+        [如何做投影映射：用了哪个 Camschnappr / Stoner / homography 方法，几个面，如何校准]
+      </div>
+      <div class="logic-block">
+        <strong>Output</strong>
+        [输出设备：几台投影仪、分辨率、信号传输方式]
+      </div>
+    </div>
+
+    <div class="spec-section">
+      <div class="spec-label">Setup</div>
+      <ul class="nodes">
+        <li><span>Resolution</span><span>[e.g. 3840 × 1080]</span></li>
+        <li><span>Projectors</span><span>[e.g. 2 × Epson EB-L615U]</span></li>
+        <li><span>Surface</span><span>[e.g. 3 fabric panels]</span></li>
+        <li><span>Distance</span><span>[e.g. 4m throw]</span></li>
+        <li><span>Software</span><span>TouchDesigner 2023</span></li>
+      </ul>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
