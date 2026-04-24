@@ -169,28 +169,29 @@
   <div class="detail-left">
 
     <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-title">[1]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [用噪声产生有机感的随机分布，LFO 让整体随时间缓慢漂移，实现"活的"粒子/实例群效果。用 LFO 驱动 Noise 纹理，经过 Fit 重映射后转为 CHOP 数值，最终驱动 25 个几何体实例的空间分布或动画属性]
     </div>
-
-    <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
-
-    <div class="media-row">
-      <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
-      <!-- ↑ REPLACE ↑ -->
-    </div>
-    <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+     <div class="effect-media"><img src="images/preview1.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">经渲染后，再叠加噪声置换 + 双重模糊阈值，最终产生一种有机蠕动、边缘模糊扩散的视觉效果——类似细胞分裂、真菌生长或液态物体的感觉。</div>
+
+     <div class="media-single">
+      <!-- ↓ REPLACE ↓ -->
+      <div class="effect-media"><img src="images/preview2.jpg" alt=""></div>
+      <div class="effect-media"><img src="images/preview3.jpg" alt=""></div>
+      <!-- ↑ REPLACE ↑ -->
+    </div>
+    <div class="media-caption">Feedback反馈回路：把上一帧的画面作为当前帧的输入，实现"残影/拖尾/生长"效果
+      第二个反馈回路：处理边缘的发光拖尾——每一帧的边缘线都会留下余晖，缓慢扩散后消失。
+
+    </div>
 
   </div>
 
@@ -203,12 +204,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render, displace, blur, thresh, comp, level, flip, inside, select, rgbkey, null, noise, feedback, slope, edge]</span><span class="node-type">TOP</span></li>
+        <li><span>[lfo, constant, topto]</span><span class="node-type">CHOP</span></li>
+        <li><span>[geo, line]</span><span class="node-type">SOP</span></li>
+        <li><span>[keyboardin]</span><span class="node-type">DAT</span></li>
+        <li><span>[mat（geo）]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, light, instancing]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,29 +219,28 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [lfo1：持续输出缓慢变化的数值（当前 0.3803），驱动 noise 位移偏移
+· keyboardin：键盘交互触发，用于重置 feedback 回路或施加扰动]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        <p>① Instancing 管线（几何体分布）</p>
+<p>② 渲染 + 双重阈值后处理
+cam1 + light1 + geo1 + line1 → render1 → displace1(noise2扭曲) → blur1 → thresh1 → blur2 → thresh2 → null4
+Blur→Thresh→Blur→Thresh 双循环产生有机细胞/流体边界形态</p>
+
+<p>③ Feedback 回路 1</p>
+
+<p>④ 着色 + Feedback 回路 2（边缘发光）</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [25个由噪声驱动位置的几何实例，经渲染后叠加多重噪声置换与双重阈值，产生有机蠕动的黑白形态；形态经着色染成带噪点颗粒感的蓝色，边缘持续保留缓慢消散的发光拖尾——整体效果类似生物发光菌丝/神经网络实时生长]
       </div>
     </div>
 
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
-    </div>
 
   </div>
 
