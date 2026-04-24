@@ -168,29 +168,28 @@
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">02 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[2-隧道穿梭]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [以椭圆点集为发射源，经螺旋复制与粒子系统扩散，叠加噪声扰动后渲染成白色粒子构成的旋转隧道。摄像机置于隧道轴心内部向前看，产生穿越宇宙虫洞般的沉浸感。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+      <div class="effect-media"><img src="images/preview4.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+      <div class="effect-media"><img src="images/preview5.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">背景中密密麻麻的白点正是这条隧道的粒子本身——摄像机就置于隧道内部向前看。</div>
 
   </div>
 
@@ -203,12 +202,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render, rgbkey]</span><span class="node-type">TOP</span></li>
+        <li><span>[-]</span><span class="node-type">CHOP</span></li>
+        <li><span>[pointgen, copy, null, null, particle, noise, limit, transform]</span><span class="node-type">SOP</span></li>
+        <li><span>[-]</span><span class="node-type">DAT</span></li>
+        <li><span>[pointsprite]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, geo]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,28 +217,28 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [pointgen1 生成椭圆点集作为粒子发射源形状
+· transform1 提供可调整的空间变换矩阵]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        [pointgen1（椭圆点集）
+→ copy1（沿轴向复制堆叠成螺旋线圈）
+→ null1（SOP断点）
+→ particle1（粒子系统：赋予速度、生命周期、扩散）
+→ noise1（对粒子位置叠加噪声扰动，破坏规整感）
+→ null2（合并 transform1 的整体空间变换）
+→ limit1（约束粒子数量与活动范围）
+→ geo1 + pointsprite1（装入几何容器，赋予 sprite 材质）
+→ render1（cam1 从轴心内部正面拍摄，形成同心圆螺旋视角）
+→ rgbkey1（抠除黑色背景，粒子层透明化供后续合成）]
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [白色粒子 sprite 构成的旋转螺旋隧道；粒子在噪声驱动下持续抖动，隧道边缘向外发散；经 rgbkey 抠图后输出透明粒子层，可与其他图层叠合]
       </div>
-    </div>
-
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
     </div>
 
   </div>

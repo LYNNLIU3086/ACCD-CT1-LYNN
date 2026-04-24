@@ -168,29 +168,29 @@
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">04 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[4-双LFO噪声游走球]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [单个球体受两个反向LFO与噪声联合驱动，在空间中持续有机漂移。渲染后叠加feedback残影拖尾与bloom泛光，产生类似萤火虫或等离子球在黑暗中游走的发光轨迹。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
-      <!-- ↑ REPLACE ↑ -->
+          <div class="effect-media"><img src="images/preview6.jpg" alt=""></div>
+
     </div>
-    <div class="media-caption">节点截图 / 过程截图</div>
+       
+
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+      <div class="effect-media"><img src="images/preview7.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">feedback 残影衰减速率由 level1 的亮度参数控制，值越低残影消散越快。核心是双层 feedback——SOP 层一个（让球持续运动不复位），TOP 层一个（让渲染结果留下光迹残影）——两层反馈配合形成完整的游走发光效果。</div>
 
   </div>
 
@@ -203,12 +203,13 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render, feedback, level, over, bloom
+]</span><span class="node-type">TOP</span></li>
+        <li><span>[lfo]</span><span class="node-type">CHOP</span></li>
+        <li><span>[pointgen, feedback, noise, math, end, select]</span><span class="node-type">SOP</span></li>
+        <li><span>[-]</span><span class="node-type">DAT</span></li>
+        <li><span>[constant]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, geo]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,28 +219,32 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [lfo1（值 -1）：驱动球体反向运动
+· lfo2（值 -2.203）：驱动另一轴向偏移，与 lfo1 频率不同步，产生更复杂的游走路径]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+
+        <p>
+SOP 运动链:
+pointgen1（生成单点球）
+→ feedback1（SOP反馈：将上一帧位置喂回，形成连续运动而非复位跳变）
+→ noise1（叠加空间噪声扰动，破坏LFO的规律感，lfo1/lfo2 分别注入两轴偏移）
+→ math1（数值缩放/限幅）→ end → select1（输出目标点）
+
+        </p>
+<p>渲染 + 发光回路:
+select1 → geo1 → render1（cam1 拍摄）
+render1 → feedback2 → level1 → 回路闭合（残影拖尾，逐帧亮度衰减）
+render1 + level1 → over1（叠合当前帧与残影）
+over1 + constant1（椭圆遮罩）→ bloom1（泛光发散）</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [发光球体在黑色背景上持续游走，身后留有逐渐消散的光迹拖尾；bloom 让球体产生柔和光晕，整体输出可与其他图层叠合]
       </div>
-    </div>
-
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
     </div>
 
   </div>
