@@ -168,26 +168,27 @@
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">03 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[近邻连线网络]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [以 CHOP 参数总线集中管理运动速度与噪声强度，驱动线段点集在空间中扩散；
+      proximity 节点在距离阈值内的点对之间自动连线，形成有机生长的晶格线网，
+      与 torus 参考形和 box 阵列共同构成粒子网格感的隧道结构。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+   <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+       <div class="effect-media"><img src="images/preview8.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+            <div class="effect-media"><img src="images/preview9.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">过程视频或补充截图</div>
@@ -203,12 +204,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render, rgbkey]</span><span class="node-type">TOP</span></li>
+        <li><span>[constant, speed, merge, null]</span><span class="node-type">CHOP</span></li>
+        <li><span>[pointgen, noise, transform, limit, null, proximity, box, transform, copy]</span><span class="node-type">SOP</span></li>
+        <li><span>[-]</span><span class="node-type">DAT</span></li>
+        <li><span>[constant]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, geo]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,28 +219,29 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [constant3（motionspeed = 1）→ speed1：运动速度时间积分
+· constant4（noisetrans = 0.01）→ speed2：噪声位移速率积分
+· constant5（period = 1, amplitude = 1）：噪声周期与振幅]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        <p>1-点云生成
+pointgen1（线段点集）→ noise1（注入 null2 的4通道参数，受控扩散成颗粒云）→ transform2（整体空间变换）→ limit1（范围约束）→ null1</p>
+
+<p>2-近邻连线
+null1 → proximity1：计算点间距离，阈值内自动连线，生成密集线框网格体</p>
+
+<p>3-场景组装
+geo1：proximity 线网 + box1/transform1/copy1（方块阵列）+ constant1（torus参考形）
+geo2：null1 噪声点云 + constant2（椭圆遮罩限制渲染区域）</p>
+<p>4-cam1 从正面拍摄 → render1（隧道透视线网）→ rgbkey1（抠除黑底）]</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [白色近邻连线构成的透视收缩隧道，点云在噪声驱动下持续抖动，线网随之动态重构；经 rgbkey 抠图后输出透明图层供后续合成]
       </div>
-    </div>
-
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
     </div>
 
   </div>
