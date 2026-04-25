@@ -21,11 +21,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    nav a {
-      color: #444;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
+    nav a { color: #444; text-decoration: none; transition: color 0.2s; }
     nav a:hover { color: #999; }
 
     /* ── Hero ── */
@@ -42,12 +38,17 @@
       display: block;
     }
 
-    /* ── Single column ── */
+    /* ── Two columns ── */
     .detail-body {
       margin: 0 40px;
-      max-width: 720px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px 80px;
       padding-bottom: 100px;
     }
+
+    /* ── Left ── */
+    .detail-left {}
 
     .detail-index { color: #333; margin-bottom: 8px; }
     .detail-title {
@@ -56,7 +57,6 @@
       margin-bottom: 24px;
       letter-spacing: -0.5px;
     }
-    .detail-desc { color: #666; margin-bottom: 40px; }
 
     .media-row {
       display: grid;
@@ -71,70 +71,102 @@
       display: block;
       background: #111;
     }
+
     .media-single { margin-bottom: 2px; }
-    .media-single video, .media-single img,
-    .media-single .effect-media img {
+    .media-single video, .media-single img {
       width: 100%;
       aspect-ratio: 16/9;
       object-fit: cover;
       display: block;
       background: #111;
     }
+
     .media-caption { color: #333; margin-top: 8px; margin-bottom: 24px; }
 
-    .ph {
-      width: 100%; height: 100%;
-      min-height: 200px;
-      display: flex; align-items: center; justify-content: center;
-      color: #2a2a2a;
-      border: 1px dashed #1e1e1e;
+    /* ── Right ── */
+    .detail-right {}
+
+    .detail-desc {
+      color: #555;
+      margin-bottom: 0;
+    }
+    .detail-desc p {
+      margin-bottom: 1.6em;
+    }
+    .detail-desc p:last-child {
+      margin-bottom: 0;
     }
   </style>
 </head>
 <body>
 
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
 
 <!-- ══ HERO ══ -->
 <div class="detail-hero">
- <div class="effect-media"><img src="images/112.jpg" alt=""></div>
+  <img src="images/112.jpg" alt="">
 </div>
 
 <div class="detail-body">
 
-  <div class="detail-index">Projection Mapping</div>
-  <div class="detail-title">[Project Title]</div>
+  <!-- ══ LEFT: 媒体 ══ -->
+  <div class="detail-left">
 
-  <div class="detail-desc">
-    [关于顶部的投影的测试和实验······]
+    <div class="detail-index">Projection Mapping</div>
+    <div class="detail-title">[Project Title]</div>
+
+    <div class="media-row">
+      <img src="images/02.jpg" alt="">
+      <img src="images/01.jpg" alt="">
+      <img src="images/03.jpg" alt="">
+      <img src="images/04.jpg" alt="">
+    </div>
+    <div class="media-caption">现场安装过程</div>
+
+    <div class="media-single">
+      <img src="images/map.jpg" alt="">
+    </div>
+    <div class="media-caption">过程测试修改</div>
+
+    <div class="media-single">
+      <video src="images/1.mov" autoplay muted loop playsinline></video>
+    </div>
+    <div class="media-caption">测试视频 1</div>
+
+    <div class="media-single">
+      <video src="images/2.MOV" autoplay muted loop playsinline></video>
+    </div>
+    <div class="media-caption">测试视频 2</div>
+
+    <div class="media-single">
+      <video src="images/3.MOV" autoplay muted loop playsinline></video>
+    </div>
+    <div class="media-caption">测试视频 3</div>
+
+    <div class="media-single">
+      <video src="images/4.MOV" autoplay muted loop playsinline></video>
+    </div>
+    <div class="media-caption">测试视频 4</div>
+
   </div>
 
-  <div class="media-row">
-   <div class="effect-media"><img src="images/02.jpg" alt=""></div>
-   <div class="effect-media"><img src="images/01.jpg" alt=""></div>
-      <div class="effect-media"><img src="images/03.jpg" alt=""></div>
-   <div class="effect-media"><img src="images/04.jpg" alt=""></div>
-  </div>
-  <div class="media-caption">现场安装过程</div>
+  <!-- ══ RIGHT: 文字描述 ══ -->
+  <div class="detail-right">
 
-  <div class="media-single">
- <div class="effect-media"><img src="images/map.jpg" alt=""></div>
-  </div>
-  <div class="media-caption">排练或测试视频</div>
+    <div class="detail-desc">
+      <p>The projection setup was conducted in a darkened classroom environment, using a CASIO projector mounted at an angle toward the wall surface. The darkness of the space proved essential — without ambient light interference, the generative visuals retained their contrast and depth, particularly the black-and-white organic forms and particle-based effects that rely heavily on dark backgrounds to read clearly.</p>
 
-   <div class="media-single">
- <div class="effect-media"><img src="images/1.MOV" alt=""></div>
-  </div>
-  <div class="media-caption">排练或测试视频</div>
+      <p>The content selected for projection focused on the tunnel and traversal effects — particle systems and noise-driven geometries that carry a strong sense of forward motion and spatial depth. When scaled up onto a physical wall, these pieces shifted in character noticeably. What appeared as abstract point clouds on a monitor became genuinely immersive at room scale; the sense of moving through space became more visceral, less like watching and more like being inside.</p>
 
-   <div class="media-single">
- <div class="effect-media"><img src="images/2.MOV" alt=""></div>
+      <p>The primary technical challenge encountered was keystone distortion. Because the projector could not be positioned perfectly perpendicular to the wall, the projected image arrived trapezoidal rather than rectangular. This was corrected through the projector's built-in keystone adjustment rather than through software, which introduced a slight reduction in image sharpness at the corrected edges — a trade-off between geometric accuracy and optical clarity. In future setups, kantanMapper's mesh warping would offer a more precise alternative, allowing corner-point adjustments to be made at the software level without degrading the optical path.</p>
+
+      <p>Mapping the content to the wall surface through kantanMapper involved defining the projection boundary as a single group, then aligning the four corner points to the physical edges of the intended surface area. The process revealed how differently the same visual material reads depending on scale and surface texture — the classroom wall's slight irregularities added an unintended but interesting material quality to the projected image, making the organic forms appear to exist on the surface rather than simply illuminated against it.</p>
+    </div>
+
   </div>
-  <div class="media-caption">排练或测试视频</div>
-  
 
 </div>
 
