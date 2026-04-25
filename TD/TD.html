@@ -21,7 +21,7 @@
     }
 
     /* ── Effects grid ── */
-    .effects-wrap { margin: 0 40px; }
+    .effects-wrap { margin: 0 40px 80px; }
     .effects {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -63,29 +63,6 @@
     .effect-info { padding: 12px 14px 20px; }
     .effect-info span { display: block; margin-bottom: 4px; color: #444; }
     .effect-info p { color: #666; }
-
-    .effect.hidden { display: none; }
-
-    /* ── Toggle ── */
-    .toggle-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      margin-top: 2px;
-      padding: 16px;
-      background: #111;
-      border: none;
-      color: #444;
-      font-family: monospace;
-      font-size: 12px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .toggle-btn:hover { color: #888; }
-    .toggle-btn .arrow { display: inline-block; transition: transform 0.3s; }
-    .toggle-btn.open .arrow { transform: rotate(180deg); }
 
     /* ── Projection ── */
     .projection {
@@ -156,7 +133,6 @@
 <div class="effects-wrap">
   <div class="effects">
 
-    <!-- 前 6 个默认显示 -->
     <a class="effect" href="effect-01.html">
       <div class="effect-media"><img src="images/2.jpg" alt=""></div>
       <div class="effect-info"><span>01</span><p>[Effect Name]</p></div>
@@ -167,14 +143,14 @@
       <div class="effect-info"><span>02</span><p>[Effect Name]</p></div>
     </a>
 
-    <a class="effect" href="effect-01.html">
+    <a class="effect" href="effect-13.html">
       <div class="effect-media"><img src="images/4.jpg" alt=""></div>
       <div class="effect-info"><span>03</span><p>[Effect Name]</p></div>
     </a>
 
     <a class="effect" href="effect-03.html">
       <div class="effect-media"><img src="images/6.jpg" alt=""></div>
-      <div class="effect-info"><span>05</span><p>[Effect Name]</p></div>
+      <div class="effect-info"><span>04</span><p>[Effect Name]</p></div>
     </a>
 
     <a class="effect" href="effect-04.html">
@@ -182,102 +158,60 @@
       <div class="effect-info"><span>05</span><p>[Effect Name]</p></div>
     </a>
 
-    <!-- <a class="effect hidden" href="effect-07.html">
-      <div class="effect-media"><img src="images/10.jpg" alt=""></div>
-      <div class="effect-info"><span>09</span><p>[Effect Name]</p></div>
-    </a> -->
 
-
-    <!-- 以下默认隐藏 -->
-   <a class="effect" href="effect-01.html">
-      <div class="effect-media"><img src="images/5.jpg" alt=""></div>
-      <div class="effect-info"><span>04</span><p>[Effect Name]</p></div>
-    </a>
-    
-    <a class="effect hidden" href="effect-05.html">
+    <a class="effect" href="effect-05.html">
       <div class="effect-media"><img src="images/7.jpg" alt=""></div>
       <div class="effect-info"><span>06</span><p>[Effect Name]</p></div>
     </a>
 
-    <a class="effect hidden" href="effect-01.html">
-      <div class="effect-media"><img src="images/8.jpg" alt=""></div>
+
+    <a class="effect" href="effect-06.html">
+      <div class="effect-media"><img src="images/9.jpg" alt=""></div>
       <div class="effect-info"><span>07</span><p>[Effect Name]</p></div>
     </a>
 
-    <a class="effect hidden" href="effect-06.html">
-      <div class="effect-media"><img src="images/9.jpg" alt=""></div>
+    <a class="effect" href="effect-07.html">
+      <div class="effect-media"><img src="images/10.jpg" alt=""></div>
       <div class="effect-info"><span>08</span><p>[Effect Name]</p></div>
     </a>
 
-    <a class="effect hidden" href="effect-07.html">
-      <div class="effect-media"><img src="images/10.jpg" alt=""></div>
+    <a class="effect" href="effect-07.html">
+      <div class="effect-media"><img src="images/11.jpg" alt=""></div>
       <div class="effect-info"><span>09</span><p>[Effect Name]</p></div>
     </a>
 
-    <a class="effect hidden" href="effect-07.html">
-      <div class="effect-media"><img src="images/11.jpg" alt=""></div>
+    <a class="effect" href="effect-12.html">
+      <div class="effect-media"><img src="images/13.jpg" alt=""></div>
       <div class="effect-info"><span>10</span><p>[Effect Name]</p></div>
     </a>
 
-    <!-- <a class="effect hidden" href="effect-08.html">
-      <div class="effect-media"><img src="images/12.jpg" alt=""></div>
+       <a class="effect" href="effect-12.html">
+      <div class="effect-media"><img src="images/15.jpg" alt=""></div>
       <div class="effect-info"><span>11</span><p>[Effect Name]</p></div>
-    </a> -->
+    </a>
 
-    <a class="effect hidden" href="effect-09.html">
-      <div class="effect-media"><img src="images/13.jpg" alt=""></div>
+    <a class="effect" href="effect-10.html">
+      <div class="effect-media"><img src="images/14.jpg" alt=""></div>
       <div class="effect-info"><span>12</span><p>[Effect Name]</p></div>
     </a>
 
-    <a class="effect hidden" href="effect-10.html">
-      <div class="effect-media"><img src="images/14.jpg" alt=""></div>
+    <a class="effect" href="effect-11.html">
+      <div class="effect-media"><img src="images/16.jpg" alt=""></div>
       <div class="effect-info"><span>13</span><p>[Effect Name]</p></div>
     </a>
-
-    <a class="effect hidden" href="effect-11.html">
-      <div class="effect-media"><img src="images/16.jpg" alt=""></div>
-      <div class="effect-info"><span>15</span><p>[Effect Name]</p></div>
-    </a>
-
-    <a class="effect hidden" href="effect-09.html">
-      <div class="effect-media"><img src="images/15.jpg" alt=""></div>
+   <a class="effect" href="effect-01.html">
+      <div class="effect-media"><img src="images/5.jpg" alt=""></div>
       <div class="effect-info"><span>14</span><p>[Effect Name]</p></div>
     </a>
-
-    <!-- <a class="effect hidden" href="effect-09.html">
-      <div class="effect-media"><img src="images/17.jpg" alt=""></div>
-      <div class="effect-info"><span>16</span><p>[Effect Name]</p></div>
-    </a> -->
-
-    <!-- <a class="effect hidden" href="effect-12.html">
-      <div class="effect-media"><img src="images/18.jpg" alt=""></div>
-      <div class="effect-info"><span>17</span><p>[Effect Name]</p></div>
+        
+ <a class="effect" href="effect-01.html">
+      <div class="effect-media"><img src="images/8.jpg" alt=""></div>
+      <div class="effect-info"><span>15</span><p>[Effect Name]</p></div>
     </a>
-
-    <a class="effect hidden" href="effect-13.html">
-      <div class="effect-media"><img src="images/19.jpg" alt=""></div>
-      <div class="effect-info"><span>18</span><p>[Effect Name]</p></div>
-    </a> -->
+ 
 
   </div>
-
-  <button class="toggle-btn" id="toggleBtn">
-    <span>Show all</span>
-    <span class="arrow">↓</span>
-  </button>
 </div>
-
-<script>
-  const btn = document.getElementById('toggleBtn');
-  const hidden = document.querySelectorAll('.effect.hidden');
-  let open = false;
-  btn.addEventListener('click', () => {
-    open = !open;
-    hidden.forEach(el => el.style.display = open ? 'block' : 'none');
-    btn.querySelector('span').textContent = open ? 'Show less' : 'Show all';
-    btn.classList.toggle('open', open);
-  });
-</script>
 
 </body>
 </html>

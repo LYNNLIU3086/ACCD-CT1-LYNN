@@ -157,7 +157,7 @@
 
 <!-- ── Nav ── -->
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
 
@@ -168,29 +168,28 @@
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">09 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[多网格]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [对噪声纹理连续施加五次边缘提取，每次运算让结构更细密碎裂；配合第一路 feedback 自我叠加生长与置换扭曲，再提取第六次边缘；第二路 feedback + transform 驱动线网持续漂移扩散，最终输出类似电路板、细胞壁或蕾丝织物不断生长扩张的高密度白色线网动态纹理。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+      <div class="effect-media"><img src="images/preview18.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+     <div class="effect-media"><img src="images/preview19.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">edge 链的次数决定纹理密度——每多一次 edge，结构就细化一个层级；level1 的亮度值控制 feedback1 的残影衰减速率；transform1 的平移量控制线网漂移速度。</div>
 
   </div>
 
@@ -203,12 +202,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[noise, edge, feedback, level, limit, comp, displace, transform, rgbkey, null]</span><span class="node-type">TOP</span></li>
+        <li><span>[keyboardin]</span><span class="node-type">CHOP</span></li>
+        <li><span>[-]</span><span class="node-type">SOP</span></li>
+        <li><span>[keyboardin]</span><span class="node-type">DAT</span></li>
+        <li><span>[-]</span><span class="node-type">MAT</span></li>
+        <li><span>[-]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,28 +217,28 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [noise1：灰度云状噪声，作为整个边缘链的原始素材
+keyboardin1（当前值 0）：键盘触发，重置或扰动 feedback1 回路]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        <p>Feedback 回路 1（生长叠加）
+edge5 + keyboardin1 → feedback1（自我叠加，纹理持续生长密集）
+→ level1（控制亮度/残影衰减）→ limit1（范围限制）→ comp1（叠合）
+→ displace1（用 comp1 对自身置换扭曲）→ edge6（第六次边缘，输出极精细白色线网）
+</p>
+
+<p>Feedback 回路 2（漂移扩散）
+edge6 → feedback2（线网自我叠加）→ transform1（每帧平移/旋转，驱动漂移）
+→ level2（亮度调整）→ comp2（当前帧 edge6 + 残影叠合）
+→ rgbkey1（抠图）→ level3（最终微调）→ null1（输出）]</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [高密度白色线网在黑色背景上持续生长漂移，结构层叠细腻如电路板或细胞壁；双路 feedback 分别负责生长密度与空间漂移，null1 输出透明层供后续合成]
       </div>
-    </div>
-
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
     </div>
 
   </div>

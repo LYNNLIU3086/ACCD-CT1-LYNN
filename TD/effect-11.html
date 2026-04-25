@@ -54,8 +54,6 @@
     }
 
     /* ── Left col ── */
-    .detail-left {}
-
     .detail-index {
       color: #333;
       margin-bottom: 8px;
@@ -90,7 +88,8 @@
       margin-bottom: 2px;
     }
     .media-single video,
-    .media-single img {
+    .media-single img,
+    .media-single .effect-media img {
       width: 100%;
       aspect-ratio: 16/9;
       object-fit: cover;
@@ -104,8 +103,6 @@
     }
 
     /* ── Right col: tech specs ── */
-    .detail-right {}
-
     .spec-section {
       margin-bottom: 40px;
     }
@@ -142,7 +139,11 @@
       border-left: 2px solid #1e1e1e;
       margin-bottom: 12px;
     }
-    .logic-block strong { color: #666; display: block; margin-bottom: 6px; }
+    .logic-block strong {
+      color: #666;
+      display: block;
+      margin-bottom: 6px;
+    }
 
     .ph {
       width: 100%; height: 100%;
@@ -157,43 +158,33 @@
 
 <!-- ── Nav ── -->
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
-
-
 
 <div class="detail-body">
 
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">14 / 15</div>
+    <div class="detail-title">炫彩模式</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      circle 经噪声置换后提取边缘，双路 feedback 分别向内螺旋和向外扩散叠加，生成有机同心圆纹样；再叠加 LFO 驱动色相旋转的橙黄渐变，输出持续变色的迷幻彩色曼陀罗；键盘可切换至彩色噪声模式。
     </div>
-
-    <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
-
-    <div class="media-row">
-      <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
-      <!-- ↑ REPLACE ↑ -->
-    </div>
-    <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
-      <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
-      <!-- ↑ REPLACE ↑ -->
+      <div class="effect-media"><img src="images/preview16.jpg" alt="节点截图"></div>
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">节点截图</div>
+
+    <div class="media-single">
+      <div class="effect-media"><img src="images/preview17.jpg" alt="过程截图"></div>
+    </div>
+    <div class="media-caption">过程截图 — transform1/2 的缩放与旋转参数决定螺旋收缩或扩散的速率；lfo1 频率控制色相旋转速度；switch1 的切换由 keyboardin 实时控制。</div>
 
   </div>
-
 
   <!-- ══ RIGHT: 技术参数 ══ -->
   <div class="detail-right">
@@ -202,13 +193,12 @@
     <div class="spec-section">
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
-        <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>circle, noise, displace, edge, feedback, transform, comp, ramp, hsvadj, lookup, switch, out</span><span class="node-type">TOP</span></li>
+        <li><span>lfo, math, keyboardin</span><span class="node-type">CHOP</span></li>
+        <li><span>—</span><span class="node-type">SOP</span></li>
+        <li><span>keyboardin</span><span class="node-type">DAT</span></li>
+        <li><span>—</span><span class="node-type">MAT</span></li>
+        <li><span>—</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,29 +208,22 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        lfo1（9358 高频）→ math1（映射为 11.55）持续驱动 hsvadj1 色相旋转；keyboardin1 按键切换 switch1 输出模式
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        circle1 + noise1 → displace1（扭曲圆边缘）→ edge1（提取轮廓）→ 双路 feedback：feedback2/transform2 
+        向外扩散，feedback1/transform1 
+        向内收缩，comp 叠合 → ramp1 + hsvadj1（LFO 驱动色相旋转）→ lookup1（查表着色）→ switch1（键盘切换 noise2 备用模式）→ out1
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        持续变色的迷幻彩色曼陀罗，同心圆纹样同时向内收缩与向外扩散；键盘按下即时切换至彩色噪声模式；out1 输出供后续合成或投影
       </div>
     </div>
 
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
-    </div>
 
   </div>
 

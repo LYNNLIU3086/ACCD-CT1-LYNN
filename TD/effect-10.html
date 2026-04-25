@@ -157,7 +157,7 @@
 
 <!-- ── Nav ── -->
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
 
@@ -168,29 +168,30 @@
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">13 / 15</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[青绿]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [圆环点集经 copy 拉伸成彗星锥形，粒子系统扩散后叠加噪声弯曲，以青绿渐变 point sprite 着色；在青色环境光下渲染出尾迹。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+      <div class="effect-media"><img src="images/preview14.jpg" alt=""></div>
+
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+     <div class="effect-media"><img src="images/preview15.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">
+limit1 的约束范围控制尾迹长度；ramp1 的色相决定粒子整体色调，可从青绿切换至其他颜色；light1 的背景色与 ramp1 协调配色是整体氛围的关键。</div>
 
   </div>
 
@@ -203,12 +204,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render, bloom, rgbkey, ramp]</span><span class="node-type">TOP</span></li>
+        <li><span>[-]</span><span class="node-type">CHOP</span></li>
+        <li><span>[pointgen, copy, null, particle, noise, transform, limit]</span><span class="node-type">SOP</span></li>
+        <li><span>[-]</span><span class="node-type">DAT</span></li>
+        <li><span>[pointsprite]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, light, geo]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,17 +219,32 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [pointgen1：圆环点集作为粒子发射源形状
+· ramp1：青绿色渐变 TOP，作为 pointsprite 的颜色纹理输入
+· light1：青绿色环境光，决定场景整体色调氛围]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+       <p>
+        SOP 粒子生成链
+pointgen1（圆环点集）→ copy1（沿轴拉伸复制，形成彗星锥形点阵）
+→ null1 → particle1（粒子系统：赋予速度与生命周期，点集开始扩散）
+→ noise1（叠加有机噪声弯曲，破坏直线轨迹）
+→ null2 → transform1（整体空间变换定位）
+→ limit1（约束粒子活动范围，控制尾迹长度）→ geo1
+       </p>
+       <p>
+        渲染管线
+ramp1（青绿渐变）→ pointsprite1（染色每个粒子点为软边椭圆 sprite）
+geo1 + pointsprite1 + cam1 + light1（青绿环境光）
+→ render1 → bloom1（泛光，让稀薄粒子发光扩散）→ rgbkey1（抠除背景）
+       </p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [青绿色调的稀薄粒子尾迹，在深色背景上若隐若现；bloom 使粒子点发出柔和光晕，整体呈现漂浮的空灵感；rgbkey 抠图后输出透明层供合成]
       </div>
     </div>
 

@@ -157,40 +157,38 @@
 
 <!-- ── Nav ── -->
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
-
-
 
 <div class="detail-body">
 
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">03 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[噪声圆形]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [噪声扭曲的圆形几何体经渲染与双重阈值后处理形成有机黑白形态；25个 LFO 驱动的噪声实例提供粒子分布；渲染结果送入 feedback 回路持续生长，slope 提取流向后二次置换与阈值化，最终输出类似菌丝、细胞分裂或有机生物蔓延的动态黑白形态。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+      <div class="effect-media"><img src="images/preview23.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+      <div class="effect-media"><img src="images/preview24.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">
+thresh1/thresh3 的阈值是形态边界清晰度的关键参数；slope1 提取流向再置换是形态"流动感"的来源；keyboardin 可随时重置 feedback 回路。</div>
 
   </div>
 
@@ -203,12 +201,13 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render1, noise2, noise2_, noise3, displace1–3, blur1–4, thresh1, thresh3, comp1–2, slope1, level1, feedback1, rgbkey1, null2–5, fit1, topto1]</span><span class="node-type">TOP</span></li>
+        <li><span>[lfo1, constant1（25 samples）]</span><span class="node-type">CHOP</span></li>
+        <li><span>[circle1, noise1, transform1, null1, line1
+]</span><span class="node-type">SOP</span></li>
+        <li><span>[keyboardin]</span><span class="node-type">DAT</span></li>
+        <li><span>[-]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam1, light1, geo1, instancing]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,29 +217,33 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+       lfo1（0.5599）：驱动 noise2_ 噪声偏移，控制25个实例的空间位置持续漂移
+· keyboardin1（值 0）：键盘触发 feedback1 重置或施加扰动
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        <p>几何体 + 渲染层（图1）
+circle1 → noise1 → transform1 → null1 → geo1（噪声扭曲圆形）
+line1 → geo1（辅助线几何）
+lfo1 → noise2_ → fit1 → null3 → topto1 → instancing（25实例噪声驱动分布）
+cam1 + light1 → render1 → displace1(noise2) → blur1 → thresh1 → blur2 → null4</p>
+
+<p>Feedback 生长层（图2）
+null4 + keyboardin1 → feedback1（黑白形态自我叠加生长）
+feedback1 → displace2 → level1（上支路亮度调整）
+feedback1 + blur3 → comp2 → slope1（梯度/流向提取）→ blur4（柔化）
+comp2 + blur4 + level1 → comp1 → null5
+null5 → displace3(noise3)（流向驱动置换）→ thresh3（强化黑白对比）
+→ rgbkey1（抠图）→ null2（最终输出）</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [黑白有机形态持续生长蔓延，边界随 slope 流向扭曲变形；整体呈菌丝扩散、细胞分裂或生物蔓延感；null2 输出透明层供后续合成或投影]
       </div>
     </div>
 
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
-    </div>
 
   </div>
 

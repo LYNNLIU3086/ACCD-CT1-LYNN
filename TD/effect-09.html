@@ -157,7 +157,7 @@
 
 <!-- ── Nav ── -->
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
 
@@ -172,25 +172,24 @@
     <div class="detail-title">[Effect Name]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [三层噪声经边缘提取、模糊、多重置换与渐变着色，生成黄绿色地貌底纹；再经 feedback 反馈回路持续叠加，slope 提取流向后二次置换扭曲，HSV 精确调色后叠合边缘描线，产生类似熔岩流动或生物皮肤蠕动的有机纹理动画。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+        <div class="effect-media"><img src="images/preview8.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+        <div class="effect-media"><img src="images/preview8.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">keyboardin 触发 feedback 扰动或重置；hsvadj1 的 Hue Offset 是整体色调的关键调节点，可将黄绿色系切换至其他色域。</div>
 
   </div>
 
@@ -203,12 +202,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[noise, edge, blur, comp, displace, lookup, hsvadj, level, null]</span><span class="node-type">TOP</span></li>
+        <li><span>[keyboardin, feedback, slope]</span><span class="node-type">CHOP</span></li>
+        <li><span>[-]</span><span class="node-type">SOP</span></li>
+        <li><span>[-]</span><span class="node-type">DAT</span></li>
+        <li><span>[ramp]</span><span class="node-type">MAT</span></li>
+        <li><span>[-]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,29 +217,38 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [· keyboardin1（当前值 0）：键盘交互，触发 feedback 重置或施加瞬间扰动
+· null2：接收上一级管线的彩色纹理，作为 feedback 的初始帧输入]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        <p>
+          底纹生成（图1）
+noise1 → edge1（边缘提取）→ blur1（柔化轮廓）
+noise1 + noise2 → comp1（双噪声叠加）→ comp2（细密黑白纹理）
+blur1 + noise3（蓝色填充）→ comp3（蓝色裂纹）
+comp2 → displace1（扭曲 comp3）→ comp4（黄绿色混合叠合）
+→ displace2（二次置换）→ lookup1 + ramp1（青绿渐变着色）→ 输出地貌底纹
+        </p>
+
+        <p>
+          Feedback 生长回路（图2）
+null2 → feedback1（彩色纹理自我叠加）
+feedback1 → slope1（梯度/流向提取）+ noise4（彩色扰动）→ comp5（置换向量图）
+→ displace3（流向驱动扭曲）→ level1（亮度调整）→ comp6（汇合）
+→ hsvadj1（HSV 色相/饱和/亮度精调）→ level2
+→ edge2（提取边缘描线）→ level3 → comp7（纹理 + 边缘叠合）→ null1（最终输出）
+
+        </p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [黄绿色调的有机纹理持续蠕动生长，边缘描线随之动态更新；整体呈现熔岩流动、苔藓扩张或生物皮肤蠕动的质感，null1 输出供后续合成或投影使用]
       </div>
     </div>
 
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
-    </div>
 
   </div>
 
