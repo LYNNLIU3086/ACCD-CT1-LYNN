@@ -157,7 +157,7 @@
 
 <!-- ── Nav ── -->
 <nav>
-  <a href="index.html">← Back</a>
+  <a href="TD.html">← Back</a>
   <span>TouchDesigner · 2026</span>
 </nav>
 
@@ -168,32 +168,30 @@
   <!-- ══ LEFT: 标题 + 描述 + 附图 ══ -->
   <div class="detail-left">
 
-    <div class="detail-index">01 / 18</div>  <!-- 改成对应编号 -->
-    <div class="detail-title">[Effect Name]</div>
+    <div class="detail-index">07 / 18</div>  <!-- 改成对应编号 -->
+    <div class="detail-title">[7-分形的曼陀罗]</div>
 
     <div class="detail-desc">
-      [在这里写这个效果的描述。可以写它的灵感来源、视觉目标、想传达的感受。]
+      [将一条经噪声扰动的线段绕轴旋转成海胆状旋转体，贴上彩虹渐变色后多重复制，形成曼陀罗花纹。两路几何分别以线框与彩色点云渲染，经泛光处理后产生有机发光的放射美感。]
     </div>
 
     <!-- 附图区：可选 pair 或 single，不需要的删掉 -->
 
-    <div class="media-row">
+    <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Screenshot 1</div>
-      <div class="ph">Screenshot 2</div>
+      <div class="effect-media"><img src="images/preview12.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
     <div class="media-caption">节点截图 / 过程截图</div>
 
     <div class="media-single">
       <!-- ↓ REPLACE ↓ -->
-      <div class="ph">Process video or extra image</div>
+     <div class="effect-media"><img src="images/preview13.jpg" alt=""></div>
       <!-- ↑ REPLACE ↑ -->
     </div>
-    <div class="media-caption">过程视频或补充截图</div>
+    <div class="media-caption">noise1 的 amplitude 控制花瓣轮廓的不规律程度；copy1 的复制数量决定放射对称轴数，值越大越接近满圆曼陀罗。</div>
 
   </div>
-
 
   <!-- ══ RIGHT: 技术参数 ══ -->
   <div class="detail-right">
@@ -203,12 +201,12 @@
       <div class="spec-label">Nodes Used</div>
       <ul class="nodes">
         <!-- 格式：节点名 + 类型标签，按需增删 -->
-        <li><span>[Node Name]</span><span class="node-type">TOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">CHOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">SOP</span></li>
-        <li><span>[Node Name]</span><span class="node-type">DAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">MAT</span></li>
-        <li><span>[Node Name]</span><span class="node-type">COMP</span></li>
+        <li><span>[render, bloom]</span><span class="node-type">TOP</span></li>
+        <li><span>[-]</span><span class="node-type">CHOP</span></li>
+        <li><span>[line, noise, revolve, lookuptex, copy, convert, transform]</span><span class="node-type">SOP</span></li>
+        <li><span>[—]</span><span class="node-type">DAT</span></li>
+        <li><span>[ramp]</span><span class="node-type">MAT</span></li>
+        <li><span>[cam, light, geo]</span><span class="node-type">COMP</span></li>
       </ul>
     </div>
 
@@ -218,30 +216,29 @@
 
       <div class="logic-block">
         <strong>Input</strong>
-        [描述输入源：音频、摄像头、鼠标、OSC、MIDI 等]
+        [ line1：一条直线段作为旋转轮廓的母线
+· ramp1：彩虹渐变 TOP，作为 lookuptex 的颜色查找表，将点的位置映射为彩色]
       </div>
 
       <div class="logic-block">
         <strong>Process</strong>
-        [描述核心处理逻辑：信号如何流动，节点之间的关系，关键参数]
+        [<p>形态生成
+line1 → noise1（扰动轮廓，形成不规则波浪线）
+→ revolve1（绕 Y 轴旋转 360°，生成海胆/梭形旋转体）
+→ lookuptex1 + ramp1（按点位置查表染彩虹色）
+→ copy1（沿圆周多重复制，形成放射对称阵列）
+</p>
+<p>双路分叉渲染
+copy1 → convert1 → transform1 → geo1（线框/面模式，白色海胆放射形）
+copy1 → convert2 → transform2 → geo2（点云/粒子模式，全彩曼陀罗花纹）
+]</p>
       </div>
 
       <div class="logic-block">
         <strong>Output</strong>
-        [描述输出：屏幕、投影、文件渲染等]
+        [色放射曼陀罗，线框层与彩色点云层叠合；bloom 让发光点向外晕散，整体呈现珊瑚/海葵在深海中发光的有机美感]
       </div>
     </div>
-
-    <!-- 参数 -->
-    <div class="spec-section">
-      <div class="spec-label">Key Parameters</div>
-      <ul class="nodes">
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-        <li><span>[Parameter]</span><span>[Value / Range]</span></li>
-      </ul>
-    </div>
-
   </div>
 
 </div>
