@@ -696,7 +696,8 @@ framework or method.</p>
 </div>
 
   <div class="prose"> 
-    <p>我的游戏</p>  
+    <p>My interactive game invites players into an imaginative, vibrant spatial world of text, using words as the core medium. The gameplay involves controlling movement and picking up through a joystick. A wooden box is used to deliver the game experience. The core idea is to treat text itself as the toy, allowing players to move, weave through the space, and get close to interact with these words
+    </p>  
 </div>
 </section>
 
@@ -726,8 +727,8 @@ framework or method.</p>
      <img src="images7-11/5.jpg" alt="Prototype iteration">
      <img src="images7-11/6.jpg" alt="Prototype iteration">
 
-<p>我把散装的方块替换成了文本，让文本在场景中流动。然后中途有一些顺序的调整，比如文字随机旋转乱飞，把 LateUpdate 里的朝向逻辑改掉，让每个 Label 朝向摄像机但保留父物体的随机旋转，同时在 CreateTextBlock 里把父物体的旋转改回随机，把文字文字位置朝向各异。</p>
-<p>过程中曾经出现一个很棘手的报错，我的摄像机视角一直在漂移，是因为用了 Joystick 轴映射到鼠标，死区（Dead Zone）没设好，静止时会持续输出一个微小值，导致视角缓慢漂移，以及ESP32 发来的原始值静止时是 ~1940，Unity没有做中心值归零处理，稍微偏离中心就会持续累加旋转。</p>
+<p>I replaced the loose blocks with text, making the text flow in the scene. Then I made some adjustments along the way—for example, making the text randomly rotate and fly around, changing the orientation logic in LateUpdate so that each Label faces the camera while retaining the parent object's random rotation, and also modifying CreateTextBlock to set the parent object's rotation back to random, resulting in varied text positions and orientations.</p>
+<p>During the process, there was a tricky error: my camera view kept drifting. This was because I used a Joystick axis mapped to the mouse, but the dead zone wasn't set properly. When stationary, it would continuously output a tiny value, causing the view to drift slowly. Additionally, the raw value sent by the ESP32 was ~1940 when stationary. Unity did not apply center‑value zeroing, so any slight deviation from the center led to continuous cumulative rotation.</p>
 
     </div>
 </section>
