@@ -672,6 +672,7 @@ framework or method.</p>
       </div>
 
 
+
       <!-- ═══ PROJECT 03 ═══ -->
 <div class="project-divider" id="project-3">
   <div class="proj-num">03</div>
@@ -695,7 +696,7 @@ framework or method.</p>
 </div>
 
   <div class="prose"> 
-    <p>I made a game atmosphere video, which completes the atmosphere process of my vision for this project.</p>  
+    <p>我的游戏</p>  
 </div>
 </section>
 
@@ -721,6 +722,12 @@ framework or method.</p>
 </div>
   <div class="split">
     <img src="images7-11/3.jpg" alt="Prototype iteration">
+     <img src="images7-11/4.jpg" alt="Prototype iteration">
+     <img src="images7-11/5.jpg" alt="Prototype iteration">
+     <img src="images7-11/6.jpg" alt="Prototype iteration">
+
+<p>我把散装的方块替换成了文本，让文本在场景中流动。然后中途有一些顺序的调整，比如文字随机旋转乱飞，把 LateUpdate 里的朝向逻辑改掉，让每个 Label 朝向摄像机但保留父物体的随机旋转，同时在 CreateTextBlock 里把父物体的旋转改回随机，把文字文字位置朝向各异。</p>
+<p>过程中曾经出现一个很棘手的报错，我的摄像机视角一直在漂移，是因为用了 Joystick 轴映射到鼠标，死区（Dead Zone）没设好，静止时会持续输出一个微小值，导致视角缓慢漂移，以及ESP32 发来的原始值静止时是 ~1940，Unity没有做中心值归零处理，稍微偏离中心就会持续累加旋转。</p>
 
     </div>
 </section>
