@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>From depth to time — Process documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#e8e8e8;--panel:#f6f6f6;--ink:#0a0a0a;--mut:#707070;--hair:#bdbdbd;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0a0a0a;--panel:#141414;--ink:#f2f2f2;--mut:#8a8a8a;--hair:#363636;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0a0a0a;--panel:#141414;--ink:#f2f2f2;--mut:#8a8a8a;--hair:#363636;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 14px/1.6 'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace}
+main{max-width:1080px;margin:0 auto;padding:0 20px 40px}
+h1{font-weight:500;font-size:clamp(44px,10vw,112px);letter-spacing:-.06em;line-height:.9;margin:0;padding:48px 0 20px}
+h2{font-weight:500;font-size:clamp(18px,2.6vw,24px);letter-spacing:-.02em;margin:0;padding:44px 0 12px}
+.lead{max-width:62ch;margin:0 0 28px;color:var(--mut)}
+dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin:0;border-top:1px solid var(--ink)}
+dl div{padding:12px 16px 12px 0;border-bottom:1px solid var(--hair)}
+dt{color:var(--mut);font-size:12px}dd{margin:0}
+.p{background:var(--panel);border:1px solid var(--hair);overflow-x:auto}
+.p svg{display:block;min-width:900px;width:100%;height:auto}
+.cap{font-size:12px;color:var(--mut);margin:8px 0 0;max-width:80ch}
+table{width:100%;min-width:680px;border-collapse:collapse}
+th,td{padding:10px 14px;border-top:1px solid var(--hair);text-align:left;vertical-align:top;font-size:13px}
+th{font-weight:500;color:var(--mut);width:22%}
+thead th{color:var(--ink);border-top:0;border-bottom:1px solid var(--ink)}
+footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--ink);font-size:12px;color:var(--mut);max-width:90ch}
+svg text{font:400 11px 'IBM Plex Mono',monospace;fill:var(--ink)}
+svg .m{fill:var(--mut)}svg .s{font-size:10px}svg .b{font-weight:500}svg .ti{fill:var(--bg)}
+svg .bx{fill:var(--panel);stroke:var(--ink);stroke-width:1.2}
+svg .fi{fill:var(--ink)}
+svg .ln{fill:none;stroke:var(--ink);stroke-width:1.3}
+svg .ds{stroke-dasharray:5 4}svg .hr{stroke:var(--hair)}svg .th{stroke-width:3}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<marker id="a" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" style="fill:var(--ink)"/></marker>
+<pattern id="fr" width="120" height="15" patternUnits="userSpaceOnUse"><path d="M0 14.5H120" style="stroke:var(--mut)" stroke-width=".8"/></pattern>
+</defs></svg>
+<main>
+<h1>From depth to time</h1>
+<p class="lead">Two ways of turning a video into a spatial object in Blender: first as a depth relief that plays in real time, then as a volume of time that can be cut, tilted and swept.</p>
+<dl>
+<div><dt>Environment</dt><dd>Blender 5.2, Geometry Nodes</dd></div>
+<div><dt>Footage</dt><dd>SDR video, 2 to 20 s</dd></div>
+<div><dt>Methods</dt><dd>A depth point cloud, B time-slice volume</dd></div>
+<div><dt>Stage</dt><dd>Exploration, phase 1</dd></div>
+</dl>
+
+<h2>Fig. 1 Process and scope</h2>
+<div class="p"><svg id="f1" viewBox="0 0 960 330" role="img" aria-label="Five stages of the process and the change in scope"></svg></div>
+<p class="cap">The scope moved from making a video play inside space to making time itself a material.</p>
+
+<h2>Fig. 2 Exploration A: depth point cloud</h2>
+<div class="p"><svg id="f2" viewBox="0 0 960 370" role="img" aria-label="Geometry Nodes pipeline turning a depth video and a colour video into a point cloud"></svg></div>
+<p class="cap">A plane is scattered with points. A depth video lifts each point along Z, a colour video paints it, and both movie textures read the scene frame, so the cloud plays with the timeline.</p>
+
+<h2>Fig. 3 Method study B: time as an axis</h2>
+<div class="p"><svg id="f3" viewBox="0 0 960 350" role="img" aria-label="Frames stacked along a time axis and cut by a flat, tilted and moving slice"></svg></div>
+<p class="cap">Every frame is a flat X·Y plane; the frames stack along Z. What the slice shows depends on where it cuts and at what angle.</p>
+
+<h2>Fig. 4 Comparison</h2>
+<div class="p"><svg id="f4" viewBox="0 0 960 230" role="img" aria-label="Z means depth in method A and time in method B"></svg></div>
+<div class="p" style="margin-top:12px"><table>
+<thead><tr><th></th><th>A Depth point cloud</th><th>B Time Block</th></tr></thead>
+<tbody>
+<tr><th>Input</th><td>Colour video and a depth video</td><td>One SDR video</td></tr>
+<tr><th>Geometry</th><td>Points scattered on a plane</td><td>Frame planes and cutting slices</td></tr>
+<tr><th>Z axis means</th><td>Depth in the scene</td><td>Time</td></tr>
+<tr><th>Time appears as</th><td>Playback, one frame at a time</td><td>A spatial axis you can cut</td></tr>
+<tr><th>Motion comes from</th><td>The timeline</td><td>Moving or keyframing the slice</td></tr>
+<tr><th>Strength</th><td>Reads as a real scene with volume</td><td>Shows motion as form, slit-scan images</td></tr>
+<tr><th>Limit</th><td>Needs a depth estimate; time is never seen at once</td><td>No scene depth; planes only</td></tr>
+</tbody></table></div>
+
+<h2>Fig. 5 System diagram</h2>
+<div class="p"><svg id="f5" viewBox="0 0 960 500" role="img" aria-label="System diagram of the Time Block method from source video to output"></svg></div>
+<p class="cap">The piece sits between the cached frames and the camera: one time volume, one slice, one keyframed movement.</p>
+
+<footer>References: Kevin L. Ferguson, Volumetric Cinema. Time Block by Pietro Costa (2026, GPL-3.0-or-later), used as the reference implementation for method B.</footer>
+</main>
+<script>
+const N='http://www.w3.org/2000/svg';
+function el(p,t,a,x){const e=document.createElementNS(N,t);for(const k in a)e.setAttribute(k,a[k]);if(x!=null)e.textContent=x;p.appendChild(e);return e}
+function tx(s,x,y,t,c,a){return el(s,'text',{x,y,class:c||'','text-anchor':a||'start'},t)}
+function box(s,x,y,w,h,a,b,k){k=k||'bx';const f=k=='fi';el(s,'rect',{x,y,width:w,height:h,class:k});
+ tx(s,x+w/2,y+h/2+(b?-3:4),a,'b'+(f?' ti':''),'middle');if(b)tx(s,x+w/2,y+h/2+12,b,'s '+(f?'ti':'m'),'middle')}
+function ar(s,d,k){el(s,'path',{d,class:'ln '+(k||''),'marker-end':'url(#a)'})}
+function ln(s,d,k){el(s,'path',{d,class:'ln '+(k||'')})}
+const $=id=>document.getElementById(id);
+
+// Fig 1
+(()=>{const s=$('f1');ln(s,'M30 40H930','hr');
+const c=[['Idea','Make a video occupy','space, not only a','screen.'],
+['Exploration A','Depth + colour video','become a point cloud.','Z = depth.','Plays in real time.'],
+['Method study B','Stack the frames','along Z. Z = time.','Cut the volume with','a slice.'],
+['Constraints','SDR footage only;','frames are cached as','image pages. Clips','grew 2 s, 4 s, 20 s.'],
+['Behaviour','Only the front plane','plays. Slice and stack','are frozen cuts; motion','= a keyframed slice.']];
+c.forEach((v,i)=>{const x=30+184*i,f=i==2,k=f?'fi':'bx',t=f?' ti':'';
+ ln(s,`M${x+86} 51V70`);el(s,'circle',{cx:x+86,cy:40,r:11,class:k});tx(s,x+86,44,i+1,'b'+t,'middle');
+ el(s,'rect',{x,y:70,width:172,height:150,class:k});tx(s,x+12,94,v[0],'b'+t);
+ v.slice(1).forEach((l,j)=>tx(s,x+12,118+j*16,l,'s'+t))});
+box(s,30,252,420,64,'Before','Video as a depth relief that plays in real time.');
+box(s,510,252,420,64,'After','Video as a volume of time: cut, tilt and sweep it.','fi');
+ar(s,'M452 284H508')})();
+
+// Fig 2
+(()=>{const s=$('f2'),X=i=>30+156*i;
+box(s,X(0),40,120,56,'Colour video','image texture');
+box(s,X(0),150,120,56,'Plane','mesh');
+box(s,X(1),150,120,56,'Distribute','density 50 000');
+box(s,X(2),150,120,56,'Point radius','0.002 m');
+box(s,X(3),150,120,56,'Store "col"','Color, Point');
+box(s,X(4),150,120,56,'Set position','depth becomes space','fi');
+box(s,X(5),150,120,56,'Set material','"point color"');
+box(s,X(0),260,120,56,'Depth video','image texture');
+box(s,X(1),260,120,56,'Separate','Red channel');
+box(s,X(2),260,120,56,'Map range','0 to 1 → 0 to 15');
+box(s,X(3),260,120,56,'Combine XYZ','Z = depth');
+for(let i=0;i<5;i++)ar(s,`M${X(i)+120} 178H${X(i+1)-2}`);
+ar(s,'M150 68H558V148','ds');
+for(let i=0;i<3;i++)ar(s,`M${X(i)+120} 288H${X(i+1)-2}`,'ds');
+ar(s,'M618 288H714V208','ds');
+tx(s,30,338,'solid: geometry     dashed: texture data     both movie textures are driven by Scene Time → frame','s m')})();
+
+// Fig 3
+(()=>{const s=$('f3');tx(s,30,32,'Frames along the time axis','b');
+for(let i=5;i>=0;i--){const y=262-22*i;el(s,'polygon',{points:`60,${y} 190,${y} 250,${y-48} 120,${y-48}`,class:'bx',style:'fill-opacity:.7'})}
+el(s,'polygon',{points:'70,250 200,190 260,150 130,210',class:'fi',style:'fill-opacity:.45;stroke:var(--ink);stroke-width:1.5'});
+ar(s,'M290 275V85');tx(s,298,100,'Time (local Z)','b');
+tx(s,60,296,'each frame is one X·Y plane','s m');tx(s,60,312,'samples = seconds × sampling FPS','s m');
+[['Flat slice','one moment',0],['Tilted slice','each row reads','a different time'],['Sweep time','keyframe position','from 0 to 1']].forEach((v,i)=>{const x=430+175*i;
+ el(s,'rect',{x,y:50,width:160,height:230,class:'bx'});tx(s,x+16,72,v[0],'b');tx(s,x+16,90,'time ↑','s m');
+ el(s,'rect',{x:x+20,y:95,width:120,height:150,fill:'url(#fr)'});
+ if(i==0)ln(s,`M${x+10} 170H${x+150}`,'th');
+ if(i==1)ln(s,`M${x+10} 235L${x+150} 105`,'th');
+ if(i==2){[235,170,105].forEach((y,j)=>el(s,'path',{d:`M${x+10} ${y}H${x+150}`,class:'ln th',style:`opacity:${.25+.35*j}`}));ar(s,`M${x+152} 250V120`)}
+ tx(s,x+80,304,v[1],'s','middle');if(v[2])tx(s,x+80,320,v[2],'s','middle')});})();
+
+// Fig 4
+(()=>{const s=$('f4');
+el(s,'rect',{x:30,y:20,width:430,height:190,class:'bx'});el(s,'rect',{x:500,y:20,width:430,height:190,class:'bx'});
+tx(s,46,44,'A  Z = depth in the scene','b');tx(s,516,44,'B  Z = time','b');
+ln(s,'M60 180H440','hr');const r=[[70,150],[110,158],[150,132],[190,120],[230,140],[270,100],[310,112],[350,90],[390,128],[430,140]];
+r.forEach(p=>{ln(s,`M${p[0]} 180V${p[1]}`,'hr');el(s,'circle',{cx:p[0],cy:p[1],r:2.5,class:'fi'})});
+ar(s,'M46 190V70');tx(s,58,80,'depth','s m');tx(s,46,204,'time = playback, one frame at a time','s m');
+for(let i=4;i>=0;i--){const y=175-20*i,x=560;el(s,'polygon',{points:`${x},${y} ${x+130},${y} ${x+180},${y-36} ${x+50},${y-36}`,class:'bx',style:'fill-opacity:.7'})}
+el(s,'polygon',{points:'570,170 700,140 750,104 620,134',class:'fi',style:'fill-opacity:.45;stroke:var(--ink)'});
+ar(s,'M800 190V70');tx(s,812,80,'time','s m');tx(s,516,204,'time is a spatial axis you can cut','s m')})();
+
+// Fig 5
+(()=>{const s=$('f5');
+ln(s,'M30 24h40');tx(s,78,28,'frames, images','s');ln(s,'M210 24h40','ds');tx(s,258,28,'data, settings','s');el(s,'rect',{x:390,y:17,width:14,height:14,class:'fi'});tx(s,412,28,'my piece','s');
+box(s,30,190,130,70,'Source video','.mov, SDR');tx(s,95,284,'range, size, FPS','s m','middle');
+box(s,210,110,120,60,'FFprobe','analyze clip');box(s,210,280,120,60,'FFmpeg','extract frames');
+ar(s,'M160 205L210 150','ds');ar(s,'M160 245L210 310');
+box(s,380,270,120,80,'Atlas cache','PNG pages');ar(s,'M330 310H380');
+el(s,'rect',{x:540,y:50,width:400,height:360,fill:'none',stroke:'var(--ink)','stroke-dasharray':'6 4'});tx(s,552,70,'Blender: Time Block','b');
+box(s,580,100,170,44,'TB_ROOT','settings, transform');ar(s,'M330 140H580','ds');tx(s,455,131,'sample count, memory','s m','middle');
+box(s,580,175,170,38,'Front: plays video');box(s,580,220,170,38,'Stack: all frames');box(s,580,265,170,38,'Slice: cross-section','','fi');box(s,580,310,170,38,'Multi-slice: slab');
+ar(s,'M665 144V175');[194,239,284,329].forEach(y=>ar(s,`M500 310C545 310 535 ${y} 578 ${y}`));
+box(s,790,225,130,58,'Time position','keyframes 0 to 1','fi');ar(s,'M790 254H770V284H752','ds');
+box(s,790,345,130,44,'Reel camera','aligned to slice');ar(s,'M665 348V367H790');
+box(s,790,440,130,50,'Output','still, vertical video');ar(s,'M855 389V440');
+el(s,'rect',{x:30,y:400,width:470,height:92,class:'fi'});tx(s,44,422,'My piece','b ti');
+['One 20 s SDR clip built as a time volume','(about 600 samples at 30 FPS, 320 px wide):','a tilted slice swept through it by keyframes.'].forEach((l,i)=>tx(s,44,443+18*i,l,'ti'))})();
+</script>
+</body>
+</html>
