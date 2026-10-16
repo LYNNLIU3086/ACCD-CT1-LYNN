@@ -52,7 +52,7 @@
     <p id="status" role="status" aria-live="polite"></p >
 
     <article id="drink" aria-label="Drink recipe" hidden>
-      < img id="photo" alt="" hidden>
+      <img id="photo" alt="" hidden>
       <h2 id="name"></h2>
       <p id="details"></p >
       <h3>Ingredients</h3>
@@ -64,7 +64,7 @@
         <h3>Astronomy Picture of the Day</h3>
         <p id="apod-date"></p >
         <h4 id="apod-title"></h4>
-        < img id="apod-image" alt="" hidden>
+        <img id="apod-image" alt="" hidden>
         <p id="apod-message"></p >
         <p id="apod-credit"></p >
         <a id="apod-link" href="" target="_blank" rel="noopener noreferrer" hidden>View on NASA</a >
@@ -79,6 +79,9 @@
     const status = document.getElementById('status');
     const drinkCard = document.getElementById('drink');
     const apodSection = document.getElementById('apod');
+    const apodEndpoint = location.port === '8000'
+      ? '/api/apod'
+      : 'http://127.0.0.1:8000/api/apod';
 
     startButton.addEventListener('click', async () => {
       startButton.disabled = true;
@@ -129,17 +132,10 @@
         }
 
         drinkCard.hidden = false;
-        const date = drink.dateModified?.match(/^(\d{4}-\d{2}-\d{2})/)?.[1];
-        if (!date) {
-          status.textContent = 'Your random drink is ready. No modification date was provided for its astronomy picture.';
-          return;
-        }
-
-        status.textContent = `Drink ready. Finding NASA’s picture for ${date}…`;
         const apodMessage = document.getElementById('apod-message');
         const apodImage = document.getElementById('apod-image');
         const apodLink = document.getElementById('apod-link');
-        document.getElementById('apod-date').textContent = date;
+        document.getElementById('apod-date').textContent = '';
         document.getElementById('apod-title').textContent = '';
         document.getElementById('apod-credit').textContent = '';
         apodMessage.textContent = '';
@@ -150,42 +146,31 @@
         apodSection.hidden = false;
 
         try {
-          // NASA's WordPress APOD API identifies an entry by its YYMMDD path.
-          const apodId = date.slice(2).replaceAll('-', '');
-          const apodResponse = await fetch(
-            `https://science.nasa.gov/wp-json/wp/v2/apod-basic/${apodId}`,
-            { signal: controller.signal }
-          );
+          status.textContent = 'Drink ready. Finding a random NASA picture…';
+          const apodResponse = await fetch(apodEndpoint, {
+            cache: 'no-store',
+            signal: controller.signal
+          });
           if (!apodResponse.ok) throw new Error('The NASA APOD request failed.');
 
           const apod = await apodResponse.json();
-          if (apod.date !== date) throw new Error('NASA returned a different date.');
-          document.getElementById('apod-title').textContent = apod.title || '';
-          const credit = apod.copyright || apod.credit || '';
-          const creditText = new DOMParser().parseFromString(credit, 'text/html').body.textContent.trim();
-          document.getElementById('apod-credit').textContent =
-            creditText ? `Credit: ${creditText}` : '';
+          if (!apod.title || !apod.imageUrl) throw new Error('NASA returned incomplete APOD data.');
 
-          const pageUrl = apod.permalink || apod.url;
-          if (pageUrl) {
-            apodLink.href = pageUrl;
-            apodLink.hidden = false;
-          }
-
-          if (apod.media_type === 'image' && apod.hdurl) {
-            apodImage.alt = apod.alt || apod.title || `Astronomy picture for ${date}`;
-            apodImage.onload = () => { apodImage.hidden = false; };
-            apodImage.onerror = () => {
-              apodImage.hidden = true;
-              apodMessage.textContent = 'The astronomy image could not be displayed. View it on NASA instead.';
-            };
-            apodImage.src = apod.hdurl;
-          } else {
-            apodMessage.textContent = 'NASA has no still image for this date. View the APOD entry on NASA.';
-          }
+          document.getElementById('apod-date').textContent = apod.date || '';
+          document.getElementById('apod-title').textContent = apod.title;
+          apodMessage.textContent = apod.explanation || '';
+          apodLink.href = apod.sourceUrl || 'https://science.nasa.gov/apod/';
+          apodLink.hidden = false;
+          apodImage.alt = apod.title;
+          apodImage.onload = () => { apodImage.hidden = false; };
+          apodImage.onerror = () => {
+            apodImage.hidden = true;
+            apodMessage.textContent = 'The astronomy image could not be displayed. View it on NASA instead.';
+          };
+          apodImage.src = apod.imageUrl;
           status.textContent = 'Your random drink is ready. Click start for another.';
         } catch (error) {
-          apodMessage.textContent = 'Could not load NASA’s picture for this date.';
+          apodMessage.textContent = 'Could not load a random NASA picture.';
           status.textContent = 'Your random drink is ready. Click start for another.';
           console.error(error);
         }
