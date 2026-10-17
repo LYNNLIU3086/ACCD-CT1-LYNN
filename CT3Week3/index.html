@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<title>EstroSculpt Process</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: a lab notebook. One reading column (~66ch) for text; figures break out wider.
+   Each step opens with a large mono step number in the margin. Monochrome, like the work itself. */
+:root {
+  --paper: #f0f0ee;
+  --ink: #141414;
+  --muted: #66666a;
+  --rule: #d2d2cf;
+  --fill: #e4e4e1;
+  --stage: #1b1b1b;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --text: 42rem;
+  --wide: 72rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f0f0f; --ink: #ecece9; --muted: #9b9b97; --rule: #2c2c2b; --fill: #1a1a19; --stage: #000000;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f0f0f; --ink: #ecece9; --muted: #9b9b97; --rule: #2c2c2b; --fill: #1a1a19; --stage: #000000;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink);
+  font-family: var(--body); font-size: 1.0625rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 4rem;
+}
+a { color: inherit; text-underline-offset: 3px; }
+.wrap { max-width: var(--wide); margin-inline: auto; }
+.col { max-width: var(--text); }
+p { margin: 0; }
+.flow { display: grid; gap: 1rem; }
+
+/* ---------- masthead ---------- */
+.mast { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-block: 1.25rem; border-bottom: 1px solid var(--ink);
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.mast b { color: var(--ink); font-weight: 500; }
+
+.hero { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 2.5rem; align-items: end; padding-block: 3rem 3.5rem; border-bottom: 1px solid var(--rule); }
+.hero h1 { font-family: var(--display); font-stretch: 125%; font-weight: 800; font-size: clamp(2.8rem, 8vw, 5.6rem); line-height: 0.92; letter-spacing: -0.03em; margin: 0 0 1.5rem; }
+.hero .sub { font-family: var(--display); font-stretch: 100%; font-weight: 400; font-size: 1.25rem; line-height: 1.35; margin-bottom: 1.5rem; text-wrap: balance; }
+.hero .rule-box { border-left: 2px solid var(--ink); padding-left: 1rem; display: grid; gap: 0.75rem; }
+.hero figure { margin: 0; }
+.hero figure img { display: block; width: 100%; aspect-ratio: 4 / 3.4; object-fit: cover; object-position: 40% 50%; background: var(--stage); }
+.facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin-top: 2rem; border-top: 1px solid var(--rule); }
+.facts div { padding: 0.75rem 0.75rem 0 0; }
+.facts b { display: block; font-family: var(--display); font-stretch: 112%; font-weight: 700; font-size: 1.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.facts span { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- contents ---------- */
+.toc { padding-block: 2rem; border-bottom: 1px solid var(--rule); }
+.toc ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.25rem 1.5rem; }
+.toc a { display: flex; gap: 0.6rem; text-decoration: none; padding-block: 0.3rem; font-family: var(--display); font-stretch: 100%; font-size: 0.95rem; }
+.toc a:hover span:last-child { text-decoration: underline; }
+.toc a span:first-child { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); padding-top: 0.15rem; font-variant-numeric: tabular-nums; }
+.label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+
+/* ---------- steps ---------- */
+.step { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: 0 2rem; padding-block: 3.5rem; border-bottom: 1px solid var(--rule); }
+.step > .num { font-family: var(--mono); font-size: 0.8rem; color: var(--muted); padding-top: 0.6rem; }
+.step > .num b { display: block; font-family: var(--display); font-stretch: 125%; font-weight: 300; font-size: 3.4rem; line-height: 1; color: var(--ink); font-variant-numeric: tabular-nums; }
+.step > .body { min-width: 0; display: grid; gap: 1.5rem; }
+h2 { font-family: var(--display); font-stretch: 112%; font-weight: 700; font-size: clamp(1.7rem, 3.4vw, 2.4rem); line-height: 1.05; letter-spacing: -0.015em; margin: 0; text-wrap: balance; }
+h3 { font-family: var(--display); font-stretch: 100%; font-weight: 600; font-size: 1.15rem; margin: 0.75rem 0 0; }
+.lead { font-size: 1.2rem; line-height: 1.5; }
+
+figure { margin: 0; display: grid; gap: 0.5rem; }
+figure img { display: block; width: 100%; max-width: 100%; height: auto; background: var(--fill); }
+figcaption { font-family: var(--mono); font-size: 0.75rem; line-height: 1.5; color: var(--muted); max-width: var(--text); }
+.grid2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+
+/* sketch-to-rule pairs */
+.pairs { display: grid; gap: 2rem; }
+.pair { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.pair .t { display: grid; gap: 0.5rem; }
+.pair .t .k { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.04em; }
+.pair .t h3 { margin: 0; }
+.pair .t .rule { font-family: var(--mono); font-size: 0.8rem; line-height: 1.5; border-top: 1px solid var(--rule); padding-top: 0.5rem; }
+
+/* tables */
+.tbl { overflow-x: auto; border-top: 1px solid var(--ink); }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; line-height: 1.45; min-width: 34rem; }
+th { text-align: left; font-family: var(--mono); font-weight: 500; font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 0.6rem 1rem 0.6rem 0; border-bottom: 1px solid var(--rule); vertical-align: bottom; }
+td { padding: 0.75rem 1rem 0.75rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+td:first-child { font-family: var(--display); font-weight: 600; white-space: nowrap; }
+td.v { font-family: var(--mono); font-weight: 500; font-size: 0.85rem; }
+
+/* version log */
+.log { display: grid; gap: 0; border-top: 1px solid var(--ink); }
+.ver { display: grid; grid-template-columns: 5rem minmax(0, 1fr) minmax(0, 15rem); gap: 1.25rem; padding-block: 1.25rem; border-bottom: 1px solid var(--rule); align-items: start; }
+.ver .v { font-family: var(--mono); font-size: 0.95rem; font-weight: 500; }
+.ver .what { display: grid; gap: 0.4rem; }
+.ver .why { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+.ver img { width: 100%; display: block; background: var(--fill); }
+
+/* diagram + chart */
+.diagram { overflow-x: auto; border: 1px solid var(--rule); padding: 1.25rem; background: var(--paper); }
+.diagram svg { display: block; min-width: 46rem; width: 100%; height: auto; }
+svg .box { fill: var(--paper); stroke: var(--ink); stroke-width: 1.2; }
+svg .box.dark { fill: var(--ink); }
+svg .t1 { fill: var(--ink); font-family: var(--display); font-weight: 600; font-size: 14px; }
+svg .t1.inv { fill: var(--paper); }
+svg .t2 { fill: var(--muted); font-family: var(--mono); font-size: 10.5px; }
+svg .t2.inv { fill: var(--paper); opacity: .75; }
+svg .ln { stroke: var(--ink); stroke-width: 1.2; fill: none; }
+svg .ah { fill: var(--ink); }
+svg .grid { stroke: var(--rule); stroke-width: 1; }
+svg .bar { fill: var(--ink); }
+svg .ax { fill: var(--muted); font-family: var(--mono); font-size: 11px; }
+svg .val { fill: var(--ink); font-family: var(--mono); font-size: 12px; font-weight: 500; }
+.formula { font-family: var(--mono); font-size: 1rem; background: var(--fill); padding: 1rem 1.25rem; overflow-x: auto; white-space: nowrap; }
+.points { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem 2rem; }
+.points div { display: grid; gap: 0.35rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; }
+.points h3 { margin: 0; font-size: 1rem; }
+.points p { font-size: 0.95rem; }
+code { font-family: var(--mono); font-size: 0.86em; background: var(--fill); padding: 0.05em 0.3em; }
+
+ul.clean { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.5rem; }
+ol.steps { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.5rem; }
+.closing { padding-block: 3rem 0; display: grid; gap: 1rem; }
+.closing p.big { font-family: var(--display); font-stretch: 100%; font-size: clamp(1.3rem, 2.6vw, 1.7rem); line-height: 1.3; max-width: 46rem; text-wrap: balance; }
+
+:focus-visible { outline: 2px dashed var(--ink); outline-offset: 3px; }
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding-block: 2rem 2.5rem; }
+  .toc ol { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .step { grid-template-columns: 1fr; padding-block: 2.5rem; }
+  .step > .num { padding: 0 0 0.75rem; display: flex; align-items: baseline; gap: 0.75rem; }
+  .step > .num b { font-size: 2.4rem; }
+  .pair { grid-template-columns: 1fr; gap: 0.75rem; }
+  .ver { grid-template-columns: 4rem minmax(0, 1fr); }
+  .ver .shot { grid-column: 2; }
+  .points { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) {
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .grid2 { grid-template-columns: 1fr; }
+  .toc ol { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="wrap">
+  <div class="mast"><span><b>EstroSculpt</b> · Hormone Evolution Simulator</span><span>Lynn Liu · Process documentation · October 2026</span></div>
+
+  <header class="hero">
+    <div>
+      <h1>Estro&shy;Sculpt</h1>
+      <p class="sub">A sculpture that grows from hormone molecules, evolution rules and outside factors.</p>
+      <div class="rule-box">
+        <p>The core rule: a hormone gains mass as single molecular units keep bonding together. This growth is shaped by three factors (body regulation, environmental disturbance and food) and moves through five stages, until the form splits into white (female) and black (male).</p>
+        <p>The form is not drawn by hand. Each slider stands for a concept, not a shaping tool. You change the factors and the stage, and the rules produce the form.</p>
+      </div>
+      <div class="facts">
+        <div><b>85</b><span>2D sketches</span></div>
+        <div><b>423</b><span>3D form studies</span></div>
+        <div><b>5</b><span>Evolution stages</span></div>
+        <div><b>8</b><span>Versions built</span></div>
+      </div>
+    </div>
+    <figure>
+      <img src="img/web_solid.jpg" alt="A white porous mass with a black granular body growing through it, rendered on a dark grey backdrop">
+      <figcaption>Secondary evolution, sex tendency +0.3, in the web version.</figcaption>
+    </figure>
+  </header>
+
+  <nav class="toc" aria-label="Steps">
+    <div class="label">The process, step by step</div>
+    <ol>
+      <li><a href="#sketches"><span>01</span><span>Hand-drawn sketches</span></a></li>
+      <li><a href="#studies"><span>02</span><span>Form studies and sources</span></a></li>
+      <li><a href="#rules"><span>03</span><span>From sketch to rule</span></a></li>
+      <li><a href="#blender"><span>04</span><span>Building it in Blender</span></a></li>
+      <li><a href="#sliders"><span>05</span><span>Concepts become sliders</span></a></li>
+      <li><a href="#engine"><span>06</span><span>How a form grows</span></a></li>
+      <li><a href="#sex"><span>07</span><span>Making sex visible</span></a></li>
+      <li><a href="#web"><span>08</span><span>The web version</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- 01 -->
+  <section class="step" id="sketches">
+    <div class="num"><b>01</b>Step</div>
+    <div class="body">
+      <h2>It starts with hand-drawn sketches</h2>
+      <div class="col flow">
+        <p class="lead">The project began on paper, not in 3D. In the 2D P sketches, hormone molecules are drawn as circles joined by curved bonds. They gather into clusters, spread across stacked planes, and slowly thicken into a solid body.</p>
+        <p>Those drawings were then organised into an evolution board. The board sets the order of growth and the meaning of colour: a white core is female, a black core is male, and grey is not yet differentiated. It also names four ways the mass can connect inside: pore, lamellar, reticular and cotton-like. The simulator follows this board from left to right.</p>
+      </div>
+      <figure>
+        <img src="img/board_evolution.jpg" alt="The EstroSculpt evolution board, showing the stages of growth and the four connecting structures" loading="lazy">
+        <figcaption>The evolution board: linear organisation and punctate distribution, the prototypical skeleton, the moment of solidification, materialisation research (female white core, male black core, grey undifferentiated) and the four connecting structures.</figcaption>
+      </figure>
+      <figure>
+        <img src="img/src_2DP_sketches.jpg" alt="A grid of hand-drawn sketches of atoms, curved bonds, clusters and layered planes" loading="lazy">
+        <figcaption>A sample of the 85 sketches in 2D P: units, curved bonds, clusters and two stacked planes.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="step" id="studies">
+    <div class="num"><b>02</b>Step</div>
+    <div class="body">
+      <h2>Form studies and the rest of the source material</h2>
+      <div class="col flow">
+        <p class="lead">The 423 images in 3D M show where the growth ends up: porous white crystalline masses, dark granular crystals, sphere clusters and a lattice cage.</p>
+        <p>Every rule in the simulator comes from one of four parts of the project. The table lists what each part gave. Two things were added during the build and are marked as such.</p>
+      </div>
+      <figure>
+        <img src="img/src_3DM_studies.jpg" alt="A grid of 3D form studies: porous white masses with dark crystals" loading="lazy">
+        <figcaption>A sample of the 3D M studies. The detailed mode of the simulator aims at these white and black porous masses.</figcaption>
+      </figure>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Source</th><th>What it is</th><th>What the simulator took from it</th></tr></thead>
+          <tbody>
+            <tr><td>2D P (85 images)</td><td>Hand drawings: atoms as circles, curved bonds, dense clusters, two stacked planes with a network between them</td><td>Units and curved bonds, clustering, layered planes, the early flat stages</td></tr>
+            <tr><td>3D M (423 images)</td><td>Form studies: porous white masses mixed with dark granular crystals, sphere clusters, a lattice cage</td><td>The white porous body, the black granular body, porosity, two photo textures</td></tr>
+            <tr><td>Evolution board</td><td>Five stages; female = white core, male = black core, grey = undifferentiated; pore, lamellar, reticular and cotton-like structures</td><td>The five-stage timeline, the sex logic, the four structures, collapse, male expansion in the last stage</td></tr>
+            <tr><td>Project text and renders</td><td>Estrogen production shaped by the body’s ability to adapt, environmental disturbance and food. Renders with radial fibres, dark branching patches and depth of field</td><td>The three factor sliders and the surface look: radial fibres, branching stains, dark grey backdrop, depth of field</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="col"><strong>Added during the build:</strong> a fifth structure, Shard, to get closer to the plate-like renders, and the direction of each factor’s effect. Both are artistic readings, not part of the original board.</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="step" id="rules">
+    <div class="num"><b>03</b>Step</div>
+    <div class="body">
+      <h2>From sketch to rule</h2>
+      <p class="col lead">Each early stage of the simulator is a direct translation of one sketch. For every pair below, the sketch is on the left and the simulator state built from it is on the right. The line under each title is the rule that was written down.</p>
+      <div class="pairs">
+        <div class="pair">
+          <figure><img src="img/pair1_punctate.jpg" alt="Sketch of scattered units next to the simulator's first stage" loading="lazy"></figure>
+          <div class="t"><span class="k">IMG_3714 · Evolution 0–0.2</span><h3>Punctate distribution → Preliminary incubation</h3><p>Scattered units and small molecule groups become loose points on a plane.</p><p class="rule">Rule: units appear from the centre outward and stay flat at first.</p></div>
+        </div>
+        <div class="pair">
+          <figure><img src="img/pair2_skeleton.jpg" alt="Sketch of molecular chains next to the skeleton stage" loading="lazy"></figure>
+          <div class="t"><span class="k">IMG_3730 · Evolution 0.2–0.45</span><h3>Molecular chains → Prototypical skeleton</h3><p>Ring-and-chain molecules become curved bonds between neighbouring units.</p><p class="rule">Rule: each unit links to its three nearest neighbours with a slightly bent bond.</p></div>
+        </div>
+        <div class="pair">
+          <figure><img src="img/pair3_layered.jpg" alt="Sketch of two layered planes next to the layered simulator state" loading="lazy"></figure>
+          <div class="t"><span class="k">IMG_3837 · Layering</span><h3>Layered planes → Lamellar structure</h3><p>Two planes with networks and dark nodes rising between them become the layering control and, later, the lamellar structure.</p><p class="rule">Rule: units are pulled onto evenly spaced horizontal planes.</p></div>
+        </div>
+        <div class="pair">
+          <figure><img src="img/pair4_solidification.jpg" alt="Sketch of a dense network next to the solidification stage" loading="lazy"></figure>
+          <div class="t"><span class="k">IMG_3968 · Evolution 0.45–0.65</span><h3>Dense network → Moment of solidification</h3><p>The tangled network folds into a round cluster. This is the step from 2D to 3D.</p><p class="rule">Rule: units gather into a few clusters, swell and start to fuse.</p></div>
+        </div>
+        <div class="pair">
+          <figure><img src="img/pair5_solid_morphotype.jpg" alt="Sketch of a solid body full of holes next to the porous mass" loading="lazy"></figure>
+          <div class="t"><span class="k">IMG_4246 · Detailed surface</span><h3>Solid morphotype → Porous mass</h3><p>The outlined body full of holes becomes a computed surface with real pores.</p><p class="rule">Rule: the fused mass is carved by holes and walls.</p></div>
+        </div>
+        <div class="pair">
+          <figure><img src="img/pair6_black_white.jpg" alt="Sketch of filled and open circles next to the black and white body" loading="lazy"></figure>
+          <div class="t"><span class="k">IMG_4315 · Evolution 0.65 and up</span><h3>Black and white circles → Sex expression</h3><p>Filled and open circles become the black body and the white body.</p><p class="rule">Rule: after materialisation each unit is white or black. Sex tendency sets how many are black and whether black sits at the core or the edge.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="step" id="blender">
+    <div class="num"><b>04</b>Step</div>
+    <div class="body">
+      <h2>Building it in Blender, one version at a time</h2>
+      <p class="col lead">The simulator was first built as a Blender add-on. It went from a quick metaball sketch to a detailed computed surface in seven versions. Each version answered one piece of feedback.</p>
+      <div class="log">
+        <div class="ver"><span class="v">v0.1</span><div class="what"><p>Metaball units, curved bonds, faceted black crystals, four preset stages, studio light and camera, bake to mesh.</p><p class="why">First goal: control the 3D form with parameters in Blender.</p></div><figure class="shot"><img src="img/v01_metaball_stages.jpg" alt="Four preset stages built from metaballs" loading="lazy"></figure></div>
+        <div class="ver"><span class="v">v0.2</span><div class="what"><p>The evolution board built in: one Evolution slider across five stages, sex tendency, four structures, black expansion, collapse and mutation.</p><p class="why">The evolution rules were shared during the build.</p></div><figure class="shot"><img src="img/v02_evolution_phases.jpg" alt="The five evolution stages, female and male, three structures and collapse" loading="lazy"></figure></div>
+        <div class="ver"><span class="v">v0.3</span><div class="what"><p>A detailed mode: a 3D density field in Geometry Nodes with real pores, reticular walls, lamellar sheets and cotton-like lumps. Small granules give the black body its texture.</p><p class="why">v0.2 looked too rough next to the reference board.</p></div><figure class="shot"><img src="img/v03_hidetail_structures.jpg" alt="Pore, reticular, lamellar and cotton-like structures as detailed surfaces" loading="lazy"></figure></div>
+        <div class="ver"><span class="v">v0.4</span><div class="what"><p>One fused surface for white and black, with a darkness value on every point. Black bleeds into white as torn streaks. A large-scale warp turns round units into rock-like masses.</p><p class="why">Make black and white blend naturally; the background was too bright.</p></div><figure class="shot"><img src="img/v04_fused_dark.jpg" alt="A fused black and white surface on a dark backdrop" loading="lazy"></figure></div>
+        <div class="ver"><span class="v">v0.5</span><div class="what"><p>Photo textures cut from 3D M, radial fibres, feathered dark patches, a smoothing pass, the Shard structure, a dark grey cloudy backdrop, depth of field, and rendering on the GPU.</p><p class="why">“Edges too sharp”; match the project renders; “background is dead black”.</p></div><figure class="shot"><img src="img/v05_textures_closeup.jpg" alt="Close-up of the textured surface" loading="lazy"></figure></div>
+        <div class="ver"><span class="v">v0.6</span><div class="what"><p>Separate detail levels for the viewport and the final render. Slider changes wait 0.4 s, then rebuild once.</p><p class="why">“Too laggy”. A denoised preview was tried and removed because it changed the look.</p></div></div>
+        <div class="ver"><span class="v">v0.7</span><div class="what"><p>Three factor sliders (body regulation, environmental disturbance, food), each driving several visual parameters. Bilingual labels and a regrouped panel; technical settings moved into one small Render Settings panel.</p><p class="why">Every slider has to be explainable in a review.</p></div></div>
+        <div class="ver"><span class="v">v0.8</span><div class="what"><p>A web version, a visible sex control, and the new name EstroSculpt across the add-on, the web page, the folder and the documents. The add-on is now installed permanently in Blender.</p><p class="why">The sex control had no visible effect; the Blender panel was awkward to use and to show.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="step" id="sliders">
+    <div class="num"><b>05</b>Step</div>
+    <div class="body">
+      <h2>Concepts become sliders</h2>
+      <div class="col flow">
+        <p class="lead">Every slider above Render Settings stands for an idea from the project. The render settings are technical only.</p>
+        <p>The three influencing factors come from the project text: estrogen production is shaped by the body’s ability to adapt, by environmental disturbance and by food. Each factor runs from 0 to 1. At 0.5 it leaves the form unchanged; above 0.5 it strengthens its effect and below 0.5 it reverses it. The directions are an artistic reading of the text, not a biological model.</p>
+      </div>
+      <h3>Influencing factors</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Slider</th><th>Concept</th><th>What it drives at 1.0</th></tr></thead>
+          <tbody>
+            <tr><td>Body regulation</td><td>The body’s ability to adapt its hormone production</td><td>Smoother surface (×1.8), less roughness (×0.6), a cleaner black/white edge, sex pulled 30% toward balance. Below 0.5: more collapse and mutation, read as dysregulation</td></tr>
+            <tr><td>Environmental disturbance</td><td>Pressure from outside the body</td><td>More warp (×1.7), mutation +0.3, roughness ×1.5, finer fracture, black expansion +0.2</td></tr>
+            <tr><td>Food</td><td>The impact of diet</td><td>More units (×1.35), fuller mass (×1.15), fewer pores (×0.6), sex −0.35 toward female. Below 0.5: sparser, more porous, darker</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Evolution</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Slider</th><th>Concept</th><th>What it drives</th></tr></thead>
+          <tbody>
+            <tr><td>Evolution (0–1)</td><td>The timeline of the board</td><td>0–0.2 incubation · 0.2–0.45 skeleton · 0.45–0.65 solidification · 0.65–0.85 materialisation · 0.85–1 secondary evolution</td></tr>
+            <tr><td>Sex tendency (−1 to +1)</td><td>Female, mixed, male; yin and yang as white and black</td><td>How much of the body is black, and whether black sits at the core (male) or the edge (female)</td></tr>
+            <tr><td>Structure</td><td>Pore, lamellar, reticular, cotton-like (+ Shard)</td><td>Holes, stacked sheets, perforated walls, soft lumps or broad plates</td></tr>
+            <tr><td>Black expansion</td><td>“The male gene expands after aggregation, the female signal weakens”</td><td>Extra black units during secondary evolution</td></tr>
+            <tr><td>Collapse</td><td>“Evolution can collapse”</td><td>Units drop out; the rest sag and spread</td></tr>
+            <tr><td>Mutation</td><td>Genetic variation</td><td>Random shifts in unit position and size</td></tr>
+            <tr><td>Seed</td><td>One individual under the same rules</td><td>A new arrangement: same rules, different body</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>Form and surface</h3>
+      <div class="tbl">
+        <table>
+          <thead><tr><th>Slider</th><th>Concept</th><th>What it drives</th></tr></thead>
+          <tbody>
+            <tr><td>Yin-yang blend</td><td>How far the two hormones mix and turn into each other</td><td>Width of the stained zone where black bleeds into white</td></tr>
+            <tr><td>Form warp</td><td>Environmental pressure</td><td>Large distortion that turns round units into rock</td></tr>
+            <tr><td>Micro scale</td><td>The slice from macro to micro</td><td>Density of pores, walls and sheets</td></tr>
+            <tr><td>Surface roughness</td><td>Visual only</td><td>Noise on the surface and grit on the black body</td></tr>
+            <tr><td>Smoothing</td><td>Visual only</td><td>Softens sharp edges after the surface is built</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="step" id="engine">
+    <div class="num"><b>06</b>Step</div>
+    <div class="body">
+      <h2>How a form grows</h2>
+      <p class="col lead">The panel never edits the shape directly. It only sets numbers. Each time a slider moves, the whole chain below runs again, from the rules to the final surface.</p>
+      <div class="diagram" role="img" aria-label="Pipeline: sliders set parameters, evolution rules derive values, units are placed, a density field is computed, a surface is extracted, black share colours it, and the result is rendered.">
+        <svg viewBox="0 0 980 190" xmlns="http://www.w3.org/2000/svg">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0 L10 5 L0 10 z"/></marker></defs>
+          <g>
+            <rect class="box" x="4" y="40" width="120" height="96"/>
+            <text class="t1" x="16" y="68">Sliders</text>
+            <text class="t2" x="16" y="90">factors, stage,</text><text class="t2" x="16" y="105">sex, structure</text><text class="t2" x="16" y="120">seed</text>
+          </g>
+          <line class="ln" x1="124" y1="88" x2="160" y2="88" marker-end="url(#ah)"/>
+          <g>
+            <rect class="box" x="162" y="40" width="130" height="96"/>
+            <text class="t1" x="174" y="68">Evolution rules</text>
+            <text class="t2" x="174" y="90">fusion, black ratio,</text><text class="t2" x="174" y="105">warp, pores,</text><text class="t2" x="174" y="120">collapse, mutation</text>
+          </g>
+          <line class="ln" x1="292" y1="88" x2="328" y2="88" marker-end="url(#ah)"/>
+          <g>
+            <rect class="box" x="330" y="40" width="120" height="96"/>
+            <text class="t1" x="342" y="68">Molecules</text>
+            <text class="t2" x="342" y="90">points with a</text><text class="t2" x="342" y="105">radius and a</text><text class="t2" x="342" y="120">black/white flag</text>
+          </g>
+          <line class="ln" x1="450" y1="88" x2="486" y2="88" marker-end="url(#ah)"/>
+          <g>
+            <rect class="box dark" x="488" y="40" width="130" height="96"/>
+            <text class="t1 inv" x="500" y="68">Density field</text>
+            <text class="t2 inv" x="500" y="90">a value for every</text><text class="t2 inv" x="500" y="105">point in space,</text><text class="t2 inv" x="500" y="120">cut by structure</text>
+          </g>
+          <line class="ln" x1="618" y1="88" x2="654" y2="88" marker-end="url(#ah)"/>
+          <g>
+            <rect class="box" x="656" y="40" width="120" height="96"/>
+            <text class="t1" x="668" y="68">Surface</text>
+            <text class="t2" x="668" y="90">where density = 0,</text><text class="t2" x="668" y="105">then smoothed</text>
+          </g>
+          <line class="ln" x1="776" y1="88" x2="812" y2="88" marker-end="url(#ah)"/>
+          <g>
+            <rect class="box" x="814" y="40" width="160" height="96"/>
+            <text class="t1" x="826" y="68">Black / white</text>
+            <text class="t2" x="826" y="90">nearby molecules vote;</text><text class="t2" x="826" y="105">over 45% black turns</text><text class="t2" x="826" y="120">the surface black</text>
+          </g>
+          <path class="ln" d="M64 136 V168 H894 V140" marker-end="url(#ah)" stroke-dasharray="3 4"/>
+          <text class="t2" x="400" y="184">a slider moves → the whole chain runs again</text>
+          <text class="t2" x="4" y="22">INPUT</text><text class="t2" x="814" y="22">WHAT YOU SEE</text>
+        </svg>
+      </div>
+      <div class="col flow">
+        <p>The key step is the density field. The space around the sculpture is divided into a fine grid. Every grid point gets a value: high when it is close to a molecule, low when it is far away. The surface is drawn where the value crosses zero.</p>
+      </div>
+      <div class="formula">D(P) = r · Mass − |P′ − p| + noise + grain</div>
+      <p class="col"><code>p</code> is the nearest molecule and <code>r</code> its radius. <code>P′</code> is the point after a slow, large-scale warp, which turns round units into rock-like masses. So any slider that changes mass, radius, warp or noise changes the surface.</p>
+      <div class="points">
+        <div><h3>Molecules stay the same body</h3><p>All random values for a molecule are drawn once from the seed. Moving a slider deforms the same body instead of reshuffling it, which is why the evolution animation is continuous.</p></div>
+        <div><h3>Structures cut the field</h3><p>Pore carves out spherical holes. Reticular keeps only thin cell walls. Lamellar adds stacked wave sheets. Cotton-like adds soft lumps. Shard uses very large cells to make broad plates.</p></div>
+        <div><h3>One fused body</h3><p>White and black are one surface. Each point stores how much black body is near it, and the material turns that into streaks, feathered edges and radial fibres, so black bleeds into white as stains.</p></div>
+        <div><h3>Surface and studio</h3><p>Photo textures from 3D M, radial fibres like the starbursts in the project renders, a dark grey cloudy backdrop, a 60 mm camera with depth of field, and high-contrast tone mapping.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="step" id="sex">
+    <div class="num"><b>07</b>Step</div>
+    <div class="body">
+      <h2>Making sex visible</h2>
+      <div class="col flow">
+        <p class="lead">In early versions the sex slider barely changed the image. The black core was hidden inside the body, and surface noise painted black spots everywhere, so even the female form looked spotted.</p>
+        <p>The fix was a vote. Each point on the surface looks at the molecules around it, weighted by distance, and measures their black share. Above 45% the surface turns black. Surface stains now only grow near real black molecules, so the female form stays clean white. The sex slider also sets the starting black ratio: 0.28 + 0.44 × sex.</p>
+      </div>
+      <figure>
+        <img src="img/blender_sex_compare.jpg" alt="Three renders of the same body: female mostly white, mixed half black, male mostly black" loading="lazy">
+        <figcaption>The same individual in Blender at sex −1 (female), 0 (mixed) and +1 (male). Pore structure, evolution 0.9.</figcaption>
+      </figure>
+      <figure>
+        <div class="diagram" role="img" aria-label="Bar chart of black surface share by sex tendency: −1 9%, −0.5 14%, 0 42%, +0.5 68%, +1 83%.">
+          <svg viewBox="0 0 560 250" xmlns="http://www.w3.org/2000/svg" style="min-width:26rem">
+            <line class="grid" x1="48" y1="20" x2="548" y2="20"/><line class="grid" x1="48" y1="70" x2="548" y2="70"/><line class="grid" x1="48" y1="120" x2="548" y2="120"/><line class="grid" x1="48" y1="170" x2="548" y2="170"/><line class="ln" x1="48" y1="220" x2="548" y2="220"/>
+            <text class="ax" x="40" y="224" text-anchor="end">0%</text><text class="ax" x="40" y="174" text-anchor="end">25%</text><text class="ax" x="40" y="124" text-anchor="end">50%</text><text class="ax" x="40" y="74" text-anchor="end">75%</text><text class="ax" x="40" y="24" text-anchor="end">100%</text>
+            <!-- height = value * 2 (200 px = 100%) -->
+            <rect class="bar" x="78"  y="202" width="56" height="18"/><text class="val" x="106" y="196" text-anchor="middle">9%</text>
+            <rect class="bar" x="178" y="192" width="56" height="28"/><text class="val" x="206" y="186" text-anchor="middle">14%</text>
+            <rect class="bar" x="278" y="136" width="56" height="84"/><text class="val" x="306" y="130" text-anchor="middle">42%</text>
+            <rect class="bar" x="378" y="84"  width="56" height="136"/><text class="val" x="406" y="78" text-anchor="middle">68%</text>
+            <rect class="bar" x="478" y="54"  width="56" height="166"/><text class="val" x="506" y="48" text-anchor="middle">83%</text>
+            <text class="ax" x="106" y="240" text-anchor="middle">−1 female</text><text class="ax" x="206" y="240" text-anchor="middle">−0.5</text><text class="ax" x="306" y="240" text-anchor="middle">0 mixed</text><text class="ax" x="406" y="240" text-anchor="middle">+0.5</text><text class="ax" x="506" y="240" text-anchor="middle">+1 male</text>
+          </svg>
+        </div>
+        <figcaption>Share of the surface that is black, by sex tendency, measured on the mesh (pore, evolution 0.9, black expansion 0.5). The 9% left on the female form comes from male expansion in secondary evolution; lowering Black expansion removes it.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="step" id="web">
+    <div class="num"><b>08</b>Step</div>
+    <div class="body">
+      <h2>The web version</h2>
+      <div class="col flow">
+        <p class="lead">The Blender panel was hard to use and hard to show, so the same rules were moved to a web page with a minimal black-and-white slider panel. It runs in any browser.</p>
+        <p>The page computes the form in parallel background threads, starts with a quick preview and sharpens it once the sliders stop, and only redraws when something changes. It has two styles. Solid matches the Blender render. Line is a minimal drawing: horizontal slices through the body, like the stacked planes of the sketches, with the black body drawn as denser slices.</p>
+      </div>
+      <div class="grid2">
+        <figure><img src="img/web_solid.jpg" alt="The web version in solid style with its slider panel" loading="lazy"><figcaption>Solid style. Whites were later brightened and contrast raised so the white body no longer reads as grey.</figcaption></figure>
+        <figure><img src="img/web_line.jpg" alt="The web version in line style: black contour slices on a light background" loading="lazy"><figcaption>Line style: contour slices, a silhouette line, and bonds as single lines.</figcaption></figure>
+      </div>
+      <h3>Using it</h3>
+      <div class="grid2">
+        <div class="flow">
+          <div class="label">Web</div>
+          <ol class="steps">
+            <li>Open the online version, or double-click <code>启动预览.command</code> in <code>EstroSculpt Web</code> to run it locally.</li>
+            <li>Choose a stage with Evolution or buttons 1–5, then set sex tendency and structure.</li>
+            <li>Shape the story with the three factors. Reset puts them back to 0.5.</li>
+            <li>Play evolution runs the whole timeline. Save PNG and Export mesh keep a result.</li>
+          </ol>
+        </div>
+        <div class="flow">
+          <div class="label">Blender</div>
+          <ol class="steps">
+            <li>Press N in the 3D viewport and open the EstroSculpt tab. The add-on is installed and loads every time.</li>
+            <li>Turn on Hi-detail and click Studio Light + Camera for the full look.</li>
+            <li>Press F12 to render. Make Evolution Animation keyframes the timeline.</li>
+            <li>Bake to Mesh freezes the current form as a normal mesh for sculpting, export or printing.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="label">Where it stands</div>
+    <p class="big">The form is close to the 3D M studies. It is still short of the project renders, whose broad crystal faces and film grain came partly from Cinema 4D modelling and post-production.</p>
+    <div class="col">
+      <ul class="clean">
+        <li><strong>Crystal faces.</strong> Shard makes plates but not the large flat facets of the renders. A faceting step in the field is the next shape task.</li>
+        <li><strong>Film grain.</strong> Not added yet; a grain pass would match the printed boards.</li>
+        <li><strong>Factor directions.</strong> These are artistic choices, for example food → whiter. They should be checked against the narrative before a review.</li>
+        <li><strong>Shard.</strong> Not one of the four original structures. Either name it within the system or leave it out of presentations.</li>
+      </ul>
+    </div>
+    <p class="label" style="margin-top:1.5rem">Files: Desktop/EstroSculpt — Blender Sim (estrosculpt.py, textures, EstroSculpt.blend) · EstroSculpt Web (index.html, core.js, field_worker.js)</p>
+  </section>
+</div>
+
+</body></html>
