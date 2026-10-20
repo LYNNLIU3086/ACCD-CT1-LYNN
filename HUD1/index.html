@@ -1,0 +1,490 @@
+<title>SIDEQUEST Terrain Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
+<style>
+/* Layout: ASTTRO-style tool shell. Toolbar on top, layers left, real 3D terrain center, EVA package right. Single dark look by choice. */
+:root{
+  --bg:#0A0A0B; --panel:#111112; --panel2:#1B1B1D; --line:#242426; --fg:#ECECEC; --muted:#8B8B90;
+  --gold:#ECECEC; --amber:#FFFFFF; --cyan:#BDBDBD; --violet:#A8A8A8; --red:#FFFFFF; --ok:#ECECEC;
+  --row:#161618; --edge:#2E2E31;
+  --ui:"Inter",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace; --serif:"Newsreader","Source Serif 4",Georgia,serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:12px/1.45 var(--ui);overflow:hidden}
+.app{height:100%;display:flex;flex-direction:column}
+header{height:44px;flex:none;display:flex;align-items:center;gap:6px;padding:0 max(10px,env(safe-area-inset-right,0px)) 0 max(10px,env(safe-area-inset-left,0px));background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto}
+.logo{display:flex;align-items:baseline;gap:10px;padding-right:10px;white-space:nowrap}.logo b{font:500 19px var(--serif);letter-spacing:0}.logo i{font:italic 400 14px var(--serif);color:var(--muted)}
+.chip{height:30px;display:flex;align-items:center;border-radius:2px;background:var(--panel2);font:600 11px var(--ui);color:var(--fg);white-space:nowrap}
+.chip span{padding:0 10px;border-right:1px solid var(--panel)}
+.chip span:last-child{border-right:0;color:var(--muted)}
+.tool{height:30px;display:flex;align-items:center;gap:6px;padding:0 10px;border-radius:2px;border:1px solid transparent;background:transparent;color:var(--muted);font:600 11px var(--ui);cursor:pointer;white-space:nowrap}
+.tool[aria-pressed="true"]{border-color:var(--fg);background:transparent;color:var(--fg)}
+.sep{width:1px;height:24px;background:var(--edge);margin:0 4px;flex:none}
+.views{display:flex;border-radius:2px;overflow:hidden;flex:none}
+.views button{border:0;padding:8px 11px;background:var(--panel2);color:var(--muted);font:600 11px var(--ui);cursor:pointer;white-space:nowrap}
+.views button[aria-pressed="true"]{background:var(--edge);color:var(--fg)}
+.main{flex:1;display:flex;min-height:0}
+aside{width:250px;flex:none;background:var(--panel);display:flex;flex-direction:column;min-height:0;overflow-y:auto}
+aside.l{border-right:1px solid var(--line)}
+aside.r{width:320px;border-left:1px solid var(--line)}
+.tabs{height:40px;flex:none;display:flex;border-bottom:1px solid var(--line);font:600 11px var(--ui);letter-spacing:.06em}
+.tabs span{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted)}
+.tabs span.on{color:var(--fg);border-bottom:1px solid var(--fg)}
+.sec{padding:14px 16px;display:flex;flex-direction:column;gap:7px;border-bottom:1px solid var(--line)}
+.h{font:500 10px var(--mono);letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.lay{min-height:34px;display:flex;align-items:center;gap:10px;padding:0 10px;border-radius:2px;background:var(--row);cursor:pointer}
+.lay input{accent-color:var(--gold);width:14px;height:14px}
+.sw{width:10px;height:10px;border-radius:2px;flex:none}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:2px;border-radius:2px;overflow:hidden}
+.seg.z{grid-template-columns:repeat(4,minmax(0,1fr))}
+.seg button{height:32px;border:0;background:var(--panel2);color:var(--muted);font:600 11px var(--mono);cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:#000}
+.tlist{display:flex;flex-direction:column;gap:3px}
+.trow{display:flex;align-items:center;gap:8px;min-height:34px;padding:0 10px;border-radius:2px;background:var(--row);border:1px solid transparent;color:var(--fg);font:12px var(--ui);cursor:pointer;text-align:left}
+.trow[aria-pressed="true"]{border-color:var(--gold);background:var(--panel2)}
+.trow b{font:600 11px var(--mono)}
+.trow small{margin-left:auto;font:11px var(--mono);color:var(--muted)}
+input[type=text]{border-radius:2px;border:1px solid var(--edge);background:var(--bg);color:var(--fg);padding:7px 10px;font:12px/1.45 var(--ui);width:100%;box-sizing:border-box}
+.cta{height:40px;border:0;border-radius:2px;background:var(--fg);color:#000;font:700 12px var(--ui);letter-spacing:.04em;cursor:pointer;width:100%}
+.ghost{height:36px;border:1px solid var(--edge);border-radius:2px;background:transparent;color:var(--fg);font:600 12px var(--ui);cursor:pointer;width:100%}
+.stage{flex:1;position:relative;min-width:0;background:#000;overflow:hidden}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#overlay{position:absolute;inset:0;pointer-events:none}
+.mk{position:absolute;will-change:transform;display:flex;flex-direction:column;align-items:center;pointer-events:auto;cursor:pointer}
+.mk .tag{display:flex;align-items:center;gap:6px;padding:3px 7px;border-radius:3px;background:rgba(0,0,0,.65);font:600 11px var(--mono);color:#fff;white-space:nowrap}
+.mk .stem{width:2px;height:14px}
+.mk.sel .tag{outline:1.5px solid var(--amber)}
+.float{position:absolute;display:flex;align-items:center;height:34px;border-radius:2px;border:1px solid var(--edge);background:rgba(17,17,18,.92);box-shadow:0 4px 14px rgba(0,0,0,.4);font:600 11px var(--ui);color:var(--fg)}
+.float button{height:34px;border:0;background:transparent;color:inherit;font:inherit;padding:0 12px;cursor:pointer;display:flex;gap:6px;align-items:center}
+.pill{position:absolute;font:500 11px var(--mono);color:#E4E7EC;background:rgba(0,0,0,.6);padding:4px 8px;border-radius:2px}
+.hudtop{position:absolute;left:50%;top:18px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:6px 14px;border-radius:2px;background:rgba(0,0,0,.55);border:1px solid #fff;font:600 18px var(--mono);color:#fff}
+.hudcard{position:absolute;left:24px;bottom:64px;max-width:320px;padding:12px 14px;border-radius:8px;background:rgba(0,0,0,.6);border:1px solid rgba(255,255,255,.3);display:flex;flex-direction:column;gap:4px}
+.compass{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:420px;max-width:80%;height:22px;border-bottom:1px solid rgba(255,255,255,.5);display:flex;justify-content:space-between;align-items:flex-end;font:500 11px var(--mono);color:rgba(232,251,255,.75)}
+footer{height:30px;flex:none;display:flex;align-items:center;gap:18px;padding:0 max(14px,env(safe-area-inset-right,0px)) 0 max(14px,env(safe-area-inset-left,0px));background:var(--panel);border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted);white-space:nowrap;overflow:hidden}
+input[type=range]{width:100%;accent-color:var(--fg);margin:0}
+.rl{display:flex;justify-content:space-between;color:var(--muted);font:500 11px var(--ui)}.rl b{font:500 11px var(--mono);color:var(--fg)}
+#cmp{position:absolute;left:50%;top:70px;transform:translateX(-50%);width:440px;max-width:80%;height:26px;border-bottom:1px solid rgba(255,255,255,.5);overflow:hidden}
+#cmp span{position:absolute;bottom:3px;transform:translateX(-50%);font:500 11px var(--mono);color:rgba(255,255,255,.8)}
+#cmp i{position:absolute;bottom:-1px;width:1px;height:6px;background:#fff}
+footer b{color:var(--fg);font-weight:500}
+button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
+@media (max-width:900px){body{overflow:auto}.app{height:auto}.main{flex-direction:column}aside,aside.r{width:auto}.stage{height:62vh;flex:none}}
+</style>
+
+<div class="app">
+<header>
+  <div class="logo"><b>Sidequest</b><i>Terrain Lab</i></div>
+  <div class="chip"><span>Curiosity</span><span>Dingo Gap · Site 26</span><span>Real data · Sols 528–533</span></div>
+  <div class="sep"></div>
+  <button class="tool" id="t-place" aria-pressed="true"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 56 56"><path d="M28 6 L50 28 L28 50 L6 28 Z" fill="none" stroke="currentColor" stroke-width="6"/></svg>Place target</button>
+  <button class="tool" id="t-inspect" aria-pressed="false"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="5.5" cy="5.5" r="4"/><path d="M8.5 8.5 L12 12"/></svg>Inspect</button>
+  <div class="sep"></div>
+  <div class="views" role="group" aria-label="Camera">
+    <button id="v-orbit" aria-pressed="true">Orbit</button>
+    <button id="v-top" aria-pressed="false">Top</button>
+    <button id="v-eye" aria-pressed="false">Astronaut eye</button>
+  </div>
+</header>
+
+<div class="main">
+<aside class="l">
+  <div class="tabs"><span class="on">LAYERS</span></div>
+  <div class="sec">
+    <span class="h">Terrain</span>
+    <div style="display:grid;grid-template-columns:96px 1fr;row-gap:5px;color:var(--muted)">
+      <span>Product</span><span style="color:var(--fg)">Contextual mesh</span>
+      <span>Built from</span><span style="color:var(--fg)">Rover + orbital (HiRISE)</span>
+      <span>Coverage</span><span style="color:var(--fg);font-family:var(--mono)">260 × 260 m</span>
+      <span>Images</span><span style="color:var(--fg);font-family:var(--mono)">928</span>
+    </div>
+  </div>
+  <div class="sec">
+    <span class="h">Environment · lunar-like low sun</span>
+    <label class="lay"><input type="checkbox" id="l-sun" checked>Sun &amp; shadow</label>
+    <label for="sun-az" class="rl">Sun azimuth <b id="sun-azv">120°</b></label><input id="sun-az" type="range" min="0" max="359" value="120">
+    <label for="sun-el" class="rl">Sun elevation <b id="sun-elv">4°</b></label><input id="sun-el" type="range" min="1" max="30" step="0.5" value="4">
+    <label class="lay"><input type="checkbox" id="l-view">Visible from astronaut</label>
+    <span id="view-stat" style="color:var(--muted)">Darkened ground cannot be seen from the start point, 1.7 m above ground.</span>
+  </div>
+  <div class="sec">
+    <span class="h">Visual layers</span>
+    <label class="lay"><input type="checkbox" id="l-slope" checked><span class="sw" style="background:repeating-linear-gradient(45deg,#fff 0 1.5px,transparent 1.5px 4px);border:1px solid var(--edge)"></span>Slope &gt; 15°</label>
+    <label class="lay"><input type="checkbox" id="l-path" checked><span class="sw" style="height:0;border-top:2px dashed #fff"></span>Traverse</label>
+    <label class="lay"><input type="checkbox" id="l-zone" checked><span class="sw" style="border:1.5px solid #fff;border-radius:50%"></span>Acceptable zones</label>
+    <label class="lay"><input type="checkbox" id="l-unc" checked><span class="sw" style="border:1.5px dotted #9a9a9a;border-radius:50%"></span>Position uncertainty</label>
+    <label class="lay"><input type="checkbox" id="l-lab" checked><span class="sw" style="background:#fff"></span>Labels</label>
+  </div>
+  <div class="sec">
+    <span class="h">Targets</span>
+    <div class="tlist" id="tlist"></div>
+    <span style="color:var(--muted)">Click the terrain to add a target.</span>
+  </div>
+</aside>
+
+<div class="stage" id="stage">
+  <div id="overlay"></div>
+  <div class="float" id="nav" style="left:50%;top:10px;transform:translateX(-50%)">
+    <button id="b-frame"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1 4V1h3M9 1h3v3M12 9v3H9M4 12H1V9"/></svg>Frame target</button>
+    <button id="b-rover"><svg aria-hidden="true" width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="1" y="4" width="11" height="5" rx="1"/><circle cx="3.5" cy="10.5" r="1.5"/><circle cx="9.5" cy="10.5" r="1.5"/></svg>Rover</button>
+  </div>
+  <span class="pill" id="status" style="right:12px;bottom:12px">Loading terrain…</span>
+  <div id="hud" hidden>
+    <div id="cmp" aria-hidden="true"></div>
+    <div class="float" id="playbar" style="left:50%;bottom:16px;transform:translateX(-50%)"><button id="b-play">▶ Play EVA</button><span id="p-time" style="font:500 11px var(--mono);padding:0 12px;border-left:1px solid var(--edge)">00:00</span><button id="b-restart">Restart</button></div>
+    <div class="hudtop" id="hudtop"></div>
+    <div class="hudcard" id="hudcard"></div>
+  </div>
+</div>
+
+<aside class="r">
+  <div class="tabs"><span>TARGETS</span><span class="on">EVA PACKAGE</span></div>
+  <div id="pkg"></div>
+</aside>
+</div>
+
+<footer>
+  <span>CURSOR <b id="c-xyz">—</b></span>
+  <span>RANGE FROM ROVER <b id="c-rng">—</b></span>
+  <span>SLOPE <b id="c-slp">—</b></span>
+  <span style="margin-left:auto">Dingo Gap contextual mesh (Landform) · NASA-AMMOS 3DTilesSampleData · NASA/JPL-Caltech/MSSS, HiRISE: NASA/JPL/UArizona</span>
+</footer>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TilesRenderer } from 'https://cdn.jsdelivr.net/npm/3d-tiles-renderer@0.5.3/build/index.three.js';
+import { computeBoundsTree, disposeBoundsTree, acceleratedRaycast } from 'https://cdn.jsdelivr.net/npm/three-mesh-bvh@0.8.3/build/index.module.js';
+THREE.BufferGeometry.prototype.computeBoundsTree=computeBoundsTree;
+THREE.BufferGeometry.prototype.disposeBoundsTree=disposeBoundsTree;
+THREE.Mesh.prototype.raycast=acceleratedRaycast;
+
+const $=id=>document.getElementById(id);
+const b64=t=>{t=t.trim(); if(Uint8Array.fromBase64) return Uint8Array.fromBase64(t); const s=atob(t),u=new Uint8Array(s.length); for(let i=0;i<s.length;i++)u[i]=s.charCodeAt(i); return u;};
+const textPlugin=()=>({name:'TEXT_TILES',fetchData(url,opts){ if(!/\.b3dm(\?|$)/.test(url)) return null; const u=url.replace(/\.b3dm(\?|$)/,'.b3dm.txt$1'); return fetch(u,opts).then(r=>{if(!r.ok)throw new Error(r.status);return r.text();}).then(t=>new Response(b64(t)));}});
+
+const DG='dingo';
+const ROVER_SITE=new THREE.Vector3(0,0,0); // rover (sitedrive) origin; the mesh is in this frame
+
+const stage=$('stage');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,1.5)); renderer.domElement.style.background='#0A0A0B';
+stage.prepend(renderer.domElement);
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFShadowMap;
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0A0A0B);
+const camera=new THREE.PerspectiveCamera(55,1,0.05,3000);
+const controls=new OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.addEventListener('change',()=>kick(20)); controls.maxPolarAngle=Math.PI*0.495;
+const root=new THREE.Group(); root.rotation.x=Math.PI/2; scene.add(root); root.updateMatrixWorld(true);
+// sun: one directional light with a shadow map; ambient kept very low so shadows read as near-black, like the Moon
+const amb=new THREE.AmbientLight(0xffffff,1); scene.add(amb);
+const sun=new THREE.DirectionalLight(0xffffff,0); scene.add(sun); scene.add(sun.target);
+sun.shadow.mapSize.set(4096,4096); sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.12;
+const terrain={c:new THREE.Vector3(),r:150};
+const sunDir=new THREE.Vector3();
+function updateSun(){
+  const on=$('l-sun').checked, az=+$('sun-az').value, el=+$('sun-el').value;
+  $('sun-azv').textContent=az+'°'; $('sun-elv').textContent=el+'°';
+  const A=THREE.MathUtils.degToRad(az), E=THREE.MathUtils.degToRad(el);
+  sunDir.set(Math.cos(E)*Math.cos(A), Math.sin(E), Math.cos(E)*Math.sin(A)).normalize(); // x north, z east, y up
+  sun.position.copy(terrain.c).addScaledVector(sunDir,600); sun.target.position.copy(terrain.c); sun.target.updateMatrixWorld();
+  const c=sun.shadow.camera, R=terrain.r*1.05; c.left=-R; c.right=R; c.top=R; c.bottom=-R; c.near=200; c.far=1000; c.updateProjectionMatrix();
+  sun.castShadow=on; sun.intensity=on?Math.PI*1.15:0; amb.intensity=on?0.05:1;
+  kick(10);
+}
+
+// slope shading added to every tile material
+const uSlope={value:1};
+function patch(mat){
+  mat.customProgramCacheKey=()=>'slope';
+  mat.onBeforeCompile=sh=>{
+    sh.uniforms.uSlope=uSlope;
+    sh.vertexShader=sh.vertexShader.replace('#include <common>','#include <common>\nvarying vec3 vWN;').replace('#include <begin_vertex>','#include <begin_vertex>\nvWN=normalize(mat3(modelMatrix)*normal);');
+    sh.fragmentShader=sh.fragmentShader.replace('#include <common>','#include <common>\nvarying vec3 vWN;\nuniform float uSlope;').replace('#include <dithering_fragment>',`#include <dithering_fragment>
+      float sl=degrees(acos(clamp(abs(vWN.y),0.0,1.0)));
+      float g=dot(gl_FragColor.rgb,vec3(0.299,0.587,0.114));
+      g=pow(g,0.9)*1.08;
+      vec3 base=vec3(g);
+      float on=smoothstep(15.0,16.0,sl)*uSlope;
+      float period=mix(7.0,4.0,smoothstep(20.0,30.0,sl));
+      float hatch=step(fract((gl_FragCoord.x+gl_FragCoord.y)/period),0.28);
+      gl_FragColor.rgb=mix(base, mix(base*0.55, vec3(1.0), hatch), on*0.85);`);
+  };
+  mat.needsUpdate=true;
+}
+const sets={};
+let rootsLoaded=0, dirtyDrape=false, lastDrape=0, tilesSettled=0, drapedAt=-1, frames=60;
+const kick=(n=30)=>{frames=Math.max(frames,n);};
+function makeSet(id,group){
+  const t=new TilesRenderer(`tiles/${id}/tileset.json`);
+  t.registerPlugin(textPlugin());
+  t.errorTarget=6;
+  t.setCamera(camera);
+  t.addEventListener('load-model',({scene:s})=>{s.traverse(o=>{if(o.isMesh){const m=new THREE.MeshLambertMaterial({map:o.material.map}); patch(m); o.material=m; o.castShadow=true; o.receiveShadow=true; o.geometry.computeBoundsTree();}}); kick(); tilesSettled=performance.now();});
+  t.addEventListener('dispose-model',({scene:s})=>{s.traverse(o=>{if(o.isMesh&&o.geometry.boundsTree) o.geometry.disposeBoundsTree();});});
+  t.addEventListener('load-root-tileset',onRootLoaded);
+  root.add(t.group);
+  sets[id]={t,group,on:true};
+}
+makeSet(DG,'ctx');
+
+const rover=new THREE.Vector3(); let roverReady=false;
+fetch(`tiles/${DG}/tileset.json`).then(r=>r.json()).then(j=>{
+  const m=j.root.transform?new THREE.Matrix4().fromArray(j.root.transform):new THREE.Matrix4();
+  rover.copy(ROVER_SITE).applyMatrix4(m).applyMatrix4(root.matrixWorld); roverReady=true; seedTargets();
+}).catch(()=>{});
+
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();for(const k in sets)sets[k].t.setResolutionFromRenderer(camera,renderer);}
+new ResizeObserver(()=>{resize(); kick();}).observe(stage); resize();
+document.addEventListener('input',()=>kick()); document.addEventListener('change',()=>kick());
+
+const ray=new THREE.Raycaster();
+const DOWN=new THREE.Vector3(0,-1,0);
+function visibleGroups(){return Object.values(sets).filter(s=>s.on).map(s=>s.t.group);}
+function ground(x,z,fromY){ray.set(new THREE.Vector3(x,fromY??rover.y+40,z),DOWN); ray.far=200; ray.firstHitOnly=true; return ray.intersectObjects(visibleGroups(),true)[0]||null;}
+function slopeOf(hit){ if(!hit||!hit.face) return null; const n=hit.face.normal.clone().transformDirection(hit.object.matrixWorld); return THREE.MathUtils.radToDeg(Math.acos(Math.min(1,Math.abs(n.y)))); }
+const rng=p=>roverReady?Math.hypot(p.x-rover.x,p.z-rover.z):0;
+const _o=new THREE.Vector3(), _d=new THREE.Vector3();
+function blocked(from,to){ _d.subVectors(to,from); const L=_d.length(); if(L<0.6) return false; ray.set(from,_d.normalize()); ray.far=L-0.4; ray.firstHitOnly=true; return ray.intersectObjects(visibleGroups(),true).length>0; }
+function inShadow(p){ if(!$('l-sun').checked||sunDir.lengthSq()===0) return null; _o.copy(p); _o.y+=0.3; ray.set(_o,sunDir); ray.far=800; ray.firstHitOnly=true; return ray.intersectObjects(visibleGroups(),true).length>0; }
+function eyePoint(){ const g=ground(rover.x,rover.z); return new THREE.Vector3(rover.x,(g?g.point.y:rover.y)+1.7,rover.z); }
+function visibleFromStart(p){ if(!roverReady) return null; return !blocked(eyePoint(), new THREE.Vector3(p.x,p.y+0.3,p.z)); }
+// viewshed: ground the astronaut cannot see from the start point
+let viewMesh=null, viewBusy=false;
+function computeViewshed(){
+  if(viewBusy||!roverReady) return; viewBusy=true; $('view-stat').textContent='Computing visibility…';
+  const eye=eyePoint(), STEP=2, R=Math.min(120,terrain.r), cells=[]; let seen=0,total=0;
+  const xs=[]; for(let x=-R;x<=R;x+=STEP) xs.push(x);
+  let i=0;
+  const work=()=>{
+    const t0=performance.now();
+    while(i<xs.length && performance.now()-t0<30){
+      const dx=xs[i++];
+      for(let dz=-R;dz<=R;dz+=STEP){ if(dx*dx+dz*dz>R*R) continue; const g=ground(eye.x+dx,eye.z+dz); if(!g) continue; total++; const tp=g.point.clone(); tp.y+=0.25; if(blocked(eye,tp)) cells.push(g.point); else seen++; }
+    }
+    if(i<xs.length){ $('view-stat').textContent=`Computing visibility… ${Math.round(i/xs.length*100)}%`; setTimeout(work,0); return; }
+    if(viewMesh){ scene.remove(viewMesh); viewMesh.geometry.dispose(); viewMesh.material.dispose(); }
+    const geo=new THREE.PlaneGeometry(STEP,STEP); geo.rotateX(-Math.PI/2);
+    viewMesh=new THREE.InstancedMesh(geo,new THREE.MeshBasicMaterial({color:0x000000,transparent:true,opacity:.62,depthWrite:false}),cells.length);
+    const m=new THREE.Matrix4(); cells.forEach((p,k)=>{m.makeTranslation(p.x,p.y+0.08,p.z); viewMesh.setMatrixAt(k,m);});
+    viewMesh.renderOrder=5; viewMesh.visible=$('l-view').checked; scene.add(viewMesh);
+    $('view-stat').textContent=`${Math.round(seen/Math.max(1,total)*100)}% of the ground within ${R} m is visible from the start point. Dark cells are hidden behind terrain.`;
+    viewBusy=false; renderPkg(); kick();
+  };
+  work();
+}
+
+const ICON={science:'#FFFFFF',hardware:'#BDBDBD',hazard:'#FFFFFF'};
+const targets=[]; let sel=null, nextN=1;
+function addTarget(p,o={}){
+  const t={id:'T-'+String(nextN++).padStart(2,'0'),p:p.clone(),kind:o.kind||'science',name:o.name||'New science target',why:o.why||'',zone:o.zone??2,unc:o.unc??0,slope:o.slope??null};
+  targets.push(t); select(t); dirtyDrape=true; return t;
+}
+function seedTargets(){
+  if(!roverReady || rootsLoaded<1 || targets.length) return;
+  const fwd=new THREE.Vector3(1,0,0);
+  const side=new THREE.Vector3(-fwd.z,0,fwd.x);
+  const tryAt=(dist,lat)=>{for(let k=0;k<16;k++){const d=dist+(k%4)*1.5,l=lat+(k>>2)*1.5; const h=ground(rover.x+fwd.x*d+side.x*l, rover.z+fwd.z*d+side.z*l); if(h) return h;} return null;};
+  const h1=tryAt(9,2), h2=tryAt(38,14), h3=tryAt(20,-9);
+  if(h1) addTarget(h1.point,{name:'Sandstone block by the dune',why:'Fresh face, best spot for a clean sample',zone:2,slope:slopeOf(h1)});
+  if(h2) addTarget(h2.point,{name:'Layered outcrop across the gap',why:'Possible layering; confirm before sampling',zone:5,unc:2.5,slope:slopeOf(h2)});
+  if(h3) addTarget(h3.point,{kind:'hazard',name:'Steep slope edge',why:'Loose ground, walk around it',zone:0,slope:slopeOf(h3)});
+  if(targets[0]) select(targets[0]);
+  frameTarget();
+}
+function onRootLoaded(){ kick(60); rootsLoaded++; $('status').textContent='Contextual mesh loaded'; if(rootsLoaded===1) frameAll(); setTimeout(seedTargets,1200); }
+function frameAll(){ const s=new THREE.Sphere(); const t=sets[DG].t; if(!t.getBoundingSphere(s)) return; s.applyMatrix4(t.group.matrixWorld); terrain.c.copy(s.center); terrain.r=Math.min(s.radius,200); updateSun(); controls.target.copy(s.center); camera.position.copy(s.center).add(new THREE.Vector3(s.radius*0.45,s.radius*0.3,s.radius*0.55)); }
+
+// EVA walk playback along the draped path
+const walk={segs:[],poly:[],len:0,s:0,playing:false,pause:0,stopIdx:-1,
+  build(){ this.poly=[]; let acc=0; this.segs.forEach((sg,si)=>{ sg.pts.forEach((p,k)=>{ if(this.poly.length){acc+=p.distanceTo(this.poly[this.poly.length-1].p);} this.poly.push({p,acc,si,end:k===sg.pts.length-1}); }); }); this.len=acc; },
+  at(s){ const P=this.poly; if(!P.length) return null; let i=1; while(i<P.length&&P[i].acc<s) i++; if(i>=P.length) return {p:P[P.length-1].p.clone(),si:P[P.length-1].si}; const a=P[i-1],b=P[i],f=(s-a.acc)/Math.max(1e-6,b.acc-a.acc); return {p:a.p.clone().lerp(b.p,f),si:b.si}; }
+};
+const WALK_SPEED=6; // m/s on screen (≈7.5× a 0.8 m/s suited walk)
+function fmtT(sec){sec=Math.round(sec);return String(Math.floor(sec/60)).padStart(2,'0')+':'+String(sec%60).padStart(2,'0');}
+let lastT=performance.now(), hudT=0;
+function stepWalk(dt){
+  if(!walk.poly.length) return;
+  if(walk.pause>0){ walk.pause-=dt; return; }
+  const before=walk.at(walk.s); walk.s=Math.min(walk.len,walk.s+dt*WALK_SPEED);
+  const cur=walk.at(walk.s), seg=walk.segs[cur.si];
+  if(seg && sel!==seg.t){ sel=seg.t; renderList(); renderPkg(); mkKey=''; }
+  // reached a stop: pause a moment
+  if(before && cur.si!==before.si){ walk.pause=1.2; }
+  const ahead=walk.at(Math.min(walk.len,walk.s+6));
+  camera.position.set(cur.p.x,cur.p.y+1.64,cur.p.z);
+  const look=seg?seg.t.p:ahead.p; const dTo=Math.hypot(look.x-cur.p.x,look.z-cur.p.z);
+  const tgt=dTo<18?new THREE.Vector3(look.x,look.y+0.3,look.z):new THREE.Vector3(ahead.p.x,ahead.p.y+1.2,ahead.p.z);
+  camera.lookAt(tgt);
+  $('p-time').textContent=fmtT(walk.s/0.8)+' EVA';
+  if(walk.s>=walk.len){ walk.playing=false; $('b-play').textContent='▶ Play EVA'; }
+}
+// compass that follows the camera heading (x = north, z = east)
+const _f=new THREE.Vector3();
+function renderCompass(){
+  camera.getWorldDirection(_f); const h=(THREE.MathUtils.radToDeg(Math.atan2(_f.z,_f.x))+360)%360;
+  const L=['N','NE','E','SE','S','SW','W','NW']; let html='';
+  for(let b=0;b<360;b+=15){ let d=((b-h+540)%360)-180; if(Math.abs(d)>60) continue; const x=50+d/120*100; html+= b%45===0?`<span style="left:${x}%">${L[b/45]}</span>`:`<i style="left:${x}%"></i>`; }
+  if(sel){ const cp=camera.position; const tb=(THREE.MathUtils.radToDeg(Math.atan2(sel.p.z-cp.z,sel.p.x-cp.x))+360)%360; let d=((tb-h+540)%360)-180; const x=50+Math.max(-60,Math.min(60,d))/120*100; html+=`<span style="left:${x}%;bottom:12px;color:#fff">◆</span>`; }
+  html+=`<span style="left:50%;bottom:-2px;font-size:9px">▲</span>`;
+  $('cmp').innerHTML=html;
+}
+
+// lines draped on the terrain
+const drapeGroup=new THREE.Group(); scene.add(drapeGroup);
+function line(pts,color,dashed){
+  const g=new THREE.BufferGeometry().setFromPoints(pts);
+  const m=dashed?new THREE.LineDashedMaterial({color,dashSize:dashed[0],gapSize:dashed[1],depthTest:false,transparent:true}):new THREE.LineBasicMaterial({color,depthTest:false,transparent:true,opacity:color===0?0.6:0.9});
+  const l=new THREE.Line(g,m); if(dashed) l.computeLineDistances(); l.renderOrder=10; return l;
+}
+function drapePt(x,z,fy){const h=ground(x,z,fy+30); return new THREE.Vector3(x,(h?h.point.y:fy)+0.06,z);}
+function rebuildDrape(){
+  drapeGroup.children.forEach(c=>{c.geometry.dispose(); c.material.dispose();}); drapeGroup.clear(); if(!roverReady) return;
+  walk.segs=[];
+  {
+    let prev=rover.clone();
+    for(const t of targets.filter(t=>t.kind!=='hazard')){ const pts=[]; const n=Math.min(60,Math.max(8,Math.ceil(prev.distanceTo(t.p)))); for(let i=0;i<=n;i++){const a=i/n; pts.push(drapePt(prev.x+(t.p.x-prev.x)*a, prev.z+(t.p.z-prev.z)*a, prev.y+(t.p.y-prev.y)*a));} walk.segs.push({pts,t}); if($('l-path').checked){ drapeGroup.add(line(pts,0x000000)); drapeGroup.add(line(pts,0xFFFFFF,[0.5,0.35])); } prev=t.p; }
+    walk.build();
+  }
+  for(const t of targets){
+    const ring=(r,col,dash)=>{const pts=[]; for(let i=0;i<=40;i++){const a=i/40*Math.PI*2; pts.push(drapePt(t.p.x+Math.cos(a)*r,t.p.z+Math.sin(a)*r,t.p.y));} return line(pts,col,dash);};
+    if($('l-zone').checked && t.zone>0){ drapeGroup.add(ring(t.zone,0x000000)); drapeGroup.add(ring(t.zone,0xFFFFFF,null)); }
+    if($('l-unc').checked && t.unc>0){ for(let k=1;k<=3;k++) drapeGroup.add(ring(t.unc*k/3,0x9A9A9A,[0.08,0.18])); }
+  }
+}
+
+// markers drawn as HTML over the canvas, using the marker kit shapes
+const overlay=$('overlay');
+const v=new THREE.Vector3();
+const svgFor=(k,s=20)=>k==='hazard'
+  ?`<svg width="${s}" height="${s}" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 7 L51 47 L5 47 Z" fill="none" stroke="#000" stroke-width="10" stroke-linejoin="round" opacity=".8"/><path d="M28 7 L51 47 L5 47 Z" fill="#fff" stroke="#fff" stroke-width="5" stroke-linejoin="round"/></svg>`
+  :`<svg width="${s}" height="${s}" viewBox="0 0 56 56" aria-hidden="true"><path d="M28 6 L50 28 L28 50 L6 28 Z" fill="none" stroke="#000" stroke-width="10" opacity=".8"/><path d="M28 6 L50 28 L28 50 L6 28 Z" fill="${k==='hardware'?'rgba(255,255,255,.15)':'rgba(255,255,255,.2)'}" stroke="${ICON[k]}" stroke-width="5"/></svg>`;
+function project(p){v.copy(p); v.project(camera); if(v.z>1||v.z<-1) return null; return [(v.x*.5+.5)*stage.clientWidth,(-v.y*.5+.5)*stage.clientHeight];}
+let mkKey='';
+function buildMarkers(){
+  const eye=view==='eye';
+  overlay.innerHTML=targets.map(t=>{const lab=$('l-lab').checked||t===sel; return `<div class="mk${t===sel?' sel':''}" data-id="${t.id}" style="left:0;top:0">${lab?`<span class="tag"><span style="color:${ICON[t.kind]}">${t.id}</span>${eye?'':rng(t.p).toFixed(1)+' m'}</span><span class="stem" style="background:${ICON[t.kind]}"></span>`:''}${svgFor(t.kind,eye?26:20)}</div>`;}).join('')
+   + (roverReady&&!eye?`<div class="mk" data-rover="1" style="left:0;top:0;pointer-events:none"><span class="tag">ROVER</span><span class="stem" style="background:#fff"></span><svg width="22" height="16" viewBox="0 0 64 44" aria-hidden="true"><rect x="6" y="6" width="52" height="22" rx="6" fill="none" stroke="#000" stroke-width="8" opacity=".8"/><rect x="6" y="6" width="52" height="22" rx="6" fill="rgba(255,255,255,.3)" stroke="#fff" stroke-width="4"/><circle cx="18" cy="34" r="6" fill="#fff" stroke="#000" stroke-width="3"/><circle cx="46" cy="34" r="6" fill="#fff" stroke="#000" stroke-width="3"/></svg></div>`:'');
+}
+function renderMarkers(){
+  const key=targets.map(t=>t.id+t.kind+t.name).join()+'|'+(sel&&sel.id)+'|'+view+'|'+$('l-lab').checked+'|'+roverReady;
+  if(key!==mkKey){ mkKey=key; buildMarkers(); }
+  for(const el of overlay.children){
+    const p=el.dataset.rover?rover:(targets.find(t=>t.id===el.dataset.id)||{}).p; if(!p) continue;
+    const xy=project(p);
+    if(!xy){ el.style.display='none'; continue; }
+    el.style.display=''; el.style.transform=`translate3d(${xy[0]}px,${xy[1]}px,0) translate(-50%,-100%)`;
+  }
+}
+overlay.addEventListener('pointerdown',e=>{const m=e.target.closest('.mk'); if(m&&m.dataset.id){e.stopPropagation(); select(targets.find(t=>t.id===m.dataset.id));}});
+
+// panels
+function select(t){ kick(); sel=t; renderList(); renderPkg(); renderHud(); if(view==='eye') placeEye(); }
+function renderList(){
+  $('tlist').innerHTML=targets.map(t=>`<button class="trow" aria-pressed="${t===sel}" data-id="${t.id}">${svgFor(t.kind,14)}<b>${t.id}</b>${t.name.length>17?t.name.slice(0,16)+'…':t.name}<small>${rng(t.p).toFixed(0)} m</small></button>`).join('');
+}
+$('tlist').addEventListener('click',e=>{const b=e.target.closest('.trow'); if(b){select(targets.find(t=>t.id===b.dataset.id)); if(view!=='eye') frameTarget();}});
+const esc=s=>s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function renderPkg(){
+  const t=sel; if(!t){ $('pkg').innerHTML=`<div class="sec"><span style="color:var(--muted)">Select a target or click the terrain to add one.</span></div>`; return; }
+  const d=rng(t.p), walk=d*1.25/0.8/60, sl=t.slope;
+  const flag=(v,l)=>v?`${l} <span style="padding:0 5px;border:1px solid #fff;margin-left:4px">CHECK</span>`:l;
+  const sh=inShadow(t.p), vis=visibleFromStart(t.p);
+  const chk=[['SUNLIGHT',sh==null?'Sun sim off':flag(sh,sh?'In shadow':'Lit'),'var(--fg)'],['SEEN FROM START',vis==null?'—':flag(!vis,vis?'Yes':'Hidden by terrain'),'var(--fg)'],['WALK',flag(d>=500,`${d.toFixed(1)} m · ~${Math.max(1,Math.round(walk))} min`),'var(--fg)'],['SLOPE AT TARGET',flag(sl!=null&&sl>=15,sl==null?'—':sl.toFixed(0)+'°'),'var(--fg)'],['POSITION',flag(t.unc>2,t.unc?`±${t.unc} m`:'±0.1 m'),'var(--fg)']];
+  $('pkg').innerHTML=`
+  <div class="sec"><span style="font:600 11px var(--mono);color:${ICON[t.kind]}">${t.id} · ${t.kind.toUpperCase()}</span>
+    <label for="p-name" class="h" style="margin-top:4px">Name</label><input id="p-name" type="text" value="${esc(t.name)}">
+    <label for="p-why" class="h">Short why · shown on HUD</label><input id="p-why" type="text" maxlength="60" value="${esc(t.why)}"></div>
+  <div class="sec"><span class="h">Acceptable zone</span>
+    <div class="seg z" role="group" aria-label="Zone radius">${[0,1,2,5].map(r=>`<button data-z="${r}" aria-pressed="${t.zone===r}">${r} m</button>`).join('')}</div>
+    <span style="color:var(--muted)">Anything inside the ring counts. The ring is draped on the real ground.</span></div>
+  <div class="sec"><span class="h">Crew check · read from terrain</span>
+    ${chk.map(c=>`<div style="height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 10px;border-radius:3px;background:var(--row)"><span style="font:600 10px var(--mono)">${c[0]}</span><span style="color:${c[2]};font:600 11px var(--mono)">${c[1]}</span></div>`).join('')}</div>
+  <div class="sec"><span class="h">HUD preview</span>
+    <div style="position:relative;height:96px;border-radius:2px;overflow:hidden;background:linear-gradient(180deg,#000 0 34%,#7a7a7a 34%,#3a3a3a 100%)">
+      <div style="position:absolute;left:50%;top:8px;transform:translateX(-50%);display:flex;gap:6px;padding:2px 8px;border-radius:3px;background:rgba(0,0,0,.6);border:1.5px solid ${ICON[t.kind]};font:600 12px var(--mono)"><span style="color:${ICON[t.kind]}">${t.id}</span>${d.toFixed(0)} m</div>
+      <div style="position:absolute;left:50%;top:40px;transform:translateX(-50%)">${svgFor(t.kind)}</div>
+      <span style="position:absolute;left:6px;right:6px;bottom:6px;font-size:10px;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:3px">${esc(t.why||'Add a short why')}</span>
+    </div>
+    <button class="ghost" id="p-hud">View in astronaut eye</button></div>
+  <div class="sec" style="border:0"><button class="cta" id="p-send">PACKAGE &amp; SEND TO EVA OPS</button><span id="p-msg" style="color:var(--muted)"></span></div>`;
+  $('p-name').oninput=e=>{t.name=e.target.value; renderList(); renderHud();};
+  $('p-why').oninput=e=>{t.why=e.target.value; renderHud();};
+  $('pkg').querySelectorAll('[data-z]').forEach(b=>b.onclick=()=>{t.zone=+b.dataset.z; dirtyDrape=true; renderPkg();});
+  $('p-hud').onclick=()=>setView('eye');
+  $('p-send').onclick=()=>{$('p-msg').textContent=`${t.id} packaged. This demo page does not send anything.`;};
+}
+function renderHud(){
+  const t=sel; if(!t) return;
+  const cp=camera.position, dE=view==='eye'?Math.hypot(t.p.x-cp.x,t.p.z-cp.z):rng(t.p);
+  $('hudtop').innerHTML=`<span style="color:${ICON[t.kind]}">${t.id}</span>${dE<10?dE.toFixed(1):dE.toFixed(0)} m`;
+  $('hudtop').style.borderColor=ICON[t.kind];
+  $('hudcard').innerHTML=`<span style="font:600 10px var(--mono);color:#fff">NEXT STOP · ${t.kind.toUpperCase()}</span><span style="font-size:15px;font-weight:600">${esc(t.name)}</span><span style="font-size:13px;color:rgba(232,251,255,.85)">${esc(t.why||'')}</span>${t.zone?`<span style="font-size:12px;color:${ICON[t.kind]}">Anything inside the ${t.zone} m ring is OK</span>`:''}`;
+}
+
+// camera views
+let view='orbit';
+function setView(nv){
+  kick(60); if(nv!=='eye'){walk.playing=false; walk.s=0; $('b-play').textContent='▶ Play EVA'; $('p-time').textContent='00:00';} view=nv; ['orbit','top','eye'].forEach(k=>$('v-'+k).setAttribute('aria-pressed',k===nv));
+  $('hud').hidden=nv!=='eye'; $('nav').hidden=nv==='eye'; controls.enabled=nv!=='eye';
+  if(nv==='top'){ const c=sel?sel.p:rover; controls.target.copy(c); camera.position.set(c.x,c.y+60,c.z+0.01); }
+  if(nv==='orbit') frameTarget();
+  if(nv==='eye') placeEye();
+  renderHud();
+}
+function placeEye(){
+  if(!roverReady||!sel) return;
+  if(walk.playing||walk.s>0) return;
+  camera.position.copy(eyePoint());
+  camera.lookAt(sel.p.x,sel.p.y+0.3,sel.p.z);
+}
+function frameTarget(){
+  const c=sel?sel.p:(roverReady?rover:null); if(!c) return;
+  const back=roverReady?new THREE.Vector3(rover.x-c.x,0,rover.z-c.z):new THREE.Vector3(1,0,1);
+  if(back.length()<1) back.set(-1,0,-1); back.normalize();
+  const r=Math.max(7,(sel?sel.zone:2)*4);
+  controls.target.copy(c); camera.position.set(c.x+back.x*r,c.y+r*0.6,c.z+back.z*r);
+}
+$('v-orbit').onclick=()=>setView('orbit'); $('v-top').onclick=()=>setView('top'); $('v-eye').onclick=()=>setView('eye');
+$('b-frame').onclick=frameTarget;
+$('b-rover').onclick=()=>{ if(!roverReady) return; controls.target.copy(rover); camera.position.set(rover.x-8,rover.y+6,rover.z-8); };
+
+let tool='place';
+$('t-place').onclick=()=>{tool='place';$('t-place').setAttribute('aria-pressed',true);$('t-inspect').setAttribute('aria-pressed',false);};
+$('t-inspect').onclick=()=>{tool='inspect';$('t-inspect').setAttribute('aria-pressed',true);$('t-place').setAttribute('aria-pressed',false);};
+$('l-slope').onchange=e=>{uSlope.value=e.target.checked?1:0; kick();};
+let sunT=0;
+const sunChanged=()=>{updateSun(); clearTimeout(sunT); sunT=setTimeout(()=>{renderPkg();},150);};
+$('l-sun').onchange=sunChanged; $('sun-az').oninput=sunChanged; $('sun-el').oninput=sunChanged;
+$('l-view').onchange=e=>{ if(e.target.checked){ if(viewMesh) viewMesh.visible=true; else computeViewshed(); } else if(viewMesh) viewMesh.visible=false; kick(); };
+$('b-play').onclick=()=>{ if(!walk.poly.length) return; if(walk.s>=walk.len) walk.s=0; walk.playing=!walk.playing; $('b-play').textContent=walk.playing?'❚❚ Pause':'▶ Play EVA'; lastT=performance.now(); kick(); };
+$('b-restart').onclick=()=>{ walk.s=0; walk.pause=0; walk.playing=true; $('b-play').textContent='❚❚ Pause'; lastT=performance.now(); kick(); };
+['l-path','l-zone','l-unc'].forEach(id=>$(id).onchange=()=>{dirtyDrape=true;});
+
+const ndc=new THREE.Vector2(); let downAt=null, hoverT=0;
+function pick(e){const r=renderer.domElement.getBoundingClientRect(); ndc.set((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1); ray.setFromCamera(ndc,camera); ray.far=3000; ray.firstHitOnly=true; return ray.intersectObjects(visibleGroups(),true)[0]||null;}
+renderer.domElement.addEventListener('pointermove',e=>{ const now=performance.now(); if(now-hoverT<60) return; hoverT=now; const h=pick(e); if(!h){$('c-xyz').textContent='—';return;} const p=h.point; $('c-xyz').textContent=`${p.x.toFixed(2)}, ${(-p.z).toFixed(2)}, ${p.y.toFixed(2)}`; $('c-rng').textContent=roverReady?rng(p).toFixed(1)+' m':'—'; const s=slopeOf(h); $('c-slp').textContent=s==null?'—':s.toFixed(0)+'°'; });
+renderer.domElement.addEventListener('pointerdown',e=>{downAt=[e.clientX,e.clientY];});
+renderer.domElement.addEventListener('pointerup',e=>{ if(!downAt||Math.hypot(e.clientX-downAt[0],e.clientY-downAt[1])>4||view==='eye'||tool!=='place') return; const h=pick(e); if(h) addTarget(h.point,{slope:slopeOf(h),zone:2}); });
+
+renderer.setAnimationLoop(()=>{
+  if(view!=='eye') controls.update();
+  const now=performance.now(); const dt=Math.min(0.1,(now-lastT)/1000); lastT=now;
+  if(view==='eye' && walk.playing){ stepWalk(dt); kick(2); }
+  if(dirtyDrape && now-lastDrape>250){ dirtyDrape=false; lastDrape=now; rebuildDrape(); drapedAt=now; kick(); }
+  // re-drape once after streaming settles so lines follow the finer ground
+  if(tilesSettled>drapedAt && now-tilesSettled>1500 && now-lastDrape>1500){ drapedAt=now; dirtyDrape=true; }
+  if(frames<=0) return;
+  frames--;
+  camera.updateMatrixWorld();
+  for(const k in sets) if(sets[k].on) sets[k].t.update();
+  renderer.render(scene,camera);
+  renderMarkers();
+  if(view==='eye'){ renderCompass(); if(now-hudT>120){ hudT=now; renderHud(); } }
+});
+</script>
