@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About · Aftershock Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Courier+Prime:wght@400;700&family=Archivo+Narrow:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f4f1ea; --card:#fbfaf6; --ink:#1a1a1a; --muted:#7a756b;
+  --line:#d6d0c4; --red:#d7261e;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:'Newsreader',Georgia,serif;font-size:15px;line-height:1.5}
+a{color:var(--ink)}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--ink);height:53px}
+.logo{font-weight:600;letter-spacing:.1em;text-decoration:none}
+nav a{color:var(--muted);text-decoration:none;margin-left:18px}
+nav a.on,nav a:hover{color:var(--ink)}
+
+/* ---------- machine ---------- */
+.machine{display:grid;grid-template-columns:minmax(320px,440px) 1fr;height:calc(100vh - 53px)}
+.left{border-right:1px solid var(--ink);overflow-y:auto}
+
+.trigger{position:relative;height:210px;border-bottom:1px solid var(--ink);background:var(--card);touch-action:none;cursor:ns-resize;outline:none}
+.trigger.locked{cursor:default}
+#seismo{width:100%;height:100%;display:block}
+.prompt{position:absolute;left:16px;top:12px;font-size:12px;pointer-events:none;max-width:62%}
+.prompt span{color:var(--muted)}
+#shakeBtn{position:absolute;right:14px;top:12px;font:inherit;font-size:11px;background:var(--paper);border:1px solid var(--ink);padding:5px 9px;cursor:pointer;user-select:none;-webkit-user-select:none}
+#shakeBtn:active{background:var(--ink);color:var(--paper)}
+.meter{position:absolute;left:16px;right:16px;bottom:14px;height:6px;background:var(--line)}
+#meterFill{height:100%;width:0;background:var(--red)}
+
+.chain{list-style:none;margin:0;padding:18px 18px 48px 50px;position:relative}
+.chain::before{content:"";position:absolute;left:28px;top:30px;bottom:56px;width:1px;background:var(--ink)}
+.ball{position:absolute;left:22px;top:24px;width:13px;height:13px;border-radius:50%;background:var(--red);opacity:0;z-index:2;
+  transition:top .75s cubic-bezier(.55,0,.3,1.45),opacity .3s}
+.node{position:relative;padding:8px 0 14px;opacity:.35;transition:opacity .3s}
+.node::before{content:"";position:absolute;left:-26px;top:14px;width:9px;height:9px;border:1px solid var(--ink);background:var(--paper);border-radius:50%}
+.node.active,.node.done,.node.error{opacity:1}
+.node.done::before{background:var(--ink)}
+.node.error::before{background:var(--red);border-color:var(--red)}
+.node h3{margin:0;font-size:13px;font-weight:600}
+.node .svc{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em}
+.node pre{display:none;margin:6px 0 0;padding:6px 8px;white-space:pre-wrap;word-break:break-word;font:inherit;font-size:11.5px;background:var(--card);border:1px solid var(--line)}
+.node.active pre,.node.done pre,.node.error pre{display:block}
+.node.active pre{border-color:var(--red)}
+
+.right{position:relative}
+#map{position:absolute;inset:0;background:#e8e4da}
+.result{position:absolute;left:16px;bottom:16px;right:16px;max-width:560px;z-index:1001;display:none;background:var(--card);border:1px solid var(--ink);padding:14px 16px}
+.result.show{display:block}
+.result .big{font-size:15px;margin:0 0 8px}
+.result .trail{color:var(--muted);font-size:12px;margin:0 0 10px}
+.result .stats{font-size:11px;color:var(--muted);margin:0 0 10px}
+.result button{font:inherit;font-size:12px;background:var(--ink);color:var(--paper);border:0;padding:7px 12px;cursor:pointer}
+
+@media (max-width:820px){
+  .machine{grid-template-columns:1fr;height:auto}
+  .left{border-right:0;border-bottom:1px solid var(--ink);overflow:visible}
+  .right{height:75vh}
+}
+
+/* ---------- about ---------- */
+.about{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+.about h1{font-size:26px;margin:0 0 6px;letter-spacing:.04em}
+.about .lede{color:var(--muted);margin:0 0 36px}
+.about h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;border-top:1px solid var(--ink);padding-top:14px;margin:40px 0 12px}
+.about h3{font-size:14px;margin:22px 0 4px}
+.about p,.about li{max-width:68ch}
+.about figure{margin:18px 0}
+.about figure svg{width:100%;height:auto;display:block;background:var(--card);border:1px solid var(--line)}
+.about figcaption{color:var(--muted);font-size:12px;margin-top:6px}
+.about table{border-collapse:collapse;width:100%;font-size:12.5px}
+.about td,.about th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.about th{font-weight:600}
+.video-slot{aspect-ratio:16/9;border:1px dashed var(--muted);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;text-align:center;padding:16px}
+.about video{width:100%;display:block;border:1px solid var(--line)}
+
+
+/* ---------- type: a printed seismic bulletin ---------- */
+:root{--serif:'Newsreader',Georgia,'Times New Roman',serif;--type:'Courier Prime','Courier New',monospace;--label:'Archivo Narrow','Arial Narrow',Arial,sans-serif}
+body{font-family:var(--serif);font-size:15px;line-height:1.5}
+.logo{font-family:var(--label);font-weight:600;letter-spacing:.18em;font-size:14px}
+nav a{font-family:var(--label);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.leaflet-container,.leaflet-tooltip{font-family:var(--label)!important;font-size:12px}
+.about h1{font-family:var(--serif);font-size:40px;font-weight:600;letter-spacing:0;line-height:1.1}
+.about .lede{font-style:italic;font-size:19px;line-height:1.4}
+.about h2{font-family:var(--label);font-size:13px;letter-spacing:.16em}
+.about h3{font-family:var(--serif);font-size:19px;font-weight:600}
+.about p,.about li{font-size:16px;line-height:1.6}
+.about table{font-family:var(--serif);font-size:14.5px}
+.about th{font-family:var(--label);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.about figcaption,.video-slot{font-family:var(--label);font-size:12.5px}
+.about svg text{font-family:'Courier Prime','Courier New',monospace}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">AFTERSHOCK MACHINE</a>
+  <nav><a href="index.html">Machine</a><a href="about.html" class="on">About</a></nav>
+</header>
+
+<article class="about">
+  <h1>Aftershock Machine</h1>
+  <p class="lede">A digital Rube Goldberg machine. You shake a web page, a real earthquake answers, and the shaking travels to another place in the world that happens to have the same name.</p>
+
+  <h2>The project</h2>
+  <p>Rube Goldberg drew machines that use many silly steps to do one small task. The fun is in watching the chain, not in the result. The Web works in a similar way. One small action in the browser can start many hidden requests between servers far away.</p>
+  <p>Aftershock Machine makes that hidden chain visible. You "make an earthquake" by scrolling hard on a seismograph. How fast you fill the meter decides how big your quake is: a wild, fast shake is like a magnitude 7, a slow one is like a magnitude 5. The page then finds a real earthquake from the past year with that same magnitude. The exact millisecond your meter filled picks which one, so no two shakes land on the same quake.</p>
+  <p>Then the machine asks a simple question: <i>what is this place called, and is there another place in the world with the same name?</i> Many towns share names. There are Victorias in Canada, the Seychelles and Texas. There are Santa Cruzes in Bolivia, California and the Philippines. The machine looks up every name the epicenter goes by, finds a namesake far away, and draws a red fault line between the two. The ground shook in one Victoria. The other Victoria felt nothing. Only their names connect them.</p>
+  <p>Before you start, the map already shows the seafloor, the edges of the tectonic plates in red, and every earthquake of magnitude 4.5 or more from the past 12 months as a black dot (about seven thousand of them). The chain also collects pictures: a satellite view of the ground that shook, photos people took near the epicenter, the name itself, photos of the namesake, and a satellite view of it. At the end, they are lined up as a film strip. Every picture can be clicked to see it larger.</p>
+
+  <h2>Video</h2>
+  <video src="video/demo.mp4" controls muted playsinline preload="metadata"></video>
+  <p class="note" style="font-family:var(--label);font-size:12.5px;color:var(--muted);margin-top:6px">One full run, shown at 2× speed.</p>
+
+  <h2>The mechanics</h2>
+  <figure>
+    <svg viewBox="0 0 680 790" xmlns="http://www.w3.org/2000/svg" font-family="Courier Prime, Courier New, monospace" font-size="13">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1a1a1a"/></marker>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#d7261e"/></marker>
+      </defs>
+      <g fill="#fbfaf6" stroke="#1a1a1a">
+        <rect x="80" y="20"  width="270" height="60"/>
+        <rect x="80" y="130" width="270" height="60"/>
+        <rect x="80" y="240" width="270" height="60"/>
+        <rect x="80" y="350" width="270" height="60"/>
+        <rect x="80" y="460" width="270" height="60"/>
+        <rect x="80" y="570" width="270" height="60"/>
+        <rect x="80" y="680" width="270" height="60" stroke="#d7261e"/>
+      </g>
+      <g fill="#1a1a1a">
+        <text x="96" y="46"  font-weight="600">00 SHAKE</text><text x="96" y="66"  fill="#7a756b" font-size="11">your scroll · browser</text>
+        <text x="96" y="156" font-weight="600">01 A REAL EARTHQUAKE</text><text x="96" y="176" fill="#7a756b" font-size="11">USGS catalog · past year</text>
+        <text x="96" y="266" font-weight="600">02 WHERE + PHOTOS</text><text x="96" y="286" fill="#7a756b" font-size="11">BigDataCloud · Wikimedia Commons</text>
+        <text x="96" y="376" font-weight="600">03 ITS NAMES</text><text x="96" y="396" fill="#7a756b" font-size="11">USGS label · BigDataCloud</text>
+        <text x="96" y="486" font-weight="600">04 FIND A NAMESAKE</text><text x="96" y="506" fill="#7a756b" font-size="11">Open-Meteo geocoding (GeoNames)</text>
+        <text x="96" y="596" font-weight="600">05 VISIT THE NAMESAKE</text><text x="96" y="616" fill="#7a756b" font-size="11">Wikipedia · Wikimedia Commons</text>
+        <text x="96" y="706" font-weight="600" fill="#d7261e">06 FAULT LINE ON MAP</text><text x="96" y="726" fill="#7a756b" font-size="11">Leaflet · Esri map + satellite</text>
+      </g>
+      <g stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#ar)">
+        <line x1="215" y1="80"  x2="215" y2="128"/>
+        <line x1="215" y1="190" x2="215" y2="238"/>
+        <line x1="215" y1="300" x2="215" y2="348"/>
+        <line x1="215" y1="410" x2="215" y2="458"/>
+        <line x1="215" y1="520" x2="215" y2="568"/>
+        <line x1="215" y1="630" x2="215" y2="678"/>
+      </g>
+      <g font-size="11.5" fill="#1a1a1a">
+        <text x="231" y="110">speed → magnitude, millisecond → pick</text>
+        <text x="231" y="220">latitude, longitude</text>
+        <text x="231" y="330">place labels</text>
+        <text x="231" y="440">a list of names</text>
+        <text x="231" y="550">same name, another place</text>
+        <text x="231" y="660">two coordinates</text>
+      </g>
+      <!-- retry loop -->
+      <path d="M 350 490 C 470 490, 470 380, 352 380" fill="none" stroke="#1a1a1a" stroke-dasharray="3 3" marker-end="url(#ar)"/>
+      <text x="470" y="430" font-size="10.5" fill="#7a756b">no namesake?</text>
+      <text x="470" y="444" font-size="10.5" fill="#7a756b">try the next name</text>
+      <!-- depth as dice -->
+      <path d="M 350 160 C 610 160, 610 470, 352 500" fill="none" stroke="#d7261e" stroke-dasharray="4 4" stroke-width="1.2" marker-end="url(#arr)"/>
+      <text x="560" y="300" fill="#d7261e" font-size="11">depth picks</text>
+      <text x="560" y="316" fill="#d7261e" font-size="11">which namesake</text>
+    </svg>
+    <figcaption>One scroll starts about 6 to 12 requests across 6 services. If none of the names exists anywhere else, the shaking falls straight through the Earth to the point on the opposite side.</figcaption>
+  </figure>
+
+  <h2>Questions from the brief</h2>
+
+  <h3>What kind of data is passed around?</h3>
+  <p>It starts as the speed of your hand and becomes a magnitude. The magnitude finds a real earthquake: a time, a depth and a pair of coordinates. The coordinates become place names. The names are then used as a key to search the whole world for other places that share them, which gives a new pair of coordinates. So the chain goes from motion, to a number, to a place, to a word, and back to a different place. Along the way, every place also becomes pictures: satellite views and photos tied to its location.</p>
+
+  <h3>Which services are chained together?</h3>
+  <table>
+    <tr><th>Step</th><th>Service</th><th>What it does here</th></tr>
+    <tr><td>01</td><td>USGS Earthquake Catalog</td><td>Gives every earthquake of magnitude 4.5 or more from the past year. The machine keeps the ones that match your shake and picks one.</td></tr>
+    <tr><td>02</td><td>BigDataCloud + Wikimedia Commons</td><td>Turns the epicenter coordinates into place names, and finds photos people took within 10 km.</td></tr>
+    <tr><td>03</td><td>USGS place label + BigDataCloud</td><td>Collects every name for the spot: nearest town, district, province, region.</td></tr>
+    <tr><td>04</td><td>Open-Meteo Geocoding (GeoNames data)</td><td>Searches the world for other places with exactly the same name, at least 150 km away. The quake's depth picks one. If a name has no twin, it tries the next name.</td></tr>
+    <tr><td>05</td><td>Wikipedia + Wikimedia Commons</td><td>Finds the article and photos for the namesake.</td></tr>
+    <tr><td>06</td><td>Leaflet + Esri map and satellite imagery</td><td>Draws the "fault line" between the two places that share a name, and shows the namesake from above.</td></tr>
+  </table>
+
+  <h3>What does the trigger look like?</h3>
+  <p>A seismograph at the top of the page. Scrolling on it (or holding the button on a phone) makes the line shake, and the whole page shakes with it. If you stop, the energy slowly drains away, so you have to keep shaking. When the meter is full, your small fake earthquake "wakes up" a real one of the same size. Fill it in about 1.5 seconds and you get a magnitude 7; take 8 seconds and you get a magnitude 4.7.</p>
+
+  <h3>What is the end result?</h3>
+  <p>A red dashed line on a map between two places that have nothing in common except a name, and one sentence, for example: "The ground shook near Victoria. Far away, there is another Victoria in the Seychelles, 9,000 km away. It felt nothing." Under it is a film strip of every picture the chain passed through. The result is useless. What matters is watching every step happen: the ball moves down the track, each box lights up, and the raw data is shown as it is passed along.</p>
+
+  <h2>Credits</h2>
+  <p>Data from USGS, BigDataCloud, Open-Meteo Geocoding API (based on GeoNames, CC BY 4.0) and Wikipedia. Photos from Wikimedia Commons, each by its own author under its own license (click a photo to see it). Satellite imagery © Esri (World Imagery; Maxar, Earthstar Geographics). Seafloor map tiles © Esri (World Ocean Base; GEBCO, NOAA, National Geographic). Tectonic plate boundaries from Peter Bird (2003), "An updated digital model of plate boundaries", GeoJSON by Hugo Ahlenius (fraxen/tectonicplates). Map library: Leaflet.</p>
+</article>
+</body>
+</html>

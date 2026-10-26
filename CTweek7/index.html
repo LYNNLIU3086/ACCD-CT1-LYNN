@@ -1,0 +1,737 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aftershock Machine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,500&family=Courier+Prime:wght@400;700&family=Archivo+Narrow:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<style>
+:root{
+  --paper:#f4f1ea; --card:#fbfaf6; --ink:#1a1a1a; --muted:#7a756b;
+  --line:#d6d0c4; --red:#d7261e;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:'Newsreader',Georgia,serif;font-size:15px;line-height:1.5}
+a{color:var(--ink)}
+
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--ink);height:53px}
+.logo{font-weight:600;letter-spacing:.1em;text-decoration:none}
+nav a{color:var(--muted);text-decoration:none;margin-left:18px}
+nav a.on,nav a:hover{color:var(--ink)}
+
+/* ---------- machine ---------- */
+.machine{display:grid;grid-template-columns:minmax(320px,440px) 1fr;height:calc(100vh - 53px)}
+.left{border-right:1px solid var(--ink);overflow-y:auto}
+
+.trigger{position:relative;height:210px;border-bottom:1px solid var(--ink);background:var(--card);touch-action:none;cursor:ns-resize;outline:none}
+.trigger.locked{cursor:default}
+#seismo{width:100%;height:100%;display:block}
+.prompt{position:absolute;left:16px;top:12px;font-size:12px;pointer-events:none;max-width:62%}
+.prompt span{color:var(--muted)}
+#shakeBtn{position:absolute;right:14px;top:12px;font:inherit;font-size:11px;background:var(--paper);border:1px solid var(--ink);padding:5px 9px;cursor:pointer;user-select:none;-webkit-user-select:none}
+#shakeBtn:active{background:var(--ink);color:var(--paper)}
+.meter{position:absolute;left:16px;right:16px;bottom:14px;height:6px;background:var(--line)}
+#meterFill{height:100%;width:0;background:var(--red)}
+
+.chain{list-style:none;margin:0;padding:18px 18px 48px 50px;position:relative}
+.chain::before{content:"";position:absolute;left:28px;top:30px;bottom:56px;width:1px;background:var(--ink)}
+.ball{position:absolute;left:22px;top:24px;width:13px;height:13px;border-radius:50%;background:var(--red);opacity:0;z-index:2;
+  transition:top .75s cubic-bezier(.55,0,.3,1.45),opacity .3s}
+.node{position:relative;padding:8px 0 14px;opacity:.35;transition:opacity .3s}
+.node::before{content:"";position:absolute;left:-26px;top:14px;width:9px;height:9px;border:1px solid var(--ink);background:var(--paper);border-radius:50%}
+.node.active,.node.done,.node.error,.node.skip{opacity:1}
+.node.skip{opacity:.6}
+.node.skip pre{display:block}
+.node.done::before{background:var(--ink)}
+.node.error::before{background:var(--red);border-color:var(--red)}
+.node h3{margin:0;font-size:13px;font-weight:600}
+.node .svc{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.07em}
+.node pre{display:none;margin:6px 0 0;padding:6px 8px;white-space:pre-wrap;word-break:break-word;font:inherit;font-size:11.5px;background:var(--card);border:1px solid var(--line)}
+.node.active pre,.node.done pre,.node.error pre{display:block}
+.node.active pre{border-color:var(--red)}
+
+.right{position:relative}
+#map{position:absolute;inset:0;background:#e8e4da}
+#map .leaflet-tile-pane{filter:saturate(.55) sepia(.2)}
+.map-info{background:var(--card);border:1px solid var(--ink);padding:6px 9px;font:12px/1.5 'Archivo Narrow',sans-serif;color:var(--ink)}
+.map-info span{color:var(--muted)}
+main{will-change:transform}
+.result{position:absolute;left:16px;bottom:16px;right:16px;max-width:560px;z-index:1001;display:none;background:var(--card);border:1px solid var(--ink);padding:14px 16px}
+.result.show{display:block}
+.result .big{font-size:15px;margin:0 0 8px}
+.result{max-width:720px}
+.shots{display:flex;gap:6px;margin-top:6px;overflow-x:auto;padding-bottom:2px}
+.shot{flex:none;width:118px;margin:0;font-size:10px;color:var(--muted);line-height:1.3}
+.shot img{display:block;width:118px;height:84px;object-fit:cover;background:var(--line);border:1px solid var(--line)}
+.shot a{color:inherit;text-decoration:none}
+.shot figcaption{margin-top:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sat{position:relative;height:120px;overflow:hidden;background:#223;border:1px solid var(--line);margin-top:6px}
+.sat .tiles{position:absolute;left:50%;top:50%}
+.sat .tiles img{position:absolute;width:256px;height:256px;display:block}
+.sat .cross{position:absolute;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;border:2px solid var(--red);border-radius:50%;box-shadow:0 0 0 1px #fff}
+.sat .lbl{position:absolute;left:6px;bottom:5px;color:#fff;font-size:10px;text-shadow:0 1px 2px #000}
+.film{display:flex;align-items:stretch;gap:0;overflow-x:auto;margin:4px 0 12px;padding-bottom:4px}
+.frame{flex:none;width:112px;margin:0;font-size:10px;line-height:1.3;color:var(--muted)}
+.frame .pic{width:112px;height:80px;border:1px solid var(--ink);overflow:hidden;position:relative;background:#223}
+.frame .pic img{width:100%;height:100%;object-fit:cover;display:block}
+.frame .pic.sat-mini .tiles{position:absolute;left:50%;top:50%}
+.frame .pic.sat-mini .tiles img{position:absolute;width:256px;height:256px;max-width:none}
+.frame .pic.word{background:var(--paper);display:flex;align-items:center;justify-content:center;text-align:center;padding:6px;font-size:13px;color:var(--ink);font-weight:600;word-break:break-word}
+.frame figcaption{margin-top:3px}
+.arrow{flex:none;align-self:center;padding:0 4px 18px;color:var(--red);font-size:14px}
+[data-zoom]{cursor:zoom-in}
+.lb{position:fixed;inset:0;z-index:3000;background:rgba(20,18,15,.88);display:none;align-items:center;justify-content:center;padding:56px 64px 70px}
+.lb.show{display:flex}
+.lb-stage{position:relative;max-width:100%;max-height:100%;display:flex;align-items:center;justify-content:center}
+.lb-stage img.lb-img{max-width:min(1200px,100%);max-height:calc(100vh - 140px);display:block;border:1px solid #000;box-shadow:0 10px 40px rgba(0,0,0,.5);background:#222}
+.lb-sat{position:relative;width:min(1100px,calc(100vw - 128px));height:calc(100vh - 140px);overflow:hidden;background:#223;border:1px solid #000}
+.lb-sat .tiles{position:absolute;left:50%;top:50%}
+.lb-sat .tiles img{position:absolute;width:256px;height:256px;max-width:none}
+.lb-sat .cross{position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:2px solid var(--red);border-radius:50%;box-shadow:0 0 0 1px #fff}
+.lb-sat .zoombar{position:absolute;right:10px;top:10px;display:flex;flex-direction:column;gap:4px}
+.lb-sat .zoombar button{width:30px;height:30px;font:600 16px 'Archivo Narrow',sans-serif;background:var(--card);border:1px solid var(--ink);cursor:pointer}
+.lb-cap{position:fixed;left:0;right:0;bottom:16px;text-align:center;color:#f4f1ea;font-size:12px;padding:0 70px}
+.lb-cap a{color:#f4f1ea}
+.lb-cap span{color:#b9b2a5}
+.lb-btn{position:fixed;background:none;border:1px solid #f4f1ea;color:#f4f1ea;font:16px 'Archivo Narrow',sans-serif;width:38px;height:38px;cursor:pointer}
+.lb-btn:hover{background:#f4f1ea;color:#1a1a1a}
+.lb-close{top:14px;right:16px}
+.lb-prev{left:14px;top:50%;margin-top:-19px}
+.lb-next{right:14px;top:50%;margin-top:-19px}
+.lb-count{position:fixed;top:22px;left:20px;color:#b9b2a5;font-size:11px}
+.photo-pin img{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--red),0 2px 4px rgba(0,0,0,.3);display:block}
+.result .trail{color:var(--muted);font-size:12px;margin:0 0 10px}
+.result .stats{font-size:11px;color:var(--muted);margin:0 0 10px}
+.result button{font:inherit;font-size:12px;background:var(--ink);color:var(--paper);border:0;padding:7px 12px;cursor:pointer}
+
+@media (max-width:820px){
+  .machine{grid-template-columns:1fr;height:auto}
+  .left{border-right:0;border-bottom:1px solid var(--ink);overflow:visible}
+  .right{height:75vh}
+}
+
+/* ---------- about ---------- */
+.about{max-width:760px;margin:0 auto;padding:40px 16px 80px}
+.about h1{font-size:26px;margin:0 0 6px;letter-spacing:.04em}
+.about .lede{color:var(--muted);margin:0 0 36px}
+.about h2{font-size:15px;text-transform:uppercase;letter-spacing:.08em;border-top:1px solid var(--ink);padding-top:14px;margin:40px 0 12px}
+.about h3{font-size:14px;margin:22px 0 4px}
+.about p,.about li{max-width:68ch}
+.about figure{margin:18px 0}
+.about figure svg{width:100%;height:auto;display:block;background:var(--card);border:1px solid var(--line)}
+.about figcaption{color:var(--muted);font-size:12px;margin-top:6px}
+.about table{border-collapse:collapse;width:100%;font-size:12.5px}
+.about td,.about th{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.about th{font-weight:600}
+.video-slot{aspect-ratio:16/9;border:1px dashed var(--muted);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px;text-align:center;padding:16px}
+.about video{width:100%;display:block;border:1px solid var(--line)}
+
+
+/* ---------- type: a printed seismic bulletin ---------- */
+:root{--serif:'Newsreader',Georgia,'Times New Roman',serif;--type:'Courier Prime','Courier New',monospace;--label:'Archivo Narrow','Arial Narrow',Arial,sans-serif}
+body{font-family:var(--serif);font-size:15px;line-height:1.5}
+.logo{font-family:var(--label);font-weight:600;letter-spacing:.18em;font-size:14px}
+nav a{font-family:var(--label);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.leaflet-container,.leaflet-tooltip{font-family:var(--label)!important;font-size:12px}
+.prompt{font-family:var(--serif);font-size:15px;line-height:1.35}
+.prompt span{font-style:italic;font-size:13.5px}
+#shakeBtn,.map-info,.result .stats,.result button,.shot figcaption,.frame figcaption,.sat .lbl,.lb-cap,.lb-count,.lb-btn,.lb-sat .zoombar button{font-family:var(--label)!important}
+.map-info{font-size:12px}
+.node .svc{font-family:var(--label);font-size:11.5px;letter-spacing:.09em}
+.node h3{font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.25;margin-top:1px}
+.node pre{font-family:var(--type);font-size:12.5px;line-height:1.45}
+.result .big{font-family:var(--serif);font-size:20px;line-height:1.3}
+.result .big[style]{font-size:17px!important;font-style:italic}
+.result button{font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.shot figcaption,.frame figcaption{font-size:11px}
+.frame .pic.word{font-family:var(--serif);font-style:italic;font-weight:500;font-size:16px}
+.arrow{font-family:var(--serif)}
+
+/* ---------- layout: map on the left, machine on the right ---------- */
+.machine{grid-template-columns:1fr minmax(340px,460px)}
+.left{order:2;border-right:0;border-left:1px solid var(--ink)}
+.right{order:1}
+@media (max-width:820px){
+  .machine{grid-template-columns:1fr}
+  .left{order:0;border-left:0}
+  .right{order:1}
+}
+
+/* ---------- bigger shake button ---------- */
+.prompt{max-width:calc(100% - 200px)}
+#shakeBtn{top:50%;right:16px;transform:translateY(-60%);width:150px;height:72px;padding:0 12px;
+  font-size:15px!important;font-weight:600;letter-spacing:.12em;text-transform:uppercase;line-height:1.15;
+  background:var(--ink);color:var(--paper);border:0;box-shadow:4px 4px 0 var(--red);
+  transition:transform .08s,box-shadow .08s;touch-action:none}
+#shakeBtn small{display:block;font-size:10.5px;font-weight:500;letter-spacing:.08em;opacity:.7;margin-top:3px;text-transform:none}
+#shakeBtn:hover{background:#000}
+#shakeBtn:active,#shakeBtn.held{transform:translateY(-60%) translate(3px,3px);box-shadow:1px 1px 0 var(--red);background:var(--red);color:#fff}
+.trigger.locked #shakeBtn{opacity:.35;box-shadow:none}
+@media (max-width:420px){ .prompt{max-width:calc(100% - 150px)} #shakeBtn{width:118px;height:64px;font-size:13px!important} }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">AFTERSHOCK MACHINE</a>
+  <nav><a href="index.html" class="on">Machine</a><a href="about.html">About</a></nav>
+</header>
+
+<main class="machine">
+  <section class="left">
+    <div id="trigger" class="trigger" tabindex="0" aria-label="Scroll here to shake">
+      <canvas id="seismo"></canvas>
+      <div class="prompt">Scroll hard here to make an earthquake.<br><span>Fill the bar fast for a big quake, slowly for a small one.</span></div>
+      <button id="shakeBtn" type="button">Hold to shake<small>or scroll here</small></button>
+      <div class="meter"><div id="meterFill"></div></div>
+    </div>
+    <ol id="chain" class="chain"><div id="ball" class="ball"></div></ol>
+  </section>
+  <section class="right">
+    <div id="map"></div>
+    <div id="result" class="result"></div>
+  </section>
+</main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <span class="lb-count" id="lbCount"></span>
+  <button class="lb-btn lb-close" id="lbClose" type="button" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" id="lbPrev" type="button" aria-label="Previous">←</button>
+  <button class="lb-btn lb-next" id="lbNext" type="button" aria-label="Next">→</button>
+  <div class="lb-stage" id="lbStage"></div>
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>window.L||document.write('<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"><\/script>')</script>
+<script>
+/* Aftershock Machine
+   scroll → USGS (past year) → BigDataCloud + Commons → place names
+          → Open-Meteo geocoding (namesakes) → Wikipedia + Commons → map line */
+
+const $ = s => document.querySelector(s);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const enc = encodeURIComponent;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const WIKI = 'https://en.wikipedia.org/w/api.php';
+
+/* ---------- the chain, as data ---------- */
+const STEPS = [
+  { title: 'You shake the page',            svc: 'your scroll · browser' },
+  { title: 'The planet answers',            svc: 'USGS earthquake catalog · past year' },
+  { title: 'Where did it happen?',          svc: 'BigDataCloud · Wikimedia Commons' },
+  { title: 'What is the place called?',     svc: 'USGS place label · BigDataCloud' },
+  { title: 'Is there another place with that name?', svc: 'Open-Meteo geocoding (GeoNames)' },
+  { title: 'Visit the namesake',            svc: 'Wikipedia · Wikimedia Commons' },
+  { title: 'Draw the fault line',           svc: 'Leaflet · Esri map' },
+];
+
+const chainEl = $('#chain'), ball = $('#ball');
+const nodes = STEPS.map((s, i) => {
+  const li = document.createElement('li');
+  li.className = 'node';
+  li.innerHTML = `<span class="svc">${String(i).padStart(2,'0')} · ${esc(s.svc)}</span><h3>${esc(s.title)}</h3><pre></pre>`;
+  chainEl.appendChild(li);
+  return li;
+});
+
+/* ---------- map ---------- */
+const map = L.map('map', { worldCopyJump: true, zoomControl: true }).setView([20, 0], 2);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri &mdash; GEBCO, NOAA, National Geographic, DeLorme, HERE', maxZoom: 13
+}).addTo(map);
+const base = L.layerGroup().addTo(map);     // plates + today's quakes, always visible
+let layers = L.layerGroup().addTo(map);     // this run
+
+const infoCtl = L.control({ position: 'topright' });
+infoCtl.onAdd = () => L.DomUtil.create('div', 'map-info');
+infoCtl.addTo(map);
+const info = t => { infoCtl.getContainer().innerHTML = t; };
+info('listening to the planet…');
+
+// tectonic plate boundaries (Bird, 2003) — where most earthquakes happen
+fetch('https://cdn.jsdelivr.net/gh/fraxen/tectonicplates@master/GeoJSON/PB2002_boundaries.json')
+  .then(r => r.json())
+  .then(g => L.geoJSON(g, { interactive: false, style: { color: '#d7261e', weight: 1, opacity: .45 } }).addTo(base))
+  .catch(() => {});
+
+// every earthquake of magnitude 4.5 or more on Earth in the past 12 months (USGS catalog)
+const MIN_MAG = 4.5;
+const YEAR_START = new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10);
+const YEAR_URL = `https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=${YEAR_START}&minmagnitude=${MIN_MAG}&orderby=time&limit=20000`;
+const dotRenderer = L.canvas({ padding: 0.3 });           // thousands of dots → draw on canvas, not SVG
+info('loading a year of earthquakes…');
+const YEAR = fetch(YEAR_URL)
+  .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
+  .then(d => {
+    const quakes = d.features.filter(f => f.properties.type === 'earthquake' && f.properties.mag != null).map(f => ({
+      lon: f.geometry.coordinates[0], lat: f.geometry.coordinates[1], depth: Math.abs(f.geometry.coordinates[2] || 0),
+      mag: f.properties.mag, place: f.properties.place || 'somewhere unnamed', time: f.properties.time, url: f.properties.url
+    }));
+    quakes.forEach(q => L.circleMarker([q.lat, q.lon], { renderer: dotRenderer, radius: Math.max(1.2, (q.mag - 4) * 2.2), color: '#1a1a1a', weight: .5,
+      fillColor: '#1a1a1a', fillOpacity: .22 }).bindTooltip(`M${q.mag.toFixed(1)} · ${esc(q.place)}<br>${new Date(q.time).toLocaleDateString()}`).addTo(base));
+    const big = quakes.filter(q => q.mag >= 7).length;
+    info(`<b>${quakes.length.toLocaleString()}</b> earthquakes M${MIN_MAG}+ in the past year<br><span>${big} of them M7 or larger · red lines = plate edges</span>`);
+    return quakes;
+  });
+YEAR.catch(e => info(`could not reach USGS<br><span>${esc(e.message)}</span>`));
+
+/* ---------- seismograph trigger ---------- */
+const trigger = $('#trigger'), cv = $('#seismo'), cx = cv.getContext('2d'), meter = $('#meterFill');
+let W = 0, H = 0, amp = 0, energy = 0, state = 'idle';
+let shakeStart = 0, shakeTotal = 0, shakeSecs = 0, shakeCount = 0, shakeMs = 0;
+const trace = [];
+const stage = document.querySelector('main');
+
+function resize() {
+  const dpr = window.devicePixelRatio || 1;
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+resize(); addEventListener('resize', resize);
+
+function shake(d) {
+  if (state !== 'idle') return;
+  const a = Math.min(Math.abs(d), 150);
+  if (energy < 1 || !shakeStart) { shakeStart = performance.now(); shakeTotal = 0; shakeCount = 0; }   // a fresh attempt
+  shakeTotal += Math.abs(d); shakeCount++;
+  amp = Math.min(1, amp + a / 300);
+  energy = Math.min(100, energy + a / 25);
+  if (energy >= 100) { meter.style.width = '100%'; shakeMs = Math.round(performance.now() - shakeStart); shakeSecs = shakeMs / 1000; run(); }   // fire right here, before the drain can touch it
+}
+function bump(v = 0.6) { amp = Math.min(1, amp + v); }
+
+trigger.addEventListener('wheel', e => {
+  e.preventDefault();
+  const unit = e.deltaMode === 1 ? 33 : e.deltaMode === 2 ? 400 : 1;   // lines / pages → pixels (Firefox uses lines)
+  const d = (Math.abs(e.deltaY) + Math.abs(e.deltaX)) * unit;
+  shake(Math.max(d, 25));                                             // every flick counts, even tiny trackpad ones
+}, { passive: false });
+// click or tap the seismograph = a small knock
+trigger.addEventListener('pointerdown', e => { if (!e.target.closest('#shakeBtn')) shake(120); });
+let lastY = null;
+trigger.addEventListener('touchstart', e => { lastY = e.touches[0].clientY; }, { passive: true });
+trigger.addEventListener('touchmove', e => {
+  e.preventDefault();
+  const y = e.touches[0].clientY; shake((y - lastY) * 3); lastY = y;
+}, { passive: false });
+trigger.addEventListener('keydown', e => {
+  if (['ArrowUp','ArrowDown',' ','PageDown','PageUp'].includes(e.key)) { e.preventDefault(); shake(90); }
+});
+let holdTimer = null;
+const stopHold = () => { clearInterval(holdTimer); holdTimer = null; $('#shakeBtn').classList.remove('held'); };
+$('#shakeBtn').addEventListener('pointerdown', e => {
+  e.preventDefault(); stopHold();
+  e.currentTarget.classList.add('held');
+  holdTimer = setInterval(() => shake(60 + Math.random() * 90), 40);
+});
+['pointerup','pointerleave','pointercancel'].forEach(ev => $('#shakeBtn').addEventListener(ev, stopHold));
+
+function frame() {
+  amp *= 0.93;
+  const q = amp > 0.04 ? amp : 0;
+  stage.style.transform = q ? `translate(${(Math.random() - .5) * q * 14}px, ${(Math.random() - .5) * q * 10}px) rotate(${(Math.random() - .5) * q * 0.6}deg)` : '';
+  if (state === 'idle') energy = Math.max(0, energy - 0.12);
+  trace.push((Math.random() * 2 - 1) * (amp * H * 0.36 + 0.8));
+  const maxLen = Math.ceil(W / 2) + 2;
+  while (trace.length > maxLen) trace.shift();
+
+  cx.clearRect(0, 0, W, H);
+  cx.strokeStyle = '#e4dfd4'; cx.lineWidth = 1;
+  for (let y = 0.5; y < H; y += 20) { cx.beginPath(); cx.moveTo(0, y); cx.lineTo(W, y); cx.stroke(); }
+  cx.strokeStyle = state === 'idle' ? '#1a1a1a' : '#d7261e';
+  cx.lineWidth = 1.2; cx.beginPath();
+  const mid = H * 0.56;
+  trace.forEach((v, i) => {
+    const x = W - (trace.length - 1 - i) * 2;
+    i ? cx.lineTo(x, mid + v) : cx.moveTo(x, mid + v);
+  });
+  cx.stroke();
+  meter.style.width = energy + '%';
+
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- helpers ---------- */
+let requests = 0;
+async function getJSON(url, timeout = 12000) {
+  requests++;
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), timeout);
+  let r;
+  try { r = await fetch(url, { signal: ctl.signal }); }
+  catch (e) { throw new Error(e.name === 'AbortError' ? `${new URL(url).hostname} took too long` : `could not reach ${new URL(url).hostname}`); }
+  finally { clearTimeout(timer); }
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+function ago(t) {
+  const days = (Date.now() - t) / 864e5;
+  if (days >= 60) return `${Math.round(days / 30.4)} months`;
+  if (days >= 2) return `${Math.round(days)} days`;
+  const m = Math.round((Date.now() - t) / 60000);
+  if (m < 60) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return `${h} h ${m % 60} min`;
+}
+function km(a, b) {
+  const R = 6371, rad = x => x * Math.PI / 180;
+  const dLat = rad(b.lat - a.lat), dLon = rad(b.lon - a.lon);
+  const s = Math.sin(dLat / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(s));
+}
+function moveBall(i) {
+  ball.style.opacity = 1;
+  ball.style.top = (nodes[i].offsetTop + 13) + 'px';
+  nodes[i].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+async function step(i, fn) {
+  const n = nodes[i];
+  n.classList.add('active');
+  n.querySelector('pre').textContent = '…';
+  moveBall(i);
+  await sleep(650);
+  try {
+    const out = await fn();
+    if (out && out.skip) { n.querySelector('pre').textContent = out.text; n.classList.remove('active'); n.classList.add('skip'); await sleep(700); return; }
+    n.querySelector('pre').textContent = out;
+    n.classList.remove('active'); n.classList.add('done');
+    bump();
+    await sleep(1000);
+  } catch (err) {
+    n.classList.remove('active'); n.classList.add('error');
+    n.querySelector('pre').textContent = 'jammed: ' + err.message;
+    err.step = i; throw err;
+  }
+}
+
+/* ---------- images ---------- */
+function tilesHTML(lat, lon, z, span = 2, spanY = 1) {
+  const n = 2 ** z, rad = lat * Math.PI / 180;
+  const fx = (lon + 180) / 360 * n;
+  const fy = (1 - Math.log(Math.tan(rad) + 1 / Math.cos(rad)) / Math.PI) / 2 * n;
+  const tx = Math.floor(fx), ty = Math.floor(fy);
+  const ox = (fx - tx) * 256, oy = (fy - ty) * 256;
+  let html = '';
+  for (let dx = -span; dx <= span; dx++) for (let dy = -spanY; dy <= spanY; dy++) {
+    const x = ((tx + dx) % n + n) % n, y = ty + dy;
+    if (y < 0 || y >= n) continue;
+    html += `<img alt="" loading="lazy" src="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}" style="left:${dx * 256 - ox}px;top:${dy * 256 - oy}px">`;
+  }
+  return html;
+}
+function satHTML(lat, lon, label, z = 11) {
+  return `<div class="sat" ${satAttrs(lat, lon, label)}><div class="tiles">${tilesHTML(lat, lon, z)}</div><div class="cross"></div><div class="lbl">${esc(label)} · click to enlarge</div></div>`;
+}
+function addToNode(i, html) {
+  const box = document.createElement('div');
+  box.innerHTML = html;
+  box.querySelectorAll('img').forEach(img => img.addEventListener('error', () => {
+    const fig = img.closest('.shot'); (fig || img).remove();
+  }));
+  nodes[i].appendChild(box);
+}
+function shotsHTML(list) {
+  return `<div class="shots">${list.map(p => `<figure class="shot"><img alt="${esc(p.cap)}" loading="lazy" src="${esc(p.src)}" ${zoomAttrs(p.big || bigOf(p.src), p.cap, p.href, p.src)}><figcaption>${esc(p.cap)}</figcaption></figure>`).join('')}</div>`;
+}
+function photoPin(lat, lon, src, tip, href, big) {
+  return L.marker([lat, lon], { icon: L.divIcon({ className: 'photo-pin', html: `<img alt="" src="${esc(src)}" ${zoomAttrs(big || bigOf(src), tip, href, src)}>`, iconSize: [44, 44], iconAnchor: [22, 22] }) })
+    .bindTooltip(esc(tip), { direction: 'top', offset: [0, -20] });
+}
+const bigOf = src => /upload\.wikimedia\.org\/.*\/thumb\//.test(src) ? src.replace(/\/(\d+)px-([^/]+)$/, '/1280px-$2') : src;
+const zoomAttrs = (big, cap, href, small) => `data-zoom="img" data-big="${esc(big)}" data-small="${esc(small || big)}" data-cap="${esc(cap)}" data-href="${esc(href || '')}"`;
+const satAttrs = (lat, lon, cap) => `data-zoom="sat" data-lat="${lat}" data-lon="${lon}" data-cap="${esc(cap)}"`;
+const norm = t => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const cleanFile = t => t.replace(/^File:/, '').replace(/\.(jpe?g|png|gif|tiff?|webp)$/i, '').replace(/_/g, ' ');
+
+/* ---------- lightbox: click any picture to enlarge ---------- */
+const lb = $('#lb'), lbStage = $('#lbStage'), lbCap = $('#lbCap'), lbCount = $('#lbCount');
+let lbItems = [], lbIndex = 0, lbZoom = 13;
+function lbList() {
+  // every zoomable picture currently on the page, in reading order; skip duplicates of the same picture
+  const seen = new Set();
+  return [...document.querySelectorAll('[data-zoom]')].filter(el => {
+    if (el.closest('#lb')) return false;
+    const key = el.dataset.zoom === 'sat' ? `sat${el.dataset.lat},${el.dataset.lon}` : el.dataset.big;
+    if (seen.has(key)) return false; seen.add(key); return true;
+  });
+}
+function lbShow(i) {
+  lbIndex = (i + lbItems.length) % lbItems.length;
+  const el = lbItems[lbIndex], d = el.dataset;
+  lbCount.textContent = lbItems.length > 1 ? `${lbIndex + 1} / ${lbItems.length}` : '';
+  $('#lbPrev').style.display = $('#lbNext').style.display = lbItems.length > 1 ? '' : 'none';
+  if (d.zoom === 'sat') {
+    const draw = () => {
+      lbStage.innerHTML = `<div class="lb-sat"><div class="tiles">${tilesHTML(+d.lat, +d.lon, lbZoom, 3, 2)}</div><div class="cross"></div>
+        <div class="zoombar"><button type="button" id="zin" aria-label="Zoom in">+</button><button type="button" id="zout" aria-label="Zoom out">−</button></div></div>`;
+      $('#zin').onclick = () => { lbZoom = Math.min(17, lbZoom + 1); draw(); };
+      $('#zout').onclick = () => { lbZoom = Math.max(3, lbZoom - 1); draw(); };
+    };
+    lbZoom = 13; draw();
+    lbCap.innerHTML = `${esc(d.cap.replace(/ · satellite$/, ''))} <span>· satellite view · ${(+d.lat).toFixed(4)}, ${(+d.lon).toFixed(4)} · imagery © Esri · use + / − to zoom</span>`;
+  } else {
+    const img = new Image();
+    img.className = 'lb-img'; img.alt = d.cap || '';
+    img.onerror = () => { if (img.src !== d.small) img.src = d.small; };   // big size missing → fall back to the small one
+    img.src = d.big;
+    lbStage.replaceChildren(img);
+    lbCap.innerHTML = `${esc(d.cap)}${d.href ? ` <span>·</span> <a href="${esc(d.href)}" target="_blank" rel="noopener">source & license ↗</a>` : ''}`;
+  }
+}
+function lbOpen(el) { lbItems = lbList(); const i = lbItems.indexOf(el); lbShow(i < 0 ? 0 : i); lb.classList.add('show'); }
+function lbClose() { lb.classList.remove('show'); lbStage.replaceChildren(); }
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-zoom]');
+  if (!el || el.closest('#lb')) return;
+  e.preventDefault(); e.stopPropagation();
+  lbOpen(el.dataset.zoom ? el : el);
+}, true);
+$('#lbClose').onclick = lbClose;
+$('#lbPrev').onclick = () => lbShow(lbIndex - 1);
+$('#lbNext').onclick = () => lbShow(lbIndex + 1);
+lb.addEventListener('click', e => { if (e.target === lb || e.target === lbStage) lbClose(); });
+addEventListener('keydown', e => {
+  if (!lb.classList.contains('show')) return;
+  if (e.key === 'Escape') lbClose();
+  else if (e.key === 'ArrowLeft') lbShow(lbIndex - 1);
+  else if (e.key === 'ArrowRight') lbShow(lbIndex + 1);
+  e.stopPropagation();
+}, true);
+
+/* ---------- the run ---------- */
+let S = {};
+
+async function run() {
+  state = 'running'; trigger.classList.add('locked');
+  S = {}; requests = 0;
+  const t0 = performance.now();
+
+  try {
+    await step(0, async () => {
+      // fill the meter fast → big quake; slowly → small one (≈1.5 s → M7.4, 3 s → M6, 5 s → M5.1, 8 s → M4.7)
+      S.target = Math.max(MIN_MAG, Math.min(7.8, MIN_MAG + 3.3 * Math.exp(-(shakeSecs - 1.2) / 2.2)));
+      return `filled the meter in ${shakeMs.toLocaleString()} ms · ${shakeCount} jolts\n→ you shook like a magnitude ${S.target.toFixed(1)}\n→ looking for a real one`;
+    });
+
+    await step(1, async () => {
+      requests++;
+      let quakes;
+      try { quakes = await YEAR; } catch (e) { throw new Error(`could not reach USGS (${e.message})`); }
+      if (!quakes.length) throw new Error('the catalog came back empty');
+      // all real quakes within ±0.1 of your magnitude; widen until something matches
+      let tol = 0.1, match = [];
+      while (!match.length && tol < 4) { match = quakes.filter(q => Math.abs(q.mag - S.target) <= tol + 1e-9); tol += 0.1; }
+      const idx = shakeMs % match.length;          // the exact millisecond your meter filled picks which one
+      const q = match[idx];
+      const { lat, lon } = q;
+      Object.assign(S, { lat, lon, depth: q.depth, mag: q.mag, place: q.place, time: q.time, quakeUrl: q.url });
+      S.pickNote = `${quakes.length.toLocaleString()} quakes M${MIN_MAG}+ in the past year\n${match.length} near M${S.target.toFixed(1)} · filled at ${shakeMs.toLocaleString()} ms · mod ${match.length} → #${idx}\n`;
+      L.circleMarker([lat, lon], { radius: 6 + Math.max(0, S.mag) * 3, color: '#d7261e', weight: 1.5, fillOpacity: .25 }).addTo(layers);
+      L.circleMarker([lat, lon], { radius: 3, color: '#d7261e', fillOpacity: 1 }).addTo(layers);
+      map.flyTo([lat, lon], 6, { duration: 1.4 });
+      for (let k = 0; k < 6; k++) setTimeout(() => bump(Math.min(1, 0.15 + Math.max(0, S.mag) * 0.15)), k * 180);
+      addToNode(1, satHTML(lat, lon, 'the ground that shook · satellite'));
+      S.film = [{ kind: 'sat', lat, lon, cap: `M${S.mag.toFixed(1)} epicenter` }];
+      return `${S.pickNote}→ M${S.mag.toFixed(1)} · ${S.place}\n${new Date(S.time).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })} (${ago(S.time)} ago) · depth ${S.depth.toFixed(1)} km\nlat ${lat.toFixed(3)}, lon ${lon.toFixed(3)}`;
+    });
+
+    await step(2, async () => {
+      let name = '', country = '';
+      try {
+        const g = await getJSON(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${S.lat}&longitude=${S.lon}&localityLanguage=en`);
+        name = g.city || g.locality || g.principalSubdivision || '';
+        country = g.countryName || '';
+        S.geo = g;
+      } catch (e) { /* fall through to the USGS label */ }
+      if (!name) name = S.place.replace(/^.*\bof\s+/i, '').split(',')[0].trim() || country || 'Earth';
+      S.locName = name;
+      let photoNote = '';
+      try {
+        const c = await getJSON(`https://commons.wikimedia.org/w/api.php?action=query&generator=geosearch&ggscoord=${enc(S.lat + '|' + S.lon)}&ggsradius=10000&ggsnamespace=6&ggslimit=12&prop=imageinfo|coordinates&iiprop=url&iiurlwidth=320&format=json&origin=*`);
+        const pics = Object.values(c.query?.pages || {})
+          .filter(p => p.imageinfo?.[0]?.thumburl && /\.(jpe?g|png|webp)$/i.test(p.title))
+          .slice(0, 4)
+          .map(p => ({ src: p.imageinfo[0].thumburl, href: p.imageinfo[0].descriptionurl, cap: cleanFile(p.title),
+                       lat: p.coordinates?.[0]?.lat, lon: p.coordinates?.[0]?.lon }));
+        if (pics.length) {
+          addToNode(2, shotsHTML(pics));
+          const p0 = pics[0];
+          if (p0.lat != null) layers.addLayer(photoPin(p0.lat, p0.lon, p0.src, `near the epicenter · ${p0.cap}`, p0.href));
+          S.film.push({ kind: 'img', src: p0.src, cap: 'a photo near there', full: p0.cap, href: p0.href });
+          photoNote = `\n${pics.length} photos people took within 10 km`;
+        } else photoNote = '\nno one has posted a photo within 10 km';
+      } catch (e) { photoNote = '\n(the photo archive did not answer)'; }
+      return `${S.lat.toFixed(3)}, ${S.lon.toFixed(3)}\n→ "${name}"${country ? ', ' + country : ''}${photoNote}`;
+    });
+
+    await step(3, async () => {
+      // collect every name this spot goes by, most specific first
+      const names = [];
+      const add = (n, why) => {
+        n = (n || '').replace(/\s+region$/i, '').replace(/^(the)\s+/i, '').trim();
+        if (n.length >= 3 && !names.some(x => norm(x.name) === norm(n))) names.push({ name: n, why });
+      };
+      const m = S.place.match(/\bof\s+([^,]+)(?:,\s*(.+))?$/i);          // "12 km NE of Ridgecrest, CA"
+      if (m) add(m[1], 'USGS: nearest town');
+      else add(S.place.split(',')[0], 'USGS: region name');               // "Kermadec Islands region"
+      const g = S.geo || {};
+      add(g.city, 'city'); add(g.locality, 'locality');
+      (g.localityInfo?.administrative || []).slice().reverse().forEach(a => { if (a.adminLevel >= 4) add(a.name, 'district'); });
+      add(g.principalSubdivision, 'province / state');
+      if (m && m[2]) add(m[2].trim(), 'USGS: region');
+      // single words from long names, as a last resort ("Kermadec Islands" → "Kermadec")
+      names.slice().forEach(x => x.name.split(/[\s-]+/).filter(w => w.length >= 5 && !/^(north|south|east|west|central|islands?|region|ridge|province|county|state|district|mountains?|coast|sea|ocean|gulf)$/i.test(w)).forEach(w => add(w, 'one word of "' + x.name + '"')));
+      if (!names.length) throw new Error('this spot has no name to look up');
+      S.names = names;
+      S.film.push({ kind: 'word', text: names[0].name, cap: 'its name' });
+      return `"${S.place}"\nnames for this spot:\n${names.slice(0, 6).map(x => `· ${x.name}  (${x.why})`).join('\n')}${names.length > 6 ? '\n…' : ''}`;
+    });
+
+    await step(4, async () => {
+      const tried = [];
+      for (const cand of S.names.slice(0, 6)) {
+        const d = await getJSON(`https://geocoding-api.open-meteo.com/v1/search?name=${enc(cand.name)}&count=100&language=en&format=json`);
+        const twins = (d.results || [])
+          .filter(r => norm(r.name) === norm(cand.name))                                  // exactly the same name
+          .map(r => ({ ...r, dist: km({ lat: S.lat, lon: S.lon }, { lat: r.latitude, lon: r.longitude }) }))
+          .filter(r => r.dist > 150);                                                      // not the original place itself
+        if (!twins.length) { tried.push(cand.name); continue; }
+        // a few twins share one country; keep the list varied, then let the quake's depth pick
+        twins.sort((a, b) => (b.population || 0) - (a.population || 0));
+        const idx = Math.round(S.depth) % twins.length;
+        const t = twins[idx];
+        S.twinName = cand.name;
+        S.dest = { title: t.name, lat: t.latitude, lon: t.longitude, country: t.country || '', admin: t.admin1 || '',
+          pop: t.population || 0, kind: t.feature_code || '', tz: t.timezone || '' };
+        const countries = [...new Set(twins.map(x => x.country).filter(Boolean))];
+        const where = x => [x.admin1, x.country].filter(Boolean).join(', ');
+        return `${tried.length ? `"${tried.join('", "')}" → no other place in the world\n` : ''}"${cand.name}" → ${twins.length} other place${twins.length > 1 ? 's' : ''} with this name\nin ${countries.slice(0, 6).join(', ')}${countries.length > 6 ? ` +${countries.length - 6} more` : ''}\ndepth ${Math.round(S.depth)} km mod ${twins.length} → #${idx}\n→ ${t.name}, ${where(t)}${t.population ? ` · pop. ${t.population.toLocaleString()}` : ''}`;
+      }
+      // no namesake anywhere → fall through the planet
+      S.twinName = S.names[0].name;
+      S.dest = { title: `the other side of ${S.names[0].name}`, lat: -S.lat, lon: S.lon > 0 ? S.lon - 180 : S.lon + 180, antipode: true, country: '', admin: '' };
+      return `"${tried.join('", "')}"\n→ no other place on Earth has any of these names\n→ the quake falls straight through the planet\nto ${S.dest.lat.toFixed(2)}, ${S.dest.lon.toFixed(2)}`;
+    });
+
+    await step(5, async () => {
+      if (S.dest.antipode) return { skip: true, text: 'nothing to visit on the other side\n(probably open ocean)' };
+      const D = S.dest;
+      let note = '';
+      // the Wikipedia article for the twin: nearest article whose title starts with its name
+      try {
+        const g = await getJSON(`${WIKI}?action=query&generator=geosearch&ggscoord=${enc(D.lat + '|' + D.lon)}&ggsradius=10000&ggslimit=20&prop=pageimages|extracts|coordinates&piprop=thumbnail|original&pithumbsize=320&exintro=1&explaintext=1&exsentences=2&format=json&origin=*`);
+        const pages = Object.values(g.query?.pages || {}).sort((a, b) => (a.index ?? 0) - (b.index ?? 0));
+        const p = pages.find(x => norm(x.title).startsWith(norm(D.title))) || null;
+        if (p) {
+          D.article = p.title; D.href = `https://en.wikipedia.org/wiki/${enc(p.title.replace(/ /g, '_'))}`;
+          D.pic = p.thumbnail?.source; D.big = p.original?.source;
+          D.extract = (p.extract || '').replace(/\s+/g, ' ').trim();
+        }
+      } catch (e) { /* no article, keep going */ }
+      if (D.pic) { addToNode(5, shotsHTML([{ src: D.pic, big: D.big, href: D.href, cap: D.article }])); S.film.push({ kind: 'img', src: D.pic, big: D.big, cap: `the other ${D.title}`, full: D.article, href: D.href }); }
+      // photos people took there
+      try {
+        const c = await getJSON(`https://commons.wikimedia.org/w/api.php?action=query&generator=geosearch&ggscoord=${enc(D.lat + '|' + D.lon)}&ggsradius=10000&ggsnamespace=6&ggslimit=12&prop=imageinfo|coordinates&iiprop=url&iiurlwidth=320&format=json&origin=*`);
+        const pics = Object.values(c.query?.pages || {})
+          .filter(p => p.imageinfo?.[0]?.thumburl && /\.(jpe?g|png|webp)$/i.test(p.title))
+          .slice(0, D.pic ? 3 : 4)
+          .map(p => ({ src: p.imageinfo[0].thumburl, href: p.imageinfo[0].descriptionurl, cap: cleanFile(p.title) }));
+        if (pics.length) {
+          addToNode(5, shotsHTML(pics));
+          if (!D.pic) { D.pic = pics[0].src; D.href = pics[0].href; S.film.push({ kind: 'img', src: pics[0].src, cap: `the other ${D.title}`, full: pics[0].cap, href: pics[0].href }); }
+          note = `\n${pics.length} photos people took there`;
+        } else note = '\nno photos posted there yet';
+      } catch (e) { note = '\n(the photo archive did not answer)'; }
+      const where = [D.admin, D.country].filter(Boolean).join(', ');
+      return `${D.title}${where ? ', ' + where : ''}${D.pop ? `\npopulation ${D.pop.toLocaleString()}` : ''}${D.extract ? `\n"${D.extract.length > 180 ? D.extract.slice(0, 180) + '…' : D.extract}"` : D.article ? '' : '\n(no Wikipedia article about it)'}${note}`;
+    });
+
+    await step(6, async () => {
+      const a = { lat: S.lat, lon: S.lon };
+      const b = { lat: S.dest.lat, lon: S.dest.lon };
+      let bLon = b.lon;
+      if (bLon - a.lon > 180) bLon -= 360; else if (a.lon - bLon > 180) bLon += 360;
+      S.km = km(a, b);
+      map.flyToBounds(L.latLngBounds([a.lat, a.lon], [b.lat, bLon]).pad(0.3), { duration: 1.4, maxZoom: 8 });
+      await sleep(1400);
+      const line = L.polyline([], { color: '#d7261e', weight: 2, dashArray: '6 6' }).addTo(layers);
+      const N = 70;
+      for (let k = 0; k <= N; k++) {
+        const t = k / N;
+        const jitter = k && k < N ? (Math.random() - .5) * 0.004 * S.km / 100 : 0;
+        line.addLatLng([a.lat + (b.lat - a.lat) * t + jitter, a.lon + (bLon - a.lon) * t + jitter]);
+        if (k % 7 === 0) bump(0.25);
+        await sleep(22);
+      }
+      L.circleMarker([a.lat, a.lon], { radius: 4, color: '#d7261e', fillColor: '#d7261e', fillOpacity: 1 }).addTo(layers)
+        .bindTooltip(S.twinName, { permanent: true, direction: 'left', offset: [-8, 0] });
+      if (S.dest.pic) layers.addLayer(photoPin(b.lat, bLon, S.dest.pic, `the other ${S.dest.title}`, S.dest.href, S.dest.big));
+      L.circleMarker([b.lat, bLon], { radius: 6, color: '#1a1a1a', fillColor: '#1a1a1a', fillOpacity: 1 }).addTo(layers)
+        .bindTooltip(S.dest.antipode ? S.dest.title : `the other ${S.dest.title}`, { permanent: true, direction: S.dest.pic ? 'bottom' : 'top', offset: [0, S.dest.pic ? 22 : -6] });
+      addToNode(6, satHTML(S.dest.lat, S.dest.lon, S.dest.antipode ? 'the other side of the Earth' : `the other ${S.dest.title} · satellite`));
+      S.film.push({ kind: 'sat', lat: S.dest.lat, lon: S.dest.lon, cap: S.dest.antipode ? 'the other side' : `the other ${S.dest.title}, from above` });
+      return `${S.twinName} → ${S.dest.antipode ? S.dest.title : 'the other ' + S.dest.title}\n${Math.round(S.km).toLocaleString()} km apart, same name`;
+    });
+
+    finish(((performance.now() - t0) / 1000).toFixed(1));
+  } catch (err) {
+    jammed(err);
+  }
+}
+
+function filmHTML() {
+  return (S.film || []).map(f => {
+    const pic = f.kind === 'sat' ? `<div class="pic sat-mini" ${satAttrs(f.lat, f.lon, f.cap)}><div class="tiles">${tilesHTML(f.lat, f.lon, 11, 1)}</div></div>`
+      : f.kind === 'img' ? `<div class="pic"><img alt="" src="${esc(f.src)}" ${zoomAttrs(f.big || bigOf(f.src), f.full || f.cap, f.href, f.src)} onerror="this.parentNode.classList.add('word');this.replaceWith('(image missing)')"></div>`
+      : `<div class="pic word">“${esc(f.text)}”</div>`;
+    return `<figure class="frame">${pic}<figcaption>${esc(f.cap)}</figcaption></figure>`;
+  }).join('<span class="arrow">→</span>');
+}
+
+function finish(secs) {
+  const D = S.dest;
+  const whereB = [D.admin, D.country].filter(Boolean).join(', ');
+  const destName = D.href ? `<a href="${esc(D.href)}" target="_blank" rel="noopener">${esc(D.title)}</a>` : esc(D.title);
+  const line = D.antipode
+    ? `No other place on Earth is called ${esc(S.twinName)}, so the shaking fell straight through the planet, ${Math.round(S.km).toLocaleString()} km to the other side.`
+    : `The ground shook near <b>${esc(S.twinName)}</b>. Far away, there is another ${destName}${whereB ? ` in ${esc(whereB)}` : ''}, ${Math.round(S.km).toLocaleString()} km away. It felt nothing.`;
+  $('#result').innerHTML = `
+    <p class="big"><a href="${esc(S.quakeUrl)}" target="_blank" rel="noopener">M${S.mag.toFixed(1)} · ${esc(S.place)}</a> · ${new Date(S.time).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}</p>
+    <p class="big" style="font-size:14px">${line}</p>
+    <div class="film">${filmHTML()}</div>
+    <p class="stats">1 scroll · ${requests} requests · 6 services · ${(S.film || []).filter(f => f.kind !== 'word').length} pictures · ${secs} s · nothing useful</p>
+    <button type="button" id="again">Shake again</button>`;
+  $('#result').classList.add('show');
+  $('#again').onclick = reset;
+  state = 'done';
+}
+
+function jammed(err) {
+  $('#result').innerHTML = `
+    <p class="big">The machine jammed at step ${String(err.step ?? '?').padStart(2, '0')}.</p>
+    <p class="trail">${esc(err.message)}</p>
+    <button type="button" id="again">Reset and shake again</button>`;
+  $('#result').classList.add('show');
+  $('#again').onclick = reset;
+  state = 'done';
+}
+
+function reset() {
+  layers.clearLayers();
+  nodes.forEach(n => { n.className = 'node'; n.querySelector('pre').textContent = ''; [...n.children].forEach(c => { if (c.tagName === 'DIV') c.remove(); }); });
+  ball.style.opacity = 0; ball.style.top = '24px';
+  $('#result').classList.remove('show');
+  map.flyTo([20, 0], 2, { duration: 1 });
+  energy = 0; amp = 0; shakeStart = 0; shakeTotal = 0; shakeCount = 0;
+  trigger.classList.remove('locked');
+  chainEl.parentElement.scrollTo({ top: 0, behavior: 'smooth' });
+  state = 'idle';
+}
+
+</script>
+</body>
+</html>
